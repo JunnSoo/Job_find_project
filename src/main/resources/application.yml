@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: it_job
+  datasource:
+    url: jdbc:mysql://localhost:3307/it_job_db
+    username: root
+    password: admin123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
