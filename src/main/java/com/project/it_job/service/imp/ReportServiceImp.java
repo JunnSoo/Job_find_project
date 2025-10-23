@@ -24,8 +24,8 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
-    public Optional<Report> getReportById(int id) {
-        return reportRepository.findById(id);
+    public Report getReportById(int id) {
+        return reportRepository.findById(id).orElseThrow(() -> new RuntimeException("Report not found with id: " + id));
     }
 
     @Override
@@ -35,7 +35,9 @@ public class ReportServiceImp implements ReportService {
 
     @Override
     public Report updateReport(int id, Report reportDetails) {
-        return reportRepository.findById(id).map(report -> {
+        Optional<Report> optionalReport = reportRepository.findById(id);
+        if(optionalReport.isPresent()){
+            Report report = optionalReport.get();
             report.setTitle(reportDetails.getTitle());
             report.setDescription(reportDetails.getDescription());
             report.setHinhAnh(reportDetails.getHinhAnh());
@@ -44,7 +46,10 @@ public class ReportServiceImp implements ReportService {
             report.setReportedUser(reportDetails.getReportedUser());
             report.setReportedJob(reportDetails.getReportedJob());
             return reportRepository.save(report);
-        }).orElse(null);
+        } else {
+            throw new RuntimeException("Report not found with id: "+id);
+        }
+
     }
 
     @Override

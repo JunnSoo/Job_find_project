@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ReportService {
     List<Report> getAllReports();
-    Optional<Report> getReportById(int id);
+    Report getReportById(int id);
     Report createReport(Report report);
     Report updateReport(int id, Report reportDetails);
     boolean deleteReport(int id);

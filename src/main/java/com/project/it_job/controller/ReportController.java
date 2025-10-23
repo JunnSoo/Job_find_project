@@ -1,6 +1,7 @@
 package com.project.it_job.controller;
 
 import com.project.it_job.entity.Report;
+import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,13 @@ public class ReportController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Report> getReportById(@PathVariable int id) {
-        return reportService.getReportById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BaseResponse> getReportById(@PathVariable int id) {
+        Report report = reportService.getReportById(id);
+        BaseResponse response = new BaseResponse();
+        response.setCode(200);
+        response.setMessage("Successfully report" );
+        response.setData(report);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -40,7 +44,20 @@ public class ReportController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReport(@PathVariable int id) {
-        return reportService.deleteReport(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    public ResponseEntity<BaseResponse> deleteReport(@PathVariable int id) {
+        boolean deleted = reportService.deleteReport(id);
+        BaseResponse response = new BaseResponse();
+        if(deleted) {
+            response.setCode(200);
+            response.setMessage("Successfully deleted report");
+            response.setData(null);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setCode(404);
+            response.setMessage("Report not found with id: " + id);
+            response.setData(null);
+            return ResponseEntity.status(404).body(response);
+        }
+
     }
 }
