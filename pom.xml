@@ -67,13 +67,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- MAPSTRUCT -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>1.5.5.Final</version>
-		</dependency>
-
 		<!-- TEST -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -89,7 +82,7 @@
 
 	<build>
 		<plugins>
-			<!-- ✅ Gộp Lombok + MapStruct vào cùng compiler plugin -->
+			<!-- Gộp Lombok + MapStruct vào cùng compiler plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -104,12 +97,7 @@
 							<artifactId>lombok</artifactId>
 							<version>1.18.32</version>
 						</path>
-						<!-- MapStruct processor -->
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>1.5.5.Final</version>
-						</path>
+
 						<!-- Spring Boot config processor -->
 						<path>
 							<groupId>org.springframework.boot</groupId>
@@ -131,13 +119,6 @@
 				<configuration>
 					<source>21</source>
 					<target>21</target>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>1.5.5.Final</version>
-						</path>
-					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>
