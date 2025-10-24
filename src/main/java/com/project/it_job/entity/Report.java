@@ -23,8 +23,10 @@ public class Report {
     private String description;
     @Column(name = "hinh_anh", columnDefinition = "TEXT")
     private String hinhAnh;
-    @Column(name = "status_id")
-    private Integer statusId;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private ReportStatus statusId;
     @Column(name = "created_report", length = 36, nullable = false)
     private String createdReport;
     @Column(name = "reported_user", length = 36)
