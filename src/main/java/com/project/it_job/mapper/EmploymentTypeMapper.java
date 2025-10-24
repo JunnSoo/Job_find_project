@@ -2,12 +2,24 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.EmploymentTypeDTO;
 import com.project.it_job.entity.EmploymentType;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface EmploymentTypeMapper {
-    EmploymentTypeMapper INSTANCE = Mappers.getMapper(com.project.it_job.mapper.EmploymentTypeMapper.class);
-    EmploymentTypeDTO toDTO(EmploymentType employmentType);
-    EmploymentType toEntity(EmploymentTypeDTO dto);
+@Component
+public class EmploymentTypeMapper {
+
+    public EmploymentTypeDTO toDTO(EmploymentType entity) {
+        if (entity == null) return null;
+        EmploymentTypeDTO dto = new EmploymentTypeDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        return dto;
+    }
+
+    public EmploymentType toEntity(EmploymentTypeDTO dto) {
+        if (dto == null) return null;
+        EmploymentType entity = new EmploymentType();
+        entity.setId(dto.getId());
+        entity.setName(dto.getName());
+        return entity;
+    }
 }
