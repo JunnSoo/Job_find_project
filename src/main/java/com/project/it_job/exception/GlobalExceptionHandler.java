@@ -3,36 +3,17 @@ package com.project.it_job.exception;
 import com.project.it_job.response.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<BaseResponse> handleRuntimeException(RuntimeException ex) {
-        BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.NOT_FOUND.value());
-        response.setMessage(ex.getMessage());
-        response.setData(null);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
-    @ExceptionHandler(GetExceptionHandler.class)
-    public ResponseEntity<BaseResponse> handleGetByIdException(Exception ex) {
-        BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.NOT_FOUND.value());
-        response.setCode(400);
-        response.setMessage("Data not found!");
-        response.setData(null);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
+    
     @ExceptionHandler(SaveExeptionHandler.class)
     public ResponseEntity<BaseResponse> handleSaveException(Exception ex) {
         BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.NOT_FOUND.value());
-        response.setCode(400);
+        response.setCode(HttpStatus.BAD_REQUEST.value());
         response.setMessage("Data save failed!");
         response.setData(null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -41,8 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UpdateExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleUpdateException(Exception ex) {
         BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.NOT_FOUND.value());
-        response.setCode(400);
+        response.setCode(HttpStatus.BAD_REQUEST.value());
         response.setMessage("Data update failed!");
         response.setData(null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -51,11 +31,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DeleteExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleDeleteException(Exception ex) {
         BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.NOT_FOUND.value());
-        response.setCode(400);
+        response.setCode(HttpStatus.BAD_REQUEST.value());
         response.setMessage("Data delete failed!");
         response.setData(null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+
+//    LỖI VALIDATION
+// Hứng lỗi validation khi dùng @Valid @RequestBody
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
+    BaseResponse response = new BaseResponse();
+    response.setCode(HttpStatus.BAD_REQUEST.value());
+    response.setMessage("validation failed!");
+    response.setData(null);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+}
 }
