@@ -9,31 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    
-    @ExceptionHandler(SaveExeptionHandler.class)
-    public ResponseEntity<BaseResponse> handleSaveException(Exception ex) {
-        BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.BAD_REQUEST.value());
-        response.setMessage("Data save failed!");
-        response.setData(null);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
 
-    @ExceptionHandler(UpdateExceptionHandler.class)
+    @ExceptionHandler(NotFoundIdExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleUpdateException(Exception ex) {
         BaseResponse response = new BaseResponse();
         response.setCode(HttpStatus.BAD_REQUEST.value());
-        response.setMessage("Data update failed!");
+        response.setMessage("Not found id !");
         response.setData(null);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
-    @ExceptionHandler(DeleteExceptionHandler.class)
-    public ResponseEntity<BaseResponse> handleDeleteException(Exception ex) {
-        BaseResponse response = new BaseResponse();
-        response.setCode(HttpStatus.BAD_REQUEST.value());
-        response.setMessage("Data delete failed!");
-        response.setData(null);
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
@@ -45,7 +28,6 @@ public class GlobalExceptionHandler {
         response.setData(null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-
 
 //    LỖI VALIDATION
 // Hứng lỗi validation khi dùng @Valid @RequestBody
