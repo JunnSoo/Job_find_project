@@ -37,6 +37,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(FileExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleFileException(Exception ex) {
+        BaseResponse response = new BaseResponse();
+        response.setCode(HttpStatus.BAD_REQUEST.value());
+        response.setMessage("File is error!");
+        response.setData(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
 
 //    LỖI VALIDATION
 // Hứng lỗi validation khi dùng @Valid @RequestBody
