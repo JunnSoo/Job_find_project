@@ -1,4 +1,4 @@
-package com.project.it_job.exception;
+package com.project.it_job.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetByIdExceptionHandler extends RuntimeException{
-    private String message;
+public class GetBlogRequest {
+    private int pageSize;
+    private int pageNumber;
 }

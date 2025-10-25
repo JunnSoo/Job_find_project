@@ -1,31 +1,22 @@
-package com.project.it_job.entity;
+package com.project.it_job.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity(name = "blog")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Blog {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class BlogDTO {
     private int id;
-
     private String title;
     private String picture;
     private String shortDescription;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private String updatedPerson;
-
-    @OneToOne(mappedBy = "blog", cascade = CascadeType.ALL)
-    private BlogDetail blogDetail;
-
 }

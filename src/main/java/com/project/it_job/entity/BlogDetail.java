@@ -17,9 +17,9 @@ public class BlogDetail {
     private int id;
     private String description;
 
-    @OneToOne(mappedBy = "blog")
-    @MapsId // dùng chung khóa chính với blog
-    @JoinColumn(name = "id") // xác định khóa ngoại
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
     private Blog blog;
 
 }
