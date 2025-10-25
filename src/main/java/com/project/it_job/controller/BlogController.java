@@ -7,6 +7,7 @@ import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.BlogService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class BlogController {
     public ResponseEntity<?> getAllBlog(GetBlogRequest getBlogRequest){
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("OK");
-        baseResponse.setCode(200);
+        baseResponse.setCode(HttpStatus.OK.value());
         if (getBlogRequest.getPageNumber() <= 0 || getBlogRequest.getPageSize() <= 0) {
             baseResponse.setData(blogService.getAllBlog());
         }else{
@@ -29,11 +30,20 @@ public class BlogController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @GetMapping("/{idBlog}")
+    public ResponseEntity<?> getBlogById(@PathVariable("idBlog") int idBlog){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("OK");
+        baseResponse.setCode(HttpStatus.OK.value());
+        baseResponse.setData(blogService.getBlogById(idBlog));
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @PostMapping
     public ResponseEntity<?> saveBlog(@Valid @RequestBody SaveBlogRequest saveBlogRequest){
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("OK");
-        baseResponse.setCode(200);
+        baseResponse.setCode(HttpStatus.OK.value());
         baseResponse.setData(blogService.saveBlog(saveBlogRequest));
         return ResponseEntity.ok(baseResponse);
     }
@@ -42,7 +52,7 @@ public class BlogController {
     public ResponseEntity<?> updateBlog(@Valid @RequestBody UpdateBlogRequest updateBlogRequest){
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("OK");
-        baseResponse.setCode(200);
+        baseResponse.setCode(HttpStatus.OK.value());
         baseResponse.setData(blogService.updateBlogById(updateBlogRequest));
         return ResponseEntity.ok(baseResponse);
     }
@@ -51,7 +61,7 @@ public class BlogController {
     public ResponseEntity<?> deleteBlog(@PathVariable int idBlog){
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("OK");
-        baseResponse.setCode(200);
+        baseResponse.setCode(HttpStatus.OK.value());
         baseResponse.setData(blogService.deleteBlogById(idBlog));
         return ResponseEntity.ok(baseResponse);
     }
