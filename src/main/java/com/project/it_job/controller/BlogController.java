@@ -5,6 +5,7 @@ import com.project.it_job.request.SaveBlogRequest;
 import com.project.it_job.request.UpdateBlogRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.BlogService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class BlogController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveBlog(@RequestBody SaveBlogRequest saveBlogRequest){
+    public ResponseEntity<?> saveBlog(@Valid @RequestBody SaveBlogRequest saveBlogRequest){
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("OK");
         baseResponse.setCode(200);
@@ -38,7 +39,7 @@ public class BlogController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateBlog(@RequestBody UpdateBlogRequest updateBlogRequest){
+    public ResponseEntity<?> updateBlog(@Valid @RequestBody UpdateBlogRequest updateBlogRequest){
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setMessage("OK");
         baseResponse.setCode(200);

@@ -17,6 +17,7 @@ public class BlogDTO {
     private String title;
     private String picture;
     private String shortDescription;
+    private String description;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }
