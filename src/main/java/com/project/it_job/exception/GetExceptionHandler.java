@@ -1,5 +1,4 @@
-package com.project.it_job.response;
-
+package com.project.it_job.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,9 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class BaseResponse {
-    private int code;
+public class GetExceptionHandler extends RuntimeException{
     private String message;
-    private Object data;
 }

@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @ExceptionHandler(GetByIdExceptionHandler.class)
+    @ExceptionHandler(GetExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleGetByIdException(Exception ex) {
         BaseResponse response = new BaseResponse();
         response.setCode(HttpStatus.NOT_FOUND.value());

@@ -1,5 +1,4 @@
-package com.project.it_job.response;
-
+package com.project.it_job.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class BaseResponse {
-    private int code;
-    private String message;
-    private Object data;
+public class SaveBlogRequest {
+    private String title;
+    private String picture;
+    private String shortDescription;
 }
