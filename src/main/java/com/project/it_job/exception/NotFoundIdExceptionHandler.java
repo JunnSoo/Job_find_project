@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveExeptionHandler extends RuntimeException{
+public class NotFoundIdExceptionHandler extends RuntimeException{
     private String message;
 }

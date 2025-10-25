@@ -3,9 +3,7 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.BlogDTO;
 import com.project.it_job.entity.Blog;
 import com.project.it_job.entity.BlogDetail;
-import com.project.it_job.exception.DeleteExceptionHandler;
-import com.project.it_job.exception.GetExceptionHandler;
-import com.project.it_job.exception.UpdateExceptionHandler;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
 import com.project.it_job.request.GetBlogRequest;
@@ -46,7 +44,9 @@ public class BlogServiceImp implements BlogService {
 
     @Override
     public BlogDTO getBlogById(int id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(() -> new GetExceptionHandler());
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> {
+            throw new NotFoundIdExceptionHandler("Không tìm thấy ID user");
+        });
         return  blogMapper.blogToDTO(blog);
     }
 
@@ -66,8 +66,10 @@ public class BlogServiceImp implements BlogService {
     @Override
     @Transactional
     public BlogDTO updateBlogById(UpdateBlogRequest updateBlogRequest) {
-        Blog blog = blogRepository.findById(updateBlogRequest.getId()).orElseThrow(() -> new UpdateExceptionHandler());
-
+        Blog blog = blogRepository.findById(updateBlogRequest.getId()).orElseThrow(() -> {
+            System.out.println("BlogServiceImp : Không tìm thấy ID user");
+            throw new NotFoundIdExceptionHandler();
+        });
         Blog mappedBlog = blogMapper.updateBlogToBlog(updateBlogRequest);
         mappedBlog.setCreatedDate(blog.getCreatedDate());
         mappedBlog.setUpdatedDate(LocalDateTime.now());
@@ -77,7 +79,10 @@ public class BlogServiceImp implements BlogService {
 
     @Override
     public BlogDTO deleteBlogById(int id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(() -> new DeleteExceptionHandler());
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> {
+            System.out.println("BlogServiceImp : Không tìm thấy ID user");
+            throw new NotFoundIdExceptionHandler();
+        });
         blogRepository.delete(blog);
         return blogMapper.blogToDTO(blog);
     }

@@ -29,6 +29,15 @@ public class BlogController {
         return ResponseEntity.ok(baseResponse);
     }
 
+    @GetMapping("{idBlog}")
+    public ResponseEntity<?> getBlogById(@PathVariable int idBlog){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage("OK");
+        baseResponse.setCode(200);
+        baseResponse.setData(blogService.getBlogById(idBlog));
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @PostMapping
     public ResponseEntity<?> saveBlog(@Valid @RequestBody SaveBlogRequest saveBlogRequest){
         BaseResponse baseResponse = new BaseResponse();
