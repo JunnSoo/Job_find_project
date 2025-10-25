@@ -2,7 +2,9 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.ReportStatusDTO;
 import com.project.it_job.entity.ReportStatus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReportStatusMapper {
 
     public static ReportStatusDTO toDTO(ReportStatus reportStatusEntity) {
