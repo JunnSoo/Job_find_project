@@ -1,4 +1,4 @@
-package com.project.it_job.controller;
+package com.project.it_job.controller.auth;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
