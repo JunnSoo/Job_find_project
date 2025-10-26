@@ -1,16 +1,13 @@
 package com.project.it_job.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity(name = "blog_detail")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BlogDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,12 +3,13 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.BlogDTO;
 import com.project.it_job.entity.Blog;
 import com.project.it_job.entity.BlogDetail;
+import com.project.it_job.exception.ConflictException;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
 import com.project.it_job.request.GetBlogRequest;
 import com.project.it_job.request.SaveBlogRequest;
-import com.project.it_job.request.UpdateBlogRequest;
+import com.project.it_job.request.SaveUpdateBlogRequest;
 import com.project.it_job.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,26 +51,22 @@ public class BlogServiceImp implements BlogService {
 
     @Override
     @Transactional
-    public BlogDTO saveBlog(SaveBlogRequest saveBlogRequest) {
-        Blog blog = blogMapper.saveBlogToBlog(saveBlogRequest);
-
-        BlogDetail blogDetail =new BlogDetail();
-        blogDetail.setDescription(saveBlogRequest.getDescription());
-        blogDetail.setBlog(blog);
-
-        blog.setBlogDetail(blogDetail);
-        return  blogMapper.blogToDTO(blogRepository.save(blog));
+    public BlogDTO saveBlog(SaveUpdateBlogRequest saveUpdateBlogRequest) {
+       try{
+           Blog blog = blogMapper.saveBlogMapper(saveUpdateBlogRequest);
+           return  blogMapper.blogToDTO(blogRepository.save(blog));
+       }catch (Exception e){
+            throw new ConflictException("Lỗi thêm blog!");
+       }
     }
 
     @Override
     @Transactional
-    public BlogDTO updateBlogById(UpdateBlogRequest updateBlogRequest) {
-        Blog blog = blogRepository.findById(updateBlogRequest.getId()).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
-
-        Blog mappedBlog = blogMapper.updateBlogToBlog(updateBlogRequest);
+    public BlogDTO updateBlogById(int idBlog, SaveUpdateBlogRequest saveUpdateBlogRequest) {
+        Blog blog = blogRepository.findById(idBlog).orElseThrow(()
+                -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+        Blog mappedBlog = blogMapper.updateBlogMapper(idBlog,saveUpdateBlogRequest);
         mappedBlog.setCreatedDate(blog.getCreatedDate());
-        mappedBlog.setUpdatedDate(LocalDateTime.now());
-
         return  blogMapper.blogToDTO(blogRepository.save(mappedBlog));
     }
 

@@ -6,7 +6,6 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.CategoryMapper;
 import com.project.it_job.repository.CategoryRepository;
 import com.project.it_job.request.GetCategoryRequest;
-import com.project.it_job.request.SaveCategoryRequest;
 import com.project.it_job.request.UpdateCategoryRequest;
 import com.project.it_job.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +42,11 @@ public class CategoryServiceImp implements CategoryService {
         return  categoryMapper.categoryToCategoryDTO(category);
     }
 
-    @Override
-    public CategoryDTO saveCategory(SaveCategoryRequest saveCategoryRequest) {
-        return  categoryMapper.categoryToCategoryDTO(
-                categoryRepository.save(categoryMapper.saveCategoryToCategory(saveCategoryRequest)));
-    }
+//    @Override
+//    public CategoryDTO saveCategory(SaveCategoryRequest saveCategoryRequest) {
+//        return  categoryMapper.categoryToCategoryDTO(
+//                categoryRepository.save(categoryMapper.saveCategoryToCategory(saveCategoryRequest)));
+//    }
 
     @Override
     public CategoryDTO updateCategory(UpdateCategoryRequest updateCategoryRequest) {
