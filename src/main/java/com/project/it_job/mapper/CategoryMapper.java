@@ -2,41 +2,51 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.CategoryDTO;
 import com.project.it_job.entity.Category;
-import com.project.it_job.request.UpdateCategoryRequest;
+import com.project.it_job.request.auth.SaveUpdateCategoryRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CategoryMapper {
-    public CategoryDTO categoryToCategoryDTO(Category category){
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setId(category.getId());
-        categoryDTO.setName(category.getName());
-        categoryDTO.setParentId(category.getParentId());
-        categoryDTO.setCreatedDate(category.getCreatedDate());
-        categoryDTO.setUpdatedDate(category.getUpdatedDate());
-        return categoryDTO;
+
+
+    public CategoryDTO categoryToCategoryDTO(Category category) {
+        if (category == null) return null;
+
+        return CategoryDTO.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .parentId(category.getParent() != null ? category.getParent().getId() : 0)
+                .children(toDTOList(category.getChildren())) // đệ quy
+                .build();
+    }
+    public List<CategoryDTO> toDTOList(List<Category> categories) {
+        if (categories == null || categories.isEmpty()) return List.of();
+        return categories.stream()
+                .map(category -> categoryToCategoryDTO(category)).toList();
     }
 
-//    public Category saveCategoryToCategory(SaveCategoryRequest saveCategoryRequest){
-//        Category category = new Category();
-//        category.setName(saveCategoryRequest.getName());
-//        if (saveCategoryRequest.getParentId() != null){
-//            category.setParentId(saveCategoryRequest.getParentId());
-//        }
-//        category.setCreatedDate(LocalDateTime.now());
-//        category.setUpdatedDate(LocalDateTime.now());
-//        return category;
-//    }
+    public Category saveCategoryMapper(Category categoryParent,  SaveUpdateCategoryRequest saveUpdateCategoryRequest){
+        if (saveUpdateCategoryRequest == null) return null;
+        return Category.builder()
+                .name(saveUpdateCategoryRequest.getName())
+                .parent(categoryParent)
+                .createdDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
+                .build();
+    }
 
-    public Category updateCategoryToCategory(UpdateCategoryRequest updateCategoryRequest){
-        Category category = new Category();
-        category.setId(updateCategoryRequest.getId());
-        category.setName(updateCategoryRequest.getName());
-        category.setParentId(updateCategoryRequest.getParentId());
-        category.setUpdatedDate(LocalDateTime.now());
-        return category;
+    public Category updateCategoryMapper(int idCate,Category categoryParent,  SaveUpdateCategoryRequest saveUpdateCategoryRequest){
+        if (saveUpdateCategoryRequest == null) return null;
+        return Category.builder()
+                .id(idCate)
+                .name(saveUpdateCategoryRequest.getName())
+                .parent(categoryParent)
+                .updatedDate(LocalDateTime.now())
+                .build();
     }
 
 

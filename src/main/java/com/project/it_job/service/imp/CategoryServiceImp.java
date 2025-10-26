@@ -6,7 +6,7 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.CategoryMapper;
 import com.project.it_job.repository.CategoryRepository;
 import com.project.it_job.request.GetCategoryRequest;
-import com.project.it_job.request.UpdateCategoryRequest;
+import com.project.it_job.request.auth.SaveUpdateCategoryRequest;
 import com.project.it_job.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ public class CategoryServiceImp implements CategoryService {
 
     @Override
     public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll().stream().map(cate-> categoryMapper.categoryToCategoryDTO(cate)).toList();
+        return categoryRepository.findAllByParentIdIsNull().stream().map(cate-> categoryMapper.categoryToCategoryDTO(cate)).toList();
     }
 
     @Override
@@ -42,18 +42,31 @@ public class CategoryServiceImp implements CategoryService {
         return  categoryMapper.categoryToCategoryDTO(category);
     }
 
-//    @Override
-//    public CategoryDTO saveCategory(SaveCategoryRequest saveCategoryRequest) {
-//        return  categoryMapper.categoryToCategoryDTO(
-//                categoryRepository.save(categoryMapper.saveCategoryToCategory(saveCategoryRequest)));
-//    }
+    @Override
+    public CategoryDTO saveCategory(SaveUpdateCategoryRequest saveUpdateCategoryRequest) {
+        Category categoryParent = null;
+        if (saveUpdateCategoryRequest.getParentId() != null && saveUpdateCategoryRequest.getParentId() > 0){
+            categoryParent = categoryRepository.findById(saveUpdateCategoryRequest.getParentId()).orElseThrow(
+                    ()->new NotFoundIdExceptionHandler("Không tìm thấy id cha của category!")
+            );
+        }
+
+        return  categoryMapper.categoryToCategoryDTO(
+                categoryRepository.save(categoryMapper.saveCategoryMapper(categoryParent ,saveUpdateCategoryRequest)));
+    }
 
     @Override
-    public CategoryDTO updateCategory(UpdateCategoryRequest updateCategoryRequest) {
-        Category category  = categoryRepository.findById(updateCategoryRequest.getId())
+    public CategoryDTO updateCategory(int idCate ,SaveUpdateCategoryRequest saveUpdateCategoryRequest) {
+        Category categoryParent = null;
+        if (saveUpdateCategoryRequest.getParentId() != null && saveUpdateCategoryRequest.getParentId() > 0){
+            categoryParent = categoryRepository.findById(saveUpdateCategoryRequest.getParentId()).orElseThrow(
+                    ()->new NotFoundIdExceptionHandler("Không tìm thấy id cha của category!")
+            );
+        }
+        Category category  = categoryRepository.findById(idCate)
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id category"));
 
-        Category mapperBlog = categoryMapper.updateCategoryToCategory(updateCategoryRequest);
+        Category mapperBlog = categoryMapper.updateCategoryMapper(idCate,categoryParent ,saveUpdateCategoryRequest);
         mapperBlog.setCreatedDate(category.getCreatedDate());
 
         return   categoryMapper.categoryToCategoryDTO(categoryRepository.save(mapperBlog));

@@ -1,10 +1,12 @@
 package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.BlogDTO;
+import com.project.it_job.dto.BlogDetailDTO;
 import com.project.it_job.entity.Blog;
 import com.project.it_job.entity.BlogDetail;
 import com.project.it_job.exception.ConflictException;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.mapper.BlogDetailMapper;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
 import com.project.it_job.request.GetBlogRequest;
@@ -29,6 +31,9 @@ public class BlogServiceImp implements BlogService {
 
     @Autowired
     private BlogMapper blogMapper;
+
+    @Autowired
+    private BlogDetailMapper blogDetailMapper;
 
 
     @Override
@@ -75,6 +80,12 @@ public class BlogServiceImp implements BlogService {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
         blogRepository.delete(blog);
         return blogMapper.blogToDTO(blog);
+    }
+
+    @Override
+    public BlogDetailDTO getBlogDetailById(int id) {
+        Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+        return blogDetailMapper.blogToBlogDetailDTO(blog);
     }
 
 

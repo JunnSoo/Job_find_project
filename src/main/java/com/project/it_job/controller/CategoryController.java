@@ -1,7 +1,7 @@
 package com.project.it_job.controller;
 
 import com.project.it_job.request.GetCategoryRequest;
-import com.project.it_job.request.UpdateCategoryRequest;
+import com.project.it_job.request.auth.SaveUpdateCategoryRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.CategoryService;
 import jakarta.validation.Valid;
@@ -18,50 +18,34 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<?> getAllCategories(GetCategoryRequest getCategoryRequest) {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setCode(HttpStatus.OK.value());
-        baseResponse.setMessage("OK");
+
         if (getCategoryRequest.getPageNumber() <= 0 || getCategoryRequest.getPageSize() <= 0) {
-            baseResponse.setData(categoryService.getAllCategories());
-        }else{
-            baseResponse.setData(categoryService.getAllCategoriesPage(getCategoryRequest));
+            return ResponseEntity.ok(BaseResponse.success(categoryService.getAllCategories(), "OK"));
         }
-        return ResponseEntity.ok(baseResponse);
+        return ResponseEntity.ok(BaseResponse.success(categoryService
+                .getAllCategoriesPage(getCategoryRequest), "OK"));
     }
 
     @GetMapping("/{idCate}")
     public ResponseEntity<?> getCategoryById(@PathVariable("idCate") Integer idCate) {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setCode(HttpStatus.OK.value());
-        baseResponse.setMessage("OK");
-        baseResponse.setData(categoryService.getCategoryById(idCate));
-        return ResponseEntity.ok(baseResponse);
+        return ResponseEntity.ok(BaseResponse.success(categoryService.getCategoryById(idCate), "OK"));
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> saveCategory(@Valid @RequestBody SaveCategoryRequest saveCategoryRequest) {
-//        BaseResponse baseResponse = new BaseResponse();
-//        baseResponse.setCode(HttpStatus.OK.value());
-//        baseResponse.setMessage("OK");
-//        baseResponse.setData(categoryService.saveCategory(saveCategoryRequest));
-//        return ResponseEntity.ok(baseResponse);
-//    }
+    @PostMapping
+    public ResponseEntity<?> saveCategory(@Valid @RequestBody SaveUpdateCategoryRequest saveUpdateCategoryRequest) {
+        return ResponseEntity.ok(BaseResponse.success(categoryService.saveCategory(saveUpdateCategoryRequest), "OK"));
 
-    @PutMapping
-    public ResponseEntity<?> updateCategory(@Valid @RequestBody UpdateCategoryRequest updateCategoryRequest) {
-       BaseResponse  baseResponse = new BaseResponse();
-       baseResponse.setCode(HttpStatus.OK.value());
-        baseResponse.setMessage("OK");
-        baseResponse.setData(categoryService.updateCategory(updateCategoryRequest));
-        return ResponseEntity.ok(baseResponse);
+    }
+
+    @PutMapping("/{idCate}")
+    public ResponseEntity<?> updateCategory(@PathVariable int idCate ,@Valid @RequestBody SaveUpdateCategoryRequest saveUpdateCategoryRequest) {
+        return ResponseEntity.ok(BaseResponse.success(categoryService.updateCategory(idCate, saveUpdateCategoryRequest), "OK"));
+
     }
 
     @DeleteMapping("/{idCate}")
     public ResponseEntity<?> deleteCategory(@PathVariable("idCate") Integer idCate) {
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setCode(HttpStatus.OK.value());
-        baseResponse.setMessage("OK");
-        baseResponse.setData(categoryService.deleteCategoryById(idCate));
-        return ResponseEntity.ok(baseResponse);
+        return ResponseEntity.ok(BaseResponse.success(categoryService.deleteCategoryById(idCate), "OK"));
+
     }
 }
