@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @Component
 public class BlogMapper {
     public BlogDTO blogToDTO(Blog blog) {
-        BlogDTO blogDTO = new BlogDTO();
-        blogDTO.setId(blog.getId());
-        blogDTO.setTitle(blog.getTitle());
-        blogDTO.setPicture(blog.getPicture());
-        blogDTO.setShortDescription(blog.getShortDescription());
-        blogDTO.setDescription(blog.getBlogDetail().getDescription());
-        blogDTO.setCreatedDate(blog.getCreatedDate());
-        blogDTO.setUpdatedDate(blog.getUpdatedDate());
-        return blogDTO;
+        return BlogDTO.builder()
+                .id(blog.getId())
+                .title(blog.getTitle())
+                .picture(blog.getPicture())
+                .shortDescription(blog.getShortDescription())
+                .description(blog.getShortDescription())
+                .createdDate(blog.getCreatedDate())
+                .updatedDate(blog.getUpdatedDate())
+                .build();
     }
 
     public Blog saveBlogToBlog(SaveBlogRequest saveBlogRequest) {

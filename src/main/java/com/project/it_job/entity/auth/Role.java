@@ -23,16 +23,16 @@ public class Role {
     @Column(columnDefinition = "CHAR(36)", updatable = false, nullable = false)
     private String id;
 
-    @JoinColumn(name = "role_name")
+    @Column(name = "role_name")
     private String roleName;
 
-    @JoinColumn(name = "description")
+    @Column(name = "description")
     private String description;
 
-    @JoinColumn(name = "created_date")
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @JoinColumn(name = "updated_date")
+    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
 }

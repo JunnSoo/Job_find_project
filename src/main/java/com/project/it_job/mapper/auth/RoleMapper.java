@@ -37,6 +37,7 @@ public class RoleMapper {
                 .roleName(roleRequest.getRoleName())
                 .description(roleRequest.getDescription())
                 .createdDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .build();
     }
 
