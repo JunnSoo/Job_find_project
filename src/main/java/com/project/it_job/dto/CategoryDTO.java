@@ -1,20 +1,19 @@
 package com.project.it_job.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CategoryDTO {
     private int id;
     private String name;
     private int parentId;
+    private List<CategoryDTO> children;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

@@ -25,6 +25,11 @@ public class BlogController {
         return ResponseEntity.ok(BaseResponse.success(blogService.getAllBlogPage(getBlogRequest),"OK"));
     }
 
+    @GetMapping("/{idBlog}/detail")
+    public ResponseEntity<?> getDetailBlogById(@PathVariable("idBlog") int idBlog){
+        return ResponseEntity.ok(BaseResponse.success(blogService.getBlogDetailById(idBlog),"OK"));
+    }
+
     @GetMapping("/{idBlog}")
     public ResponseEntity<?> getBlogById(@PathVariable("idBlog") int idBlog){
         return ResponseEntity.ok(BaseResponse.success(blogService.getBlogById(idBlog),"OK"));
