@@ -2,7 +2,6 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.CategoryDTO;
 import com.project.it_job.entity.Category;
-import com.project.it_job.request.SaveCategoryRequest;
 import com.project.it_job.request.UpdateCategoryRequest;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +19,16 @@ public class CategoryMapper {
         return categoryDTO;
     }
 
-    public Category saveCategoryToCategory(SaveCategoryRequest saveCategoryRequest){
-        Category category = new Category();
-        category.setName(saveCategoryRequest.getName());
-        if (saveCategoryRequest.getParentId() != null){
-            category.setParentId(saveCategoryRequest.getParentId());
-        }
-        category.setCreatedDate(LocalDateTime.now());
-        category.setUpdatedDate(LocalDateTime.now());
-        return category;
-    }
+//    public Category saveCategoryToCategory(SaveCategoryRequest saveCategoryRequest){
+//        Category category = new Category();
+//        category.setName(saveCategoryRequest.getName());
+//        if (saveCategoryRequest.getParentId() != null){
+//            category.setParentId(saveCategoryRequest.getParentId());
+//        }
+//        category.setCreatedDate(LocalDateTime.now());
+//        category.setUpdatedDate(LocalDateTime.now());
+//        return category;
+//    }
 
     public Category updateCategoryToCategory(UpdateCategoryRequest updateCategoryRequest){
         Category category = new Category();
