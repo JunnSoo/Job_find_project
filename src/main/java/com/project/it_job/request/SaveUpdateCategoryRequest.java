@@ -1,4 +1,4 @@
-package com.project.it_job.request.auth;
+package com.project.it_job.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

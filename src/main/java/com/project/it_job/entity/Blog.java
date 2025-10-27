@@ -18,11 +18,8 @@ public class Blog {
     private String title;
     private String picture;
     private String shortDescription;
+    private String description;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String updatedPerson;
-
-    @OneToOne(mappedBy = "blog", cascade = CascadeType.ALL)
-    private BlogDetail blogDetail;
-
 }

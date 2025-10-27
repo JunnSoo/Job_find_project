@@ -6,7 +6,6 @@ import com.project.it_job.entity.Blog;
 import com.project.it_job.exception.ConflictException;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.ParamExceptionHandler;
-import com.project.it_job.mapper.BlogDetailMapper;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
 import com.project.it_job.request.PageRequestCustom;
@@ -31,7 +30,6 @@ public class BlogServiceImp implements BlogService {
 
     private final BlogMapper blogMapper;
 
-    private final BlogDetailMapper blogDetailMapper;
 
 
     @Override
@@ -99,8 +97,6 @@ public class BlogServiceImp implements BlogService {
     @Override
     public BlogDetailDTO getBlogDetailById(int id) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
-        return blogDetailMapper.blogToBlogDetailDTO(blog);
+        return blogMapper.blogToBlogDetailDTO(blog);
     }
-
-
 }

@@ -3,15 +3,18 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.CategoryDTO;
 import com.project.it_job.entity.Category;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.ParamExceptionHandler;
 import com.project.it_job.mapper.CategoryMapper;
 import com.project.it_job.repository.CategoryRepository;
-import com.project.it_job.request.GetCategoryRequest;
-import com.project.it_job.request.auth.SaveUpdateCategoryRequest;
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.request.SaveUpdateCategoryRequest;
 import com.project.it_job.service.CategoryService;
+import com.project.it_job.specification.CategorySpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,9 +33,26 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public Page<CategoryDTO> getAllCategoriesPage(GetCategoryRequest getCategoryRequest) {
-        Pageable pageable =  PageRequest.of(getCategoryRequest.getPageNumber(),getCategoryRequest.getPageSize());
-        return categoryRepository.findAll(pageable).map( category -> categoryMapper.categoryToCategoryDTO(category));
+    public Page<CategoryDTO> getAllCategoriesPage(PageRequestCustom  pageRequestCustom) {
+        //       Trường hợp keyword = null
+        if (pageRequestCustom.getKeyword() == null) {
+            pageRequestCustom.setKeyword("");
+        }else{
+//            set pageSize mặc định khi có keyword và pageSize không được truyền
+            if (pageRequestCustom.getPageSize() == 0) {
+                pageRequestCustom.setPageSize(5);            }
+        }
+
+//        truyền pageSize không hợp lệ ( > 0 mới tính)
+        if (pageRequestCustom.getPageSize() <= 0)
+            throw new ParamExceptionHandler("Truyền pageSize không hợp lệ!");
+
+        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber(), pageRequestCustom.getPageSize());
+        Specification<Category> spec = Specification.allOf(
+                CategorySpecification.searchByName(pageRequestCustom.getKeyword()),
+                CategorySpecification.parentIsNull()
+        );
+        return categoryRepository.findAll(spec, pageable).map( cate -> categoryMapper.categoryToCategoryDTO(cate));
     }
 
     @Override

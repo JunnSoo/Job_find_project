@@ -15,5 +15,5 @@ public interface BlogService {
      BlogDTO saveBlog(SaveUpdateBlogRequest saveUpdateBlogRequest );
      BlogDTO updateBlogById(int idBlog,SaveUpdateBlogRequest saveUpdateBlogRequest);
      BlogDTO deleteBlogById(int id);
-     BlogDetailDTO  getBlogDetailById(int id);
+     BlogDetailDTO getBlogDetailById(int id);
 }
