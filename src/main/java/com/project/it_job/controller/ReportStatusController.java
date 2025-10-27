@@ -20,95 +20,37 @@ import java.util.stream.Collectors;
 public class ReportStatusController {
 
     @Autowired
-    private  ReportStatusService reportStatusService;
+    private ReportStatusService reportStatusService;
 
+    //Lấy danh sách tất cả status
     @GetMapping
-    public ResponseEntity<BaseResponse> getAll() {
-        List<ReportStatus> list = reportStatusService.getAll();
-
-        BaseResponse baseResponse = new BaseResponse();
-        if(list.isEmpty()){
-            baseResponse.setCode(HttpStatus.OK.value());
-            baseResponse.setMessage("Report Status List is Empty");
-            baseResponse.setData(list);
-            return ResponseEntity.ok(baseResponse);
-        }
-        List<ReportStatusDTO> dtoList = list.stream()
-                        .map(ReportStatusMapper::toDTO)
-                        .collect(Collectors.toList());
-        baseResponse.setCode(HttpStatus.OK.value());
-        baseResponse.setMessage("Get list of Report Status is Success");
-        baseResponse.setData(dtoList);
-        return ResponseEntity.ok(baseResponse);
+    public List<ReportStatusDTO> getAllStatuses() {
+        return reportStatusService.getAll();
     }
 
+    //Lấy 1 status theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse> getById(@PathVariable int id) {
-        Optional<ReportStatus> optional = reportStatusService.getById(id);
-        BaseResponse response = new BaseResponse();
-
-        if (optional.isPresent()) {
-            ReportStatusDTO dto = ReportStatusMapper.toDTO(optional.get());
-            response.setCode(HttpStatus.OK.value());
-            response.setMessage("Get information of Report Status is Success");
-            response.setData(dto);
-            return ResponseEntity.ok(response);
-        } else {
-            response.setCode(HttpStatus.NOT_FOUND.value());
-            response.setMessage("Not found Status have id: " + id);
-            response.setData(null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ReportStatusDTO getStatusById(@PathVariable int id) {
+        return reportStatusService.getById(id);
     }
 
+    // Thêm mới status
     @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody ReportStatusDTO dto) {
-        ReportStatus entity = ReportStatusMapper.toEntity(dto);
-        ReportStatus created = reportStatusService.create(entity);
-        ReportStatusDTO result = ReportStatusMapper.toDTO(created);
-
-        BaseResponse response = new BaseResponse(
-                HttpStatus.CREATED.value(),
-                "Add Report Status is Success",
-                result
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ReportStatusDTO createStatus(@RequestBody ReportStatusDTO dto) {
+        return reportStatusService.create(dto);
     }
 
+    // Cập nhật status
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable int id, @RequestBody ReportStatusDTO dto) {
-        ReportStatus entity = ReportStatusMapper.toEntity(dto);
-        ReportStatus updated = reportStatusService.update(id, entity);
-        BaseResponse response = new BaseResponse();
-        if (updated != null) {
-            ReportStatusDTO result = ReportStatusMapper.toDTO(updated);
-            response.setCode(HttpStatus.OK.value());
-            response.setMessage("Updated status is Success");
-            response.setData(result);
-            return ResponseEntity.ok(response);
-        } else {
-            response.setCode(HttpStatus.NOT_FOUND.value());
-            response.setMessage("Not found status have id: " + id);
-            response.setData(null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ReportStatusDTO updateStatus(@PathVariable int id, @RequestBody ReportStatusDTO dto) {
+        return reportStatusService.update(id, dto);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable int id) {
-        boolean deleted = reportStatusService.delete(id);
-        BaseResponse response = new BaseResponse();
 
-        if (deleted) {
-            response.setCode(HttpStatus.OK.value());
-            response.setMessage("Delete Report Status Success");
-            response.setData(null);
-            return ResponseEntity.ok(response);
-        } else {
-            response.setCode(HttpStatus.NOT_FOUND.value());
-            response.setMessage("Report Status with id " + id + " not found");
-            response.setData(null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    // Xóa status
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStatus(@PathVariable int id) {
+        reportStatusService.delete(id);
+        return ResponseEntity.ok("Xóa trạng thái report thành công với ID: " + id);
     }
 
 }
