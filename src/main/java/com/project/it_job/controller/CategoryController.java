@@ -1,12 +1,11 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.request.GetCategoryRequest;
-import com.project.it_job.request.auth.SaveUpdateCategoryRequest;
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.request.SaveUpdateCategoryRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +16,13 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCategories(GetCategoryRequest getCategoryRequest) {
+    public ResponseEntity<?> getAllCategories(PageRequestCustom pageRequestCustom) {
 
-        if (getCategoryRequest.getPageNumber() <= 0 || getCategoryRequest.getPageSize() <= 0) {
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 && pageRequestCustom.getKeyword() == null ) {
             return ResponseEntity.ok(BaseResponse.success(categoryService.getAllCategories(), "OK"));
         }
         return ResponseEntity.ok(BaseResponse.success(categoryService
-                .getAllCategoriesPage(getCategoryRequest), "OK"));
+                .getAllCategoriesPage(pageRequestCustom), "OK"));
     }
 
     @GetMapping("/{idCate}")

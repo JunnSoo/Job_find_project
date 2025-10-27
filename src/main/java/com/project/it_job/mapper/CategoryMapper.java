@@ -2,12 +2,11 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.CategoryDTO;
 import com.project.it_job.entity.Category;
-import com.project.it_job.request.auth.SaveUpdateCategoryRequest;
+import com.project.it_job.request.SaveUpdateCategoryRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class CategoryMapper {
