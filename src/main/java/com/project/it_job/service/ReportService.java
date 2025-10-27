@@ -11,4 +11,5 @@ public interface ReportService {
     ReportDTO createReport(ReportRequest request);
     ReportDTO updateReport(int id, ReportRequest request);
     void deleteReport(int id);
+    List<ReportDTO> getAllReportsPage(ReportRequest request);
 }

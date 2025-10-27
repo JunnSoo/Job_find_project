@@ -17,8 +17,13 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping
-    public ResponseEntity<?> getAllReports() {
-        return ResponseEntity.ok(BaseResponse.success(reportService.getAllReports(), "OK"));
+    public ResponseEntity<?> getAllReports(ReportRequest reportRequest) {
+        if (reportRequest.getPageNumber() <= 0 || reportRequest.getPageSize() <= 0) {
+            return ResponseEntity.ok(BaseResponse.success(reportService.getAllReports(), "OK"));
+        }
+
+        // Nếu có phân trang → trả kết quả theo trang
+        return ResponseEntity.ok(BaseResponse.success(reportService.getAllReportsPage(reportRequest), "OK"));
     }
 
     @GetMapping("/{id}")
