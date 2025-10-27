@@ -7,6 +7,7 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReportMapper;
 import com.project.it_job.repository.ReportRepository;
 import com.project.it_job.repository.ReportStatusRepository;
+import com.project.it_job.request.ReportRequest;
 import com.project.it_job.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,51 +35,51 @@ public class ReportServiceImp implements ReportService {
 
     @Override
     public ReportDTO getReportById(int id) {
-        Optional<Report> reportOpt = reportRepository.findById(id);
-        if (!reportOpt.isPresent()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy report với ID: " + id);
-        }
-        return ReportMapper.toDTO(reportOpt.get());
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
+        return ReportMapper.toDTO(report);
     }
 
     @Override
-    public ReportDTO createReport(ReportDTO dto) {
-        Optional<ReportStatus> statusOpt = reportStatusRepository.findById(dto.getStatusId());
-        ReportStatus status = statusOpt.orElseThrow(() ->
-                new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + dto.getStatusId()));
+    public ReportDTO createReport(ReportRequest request) {
+        ReportStatus status = reportStatusRepository.findById(request.getStatusId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + request.getStatusId()));
 
+        Report report = new Report();
+        report.setTitle(request.getTitle());
+        report.setDescription(request.getDescription());
+        report.setHinhAnh(request.getHinhAnh());
+        report.setCreatedReport(request.getCreatedReport());
+        report.setReportedUser(request.getReportedUser());
+        report.setReportedJob(request.getReportedJob());
+        report.setStatusId(status);
 
-        Report report = ReportMapper.toEntity(dto, status);
         return ReportMapper.toDTO(reportRepository.save(report));
     }
 
     @Override
-    public ReportDTO updateReport(int id, ReportDTO dto) {
-        Optional<Report> reportOpt = reportRepository.findById(id);
-        if (!reportOpt.isPresent()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy report với ID: " + id);
-        }
+    public ReportDTO updateReport(int id, ReportRequest request) {
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
 
-        Report report = reportOpt.get();
-        report.setTitle(dto.getTitle());
-        report.setDescription(dto.getDescription());
-        report.setHinhAnh(dto.getHinhAnh());
-        report.setReportedJob(dto.getReportedJob());
-        report.setReportedUser(dto.getReportedUser());
-        report.setCreatedReport(dto.getCreatedReport());
+        report.setTitle(request.getTitle());
+        report.setDescription(request.getDescription());
+        report.setHinhAnh(request.getHinhAnh());
+        report.setCreatedReport(request.getCreatedReport());
+        report.setReportedUser(request.getReportedUser());
+        report.setReportedJob(request.getReportedJob());
 
-        Optional<ReportStatus> statusOpt = reportStatusRepository.findById(dto.getStatusId());
-        statusOpt.ifPresent(report::setStatusId);
+        ReportStatus status = reportStatusRepository.findById(request.getStatusId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + request.getStatusId()));
+        report.setStatusId(status);
 
         return ReportMapper.toDTO(reportRepository.save(report));
     }
 
     @Override
     public void deleteReport(int id) {
-        Optional<Report> reportOpt = reportRepository.findById(id);
-        if (!reportOpt.isPresent()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy report với ID: " + id);
-        }
-        reportRepository.delete(reportOpt.get());
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
+        reportRepository.delete(report);
     }
 }
