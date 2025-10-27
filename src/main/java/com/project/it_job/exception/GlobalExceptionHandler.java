@@ -29,6 +29,17 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Lỗi File!", HttpStatus.BAD_REQUEST));
     }
 
+//    Lỗi tham số
+    @ExceptionHandler(ParamExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleParamException(ParamExceptionHandler ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Lỗi truyền tham số!", HttpStatus.BAD_REQUEST));
+    }
+
+
+
     //Báo lỗi chung 500
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse> handleGeneralException(Exception ex) {

@@ -2,7 +2,7 @@ package com.project.it_job.service.imp.auth;
 
 import com.project.it_job.dto.auth.RoleDTO;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
-import com.project.it_job.request.PageRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.exception.ConflictException;
 import com.project.it_job.mapper.auth.RoleMapper;
@@ -39,7 +39,7 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
-    public Page<RoleDTO> getAllWithPage(PageRequest req) {
+    public Page<RoleDTO> getAllWithPage(PageRequestCustom req) {
         //Search
         Specification<Role> spec = RoleSpecification.searchByName(req.getKeyword());
 
@@ -55,15 +55,15 @@ public class RoleServiceImp implements RoleService {
             default -> Sort.by(Sort.Direction.ASC, "createdDate");
         };
 
-        if(req.getPageNumer() <= 0){
-            req.setPageNumer(0);
+        if(req.getPageNumber() <= 0){
+            req.setPageNumber(0);
         }
         if(req.getPageSize() <= 0){
             req.setPageSize(10);
         }
 
         //Page
-        Pageable pageable = org.springframework.data.domain.PageRequest.of(req.getPageNumer(), req.getPageSize(), sort);
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(req.getPageNumber(), req.getPageSize(), sort);
 
         return roleRepository.findAll(spec,pageable)
                 .map(roleMapper::toRoleDTO);
