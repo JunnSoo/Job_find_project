@@ -15,4 +15,8 @@ public class ReportRequest {
     private String createdReport;
     private String reportedUser;
     private int reportedJob;
+
+    private int pageNumber ;
+    private int pageSize ;
+    private String keyword;
 }

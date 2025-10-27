@@ -10,6 +10,9 @@ import com.project.it_job.repository.ReportStatusRepository;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,5 +84,19 @@ public class ReportServiceImp implements ReportService {
         Report report = reportRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
         reportRepository.delete(report);
+    }
+    @Override
+    public List<ReportDTO> getAllReportsPage(ReportRequest request) {
+        int pageNumber = request.getPageNumber();
+        int pageSize = request.getPageSize();
+
+        // Dùng phân trang cơ bản
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<Report> page = reportRepository.findAll(pageable);
+
+        return page.getContent()
+                .stream()
+                .map(ReportMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
