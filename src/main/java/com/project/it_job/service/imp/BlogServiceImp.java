@@ -3,37 +3,35 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.BlogDTO;
 import com.project.it_job.dto.BlogDetailDTO;
 import com.project.it_job.entity.Blog;
-import com.project.it_job.entity.BlogDetail;
 import com.project.it_job.exception.ConflictException;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.ParamExceptionHandler;
 import com.project.it_job.mapper.BlogDetailMapper;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
-import com.project.it_job.request.GetBlogRequest;
-import com.project.it_job.request.SaveBlogRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateBlogRequest;
 import com.project.it_job.service.BlogService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.it_job.specification.BlogSpecification;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BlogServiceImp implements BlogService {
 
-    @Autowired
-    private BlogRepository blogRepository;
+    private final BlogRepository blogRepository;
 
-    @Autowired
-    private BlogMapper blogMapper;
+    private final BlogMapper blogMapper;
 
-    @Autowired
-    private BlogDetailMapper blogDetailMapper;
+    private final BlogDetailMapper blogDetailMapper;
 
 
     @Override
@@ -41,12 +39,28 @@ public class BlogServiceImp implements BlogService {
         return blogRepository.findAll().stream().map(blog -> blogMapper.blogToDTO(blog)).toList();
     }
 
-    @Override
-    public Page<BlogDTO> getAllBlogPage(GetBlogRequest getBlogRequest) {
 
-        Pageable pageable = PageRequest.of(getBlogRequest.getPageNumber(), getBlogRequest.getPageSize());
-        return blogRepository.findAll(pageable).map( blog -> blogMapper.blogToDTO(blog));
+
+    @Override
+    public Page<BlogDTO> getAllBlogPage(PageRequestCustom pageRequestCustom) {
+        //       Trường hợp keyword = null
+        if (pageRequestCustom.getKeyword() == null) {
+            pageRequestCustom.setKeyword("");
+        }else{
+//            set pageSize mặc định khi có keyword và pageSize không được truyền
+            if (pageRequestCustom.getPageSize() == 0) {
+                pageRequestCustom.setPageSize(5);            }
+        }
+
+//        truyền pageSize không hợp lệ ( > 0 mới tính)
+        if (pageRequestCustom.getPageSize() <= 0)
+            throw new ParamExceptionHandler("Truyền pageSize không hợp lệ!");
+
+        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber(), pageRequestCustom.getPageSize());
+        Specification<Blog> spec = Specification.allOf(BlogSpecification.searchByName(pageRequestCustom.getKeyword()));
+        return blogRepository.findAll(spec, pageable).map( blog -> blogMapper.blogToDTO(blog));
     }
+
 
     @Override
     public BlogDTO getBlogById(int id) {
