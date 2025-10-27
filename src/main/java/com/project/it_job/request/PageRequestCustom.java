@@ -4,8 +4,8 @@ import lombok.Data;
 
 
 @Data
-public class PageRequest {
-    private int pageNumer;
+public class PageRequestCustom {
+    private int pageNumber;
     private int pageSize;
 
     private String sortBy = "createdAtDesc";

@@ -1,12 +1,11 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.request.GetBlogRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateBlogRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.BlogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +17,11 @@ public class BlogController {
     private final BlogService blogService;
 
     @GetMapping
-    public ResponseEntity<?> getAllBlog(GetBlogRequest getBlogRequest){
-        if (getBlogRequest.getPageNumber() <= 0 || getBlogRequest.getPageSize() <= 0) {
+    public ResponseEntity<?> getAllBlog(PageRequestCustom pageRequestCustom){
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0  && pageRequestCustom.getKeyword() == null ) {
             return ResponseEntity.ok(BaseResponse.success(blogService.getAllBlog(),"OK"));
         }
-        return ResponseEntity.ok(BaseResponse.success(blogService.getAllBlogPage(getBlogRequest),"OK"));
+        return ResponseEntity.ok(BaseResponse.success(blogService.getAllBlogPage(pageRequestCustom),"OK"));
     }
 
     @GetMapping("/{idBlog}/detail")

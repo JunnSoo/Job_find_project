@@ -1,6 +1,6 @@
 package com.project.it_job.controller.auth;
 
-import com.project.it_job.request.PageRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.auth.RoleRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.RoleService;
@@ -20,8 +20,8 @@ public class RoleController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll(PageRequest pageRequest) {
-        if(pageRequest.getPageSize() <= 0) {
+    public ResponseEntity<?> getAll(PageRequestCustom pageRequestCustom) {
+        if(pageRequestCustom.getPageSize() <= 0) {
 
             if(roleService.getAll() == null || roleService.getAll().isEmpty()) {
                 return ResponseEntity.ok(
@@ -33,14 +33,14 @@ public class RoleController {
             );
         }
 
-        if(roleService.getAllWithPage(pageRequest) == null || roleService.getAllWithPage(pageRequest).isEmpty()) {
+        if(roleService.getAllWithPage(pageRequestCustom) == null || roleService.getAllWithPage(pageRequestCustom).isEmpty()) {
             return ResponseEntity.ok(
                     BaseResponse.success(null, "Danh sách role rỗng")
             );
         }
 
         return ResponseEntity.ok(
-                BaseResponse.success(roleService.getAllWithPage(pageRequest), "Lấy danh sách role thành công")
+                BaseResponse.success(roleService.getAllWithPage(pageRequestCustom), "Lấy danh sách role thành công")
         );
     }
 
