@@ -1,14 +1,13 @@
 package com.project.it_job.service;
 
-import com.project.it_job.entity.Report;
+import com.project.it_job.dto.ReportDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ReportService {
-    List<Report> getAllReports();
-    Report getReportById(int id);
-    Report createReport(Report report);
-    Report updateReport(int id, Report reportDetails);
-    boolean deleteReport(int id);
+    List<ReportDTO> getAllReports();
+    ReportDTO getReportById(int id);
+    ReportDTO createReport(ReportDTO dto);
+    ReportDTO updateReport(int id, ReportDTO dto);
+    void deleteReport(int id);
 }

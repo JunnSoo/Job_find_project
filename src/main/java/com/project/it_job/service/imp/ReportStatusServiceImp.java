@@ -1,6 +1,9 @@
 package com.project.it_job.service.imp;
 
+import com.project.it_job.dto.ReportStatusDTO;
 import com.project.it_job.entity.ReportStatus;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.mapper.ReportStatusMapper;
 import com.project.it_job.repository.ReportStatusRepository;
 import com.project.it_job.service.ReportStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportStatusServiceImp implements ReportStatusService {
@@ -15,44 +19,47 @@ public class ReportStatusServiceImp implements ReportStatusService {
     private ReportStatusRepository reportStatusRepository;
 
     @Override
-    public List<ReportStatus> getAll(){
-        return reportStatusRepository.findAll();
+    public List<ReportStatusDTO> getAll() {
+        return reportStatusRepository.findAll()
+                .stream()
+                .map(ReportStatusMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ReportStatus> getById(int id) {
-        return reportStatusRepository.findById(id);
+    public ReportStatusDTO getById(int id) {
+        Optional<ReportStatus> opt = reportStatusRepository.findById(id);
+        if (!opt.isPresent()) {
+            throw new NotFoundIdExceptionHandler();
+        }
+        return ReportStatusMapper.toDTO(opt.get());
     }
 
     @Override
-    public ReportStatus create(ReportStatus reportStatus) {
-        return reportStatusRepository.save(reportStatus);
+    public ReportStatusDTO create(ReportStatusDTO dto) {
+        ReportStatus entity = ReportStatusMapper.toEntity(dto);
+        return ReportStatusMapper.toDTO(reportStatusRepository.save(entity));
     }
 
     @Override
-    public ReportStatus update(int id, ReportStatus newData) {
-        Optional<ReportStatus> optional = reportStatusRepository.findById(id);
-        if (optional.isPresent()) {
-            ReportStatus reportStatus = optional.get();
-            reportStatus.setName(newData.getName());
-            return reportStatusRepository.save(reportStatus);
-        } else {
-            System.out.println("ReportStatus ID " +id+ " not found");
-            throw new RuntimeException("Not found" );
+    public ReportStatusDTO update(int id, ReportStatusDTO dto) {
+        Optional<ReportStatus> opt = reportStatusRepository.findById(id);
+        if (!opt.isPresent()) {
+            throw new NotFoundIdExceptionHandler();
         }
 
+        ReportStatus entity = opt.get();
+        entity.setName(dto.getName());
+        return ReportStatusMapper.toDTO(reportStatusRepository.save(entity));
     }
 
     @Override
-    public boolean delete(int id) {
-        Optional<ReportStatus> optional = reportStatusRepository.findById(id);
-        if (optional.isPresent()) {
-            reportStatusRepository.deleteById(id);
-            return true;
+    public void delete(int id) {
+        Optional<ReportStatus> opt = reportStatusRepository.findById(id);
+        if (!opt.isPresent()) {
+            throw new NotFoundIdExceptionHandler();
         }
-        System.out.println("ReportStatus ID " +id+ " not found to delete");
-        return false;
-
+        reportStatusRepository.delete(opt.get());
     }
 
 }

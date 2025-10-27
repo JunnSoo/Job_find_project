@@ -5,16 +5,21 @@ import com.project.it_job.entity.ReportStatus;
 
 public class ReportStatusMapper {
 
-    public static ReportStatusDTO toDTO(ReportStatus reportStatusEntity) {
-        if(reportStatusEntity == null) return null;
-        return new ReportStatusDTO(reportStatusEntity.getId(), reportStatusEntity.getName());
+    public static ReportStatusDTO toDTO(ReportStatus entity) {
+        if (entity == null) return null;
+
+        ReportStatusDTO dto = new ReportStatusDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        return dto;
     }
 
-    public static ReportStatus toEntity(ReportStatusDTO reportStatusDTO) {
-        if(reportStatusDTO == null) return null;
-        ReportStatus reportStatusEntity = new ReportStatus();
-        reportStatusEntity.setId(reportStatusDTO.getId());
-        reportStatusEntity.setName(reportStatusDTO.getName());
-        return reportStatusEntity;
+    public static ReportStatus toEntity(ReportStatusDTO dto) {
+        if (dto == null) return null;
+
+        ReportStatus entity = new ReportStatus();
+        entity.setId(dto.getId());
+        entity.setName(dto.getName());
+        return entity;
     }
 }
