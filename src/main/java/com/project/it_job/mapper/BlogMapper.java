@@ -24,6 +24,7 @@ public class BlogMapper {
 
     public Blog saveBlogMapper(SaveUpdateBlogRequest  saveUpdateBlogRequest) {
         if (saveUpdateBlogRequest == null) return null;
+
             Blog blog = Blog.builder()
                     .title(saveUpdateBlogRequest.getTitle())
                     .picture(saveUpdateBlogRequest.getPicture())

@@ -54,7 +54,6 @@ public class CategoryServiceImp implements CategoryService {
         return  categoryMapper.categoryToCategoryDTO(
                 categoryRepository.save(categoryMapper.saveCategoryMapper(categoryParent ,saveUpdateCategoryRequest)));
     }
-
     @Override
     public CategoryDTO updateCategory(int idCate ,SaveUpdateCategoryRequest saveUpdateCategoryRequest) {
         Category categoryParent = null;
