@@ -1,6 +1,8 @@
 package com.project.it_job.controller;
 
 import com.project.it_job.dto.ReportDTO;
+import com.project.it_job.request.ReportRequest;
+import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,34 +16,29 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    //Lấy tất cả report
     @GetMapping
-    public List<ReportDTO> getAllReports() {
-        return reportService.getAllReports();
+    public ResponseEntity<?> getAllReports() {
+        return ResponseEntity.ok(BaseResponse.success(reportService.getAllReports(), "OK"));
     }
 
-    // Lấy report theo id
     @GetMapping("/{id}")
-    public ReportDTO getReportById(@PathVariable int id) {
-        return reportService.getReportById(id);
+    public ResponseEntity<?> getReportById(@PathVariable int id) {
+        return ResponseEntity.ok(BaseResponse.success(reportService.getReportById(id), "OK"));
     }
 
-    // Thêm mới report
     @PostMapping
-    public ReportDTO createReport(@RequestBody ReportDTO dto) {
-        return reportService.createReport(dto);
+    public ResponseEntity<?> createReport(@RequestBody ReportRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(reportService.createReport(request), "Tạo report thành công"));
     }
 
-    // Cập nhật report
     @PutMapping("/{id}")
-    public ReportDTO updateReport(@PathVariable int id, @RequestBody ReportDTO dto) {
-        return reportService.updateReport(id, dto);
+    public ResponseEntity<?> updateReport(@PathVariable int id, @RequestBody ReportRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(reportService.updateReport(id, request), "Cập nhật report thành công"));
     }
 
-    // Xóa report
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReport(@PathVariable int id) {
+    public ResponseEntity<?> deleteReport(@PathVariable int id) {
         reportService.deleteReport(id);
-        return ResponseEntity.ok("Xóa report thành công với ID: " + id);
+        return ResponseEntity.ok(BaseResponse.success(null, "Xóa report có ID " + id + " thành công"));
     }
 }

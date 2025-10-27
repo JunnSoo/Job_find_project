@@ -6,7 +6,4 @@ public class NotFoundIdExceptionHandler extends RuntimeException {
         super(message);
     }
 
-    public NotFoundIdExceptionHandler() {
-        super("Không tìm thấy ID trong hệ thống!");
-    }
 }

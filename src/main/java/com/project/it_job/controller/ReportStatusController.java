@@ -3,6 +3,7 @@ package com.project.it_job.controller;
 import com.project.it_job.dto.ReportStatusDTO;
 import com.project.it_job.entity.ReportStatus;
 import com.project.it_job.mapper.ReportStatusMapper;
+import com.project.it_job.request.ReportStatusRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,35 +23,30 @@ public class ReportStatusController {
     @Autowired
     private ReportStatusService reportStatusService;
 
-    //Lấy danh sách tất cả status
     @GetMapping
-    public List<ReportStatusDTO> getAllStatuses() {
-        return reportStatusService.getAll();
+    public ResponseEntity<?> getAllStatus() {
+        return ResponseEntity.ok(BaseResponse.success(reportStatusService.getAllStatus(), "OK"));
     }
 
-    //Lấy 1 status theo ID
     @GetMapping("/{id}")
-    public ReportStatusDTO getStatusById(@PathVariable int id) {
-        return reportStatusService.getById(id);
+    public ResponseEntity<?> getStatusById(@PathVariable int id) {
+        return ResponseEntity.ok(BaseResponse.success(reportStatusService.getStatusById(id), "OK"));
     }
 
-    // Thêm mới status
     @PostMapping
-    public ReportStatusDTO createStatus(@RequestBody ReportStatusDTO dto) {
-        return reportStatusService.create(dto);
+    public ResponseEntity<?> createStatus(@RequestBody ReportStatusRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(reportStatusService.createStatus(request), "Tạo status thành công"));
     }
 
-    // Cập nhật status
     @PutMapping("/{id}")
-    public ReportStatusDTO updateStatus(@PathVariable int id, @RequestBody ReportStatusDTO dto) {
-        return reportStatusService.update(id, dto);
+    public ResponseEntity<?> updateStatus(@PathVariable int id, @RequestBody ReportStatusRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(reportStatusService.updateStatus(id, request), "Cập nhật status thành công"));
     }
 
-    // Xóa status
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStatus(@PathVariable int id) {
+    public ResponseEntity<?> deleteStatus(@PathVariable int id) {
         reportStatusService.delete(id);
-        return ResponseEntity.ok("Xóa trạng thái report thành công với ID: " + id);
+        return ResponseEntity.ok(BaseResponse.success(null, "Xóa status có ID " + id + " thành công"));
     }
 
 }

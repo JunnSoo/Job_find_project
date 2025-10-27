@@ -5,6 +5,7 @@ import com.project.it_job.entity.ReportStatus;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReportStatusMapper;
 import com.project.it_job.repository.ReportStatusRepository;
+import com.project.it_job.request.ReportStatusRequest;
 import com.project.it_job.service.ReportStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReportStatusServiceImp implements ReportStatusService {
+
     @Autowired
     private ReportStatusRepository reportStatusRepository;
 
     @Override
-    public List<ReportStatusDTO> getAll() {
+    public List<ReportStatusDTO> getAllStatus() {
         return reportStatusRepository.findAll()
                 .stream()
                 .map(ReportStatusMapper::toDTO)
@@ -27,39 +29,31 @@ public class ReportStatusServiceImp implements ReportStatusService {
     }
 
     @Override
-    public ReportStatusDTO getById(int id) {
-        Optional<ReportStatus> opt = reportStatusRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new NotFoundIdExceptionHandler();
-        }
-        return ReportStatusMapper.toDTO(opt.get());
+    public ReportStatusDTO getStatusById(int id) {
+        ReportStatus status = reportStatusRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));
+        return ReportStatusMapper.toDTO(status);
     }
 
     @Override
-    public ReportStatusDTO create(ReportStatusDTO dto) {
-        ReportStatus entity = ReportStatusMapper.toEntity(dto);
-        return ReportStatusMapper.toDTO(reportStatusRepository.save(entity));
+    public ReportStatusDTO createStatus(ReportStatusRequest request) {
+        ReportStatus status = new ReportStatus();
+        status.setName(request.getName());
+        return ReportStatusMapper.toDTO(reportStatusRepository.save(status));
     }
 
     @Override
-    public ReportStatusDTO update(int id, ReportStatusDTO dto) {
-        Optional<ReportStatus> opt = reportStatusRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new NotFoundIdExceptionHandler();
-        }
-
-        ReportStatus entity = opt.get();
-        entity.setName(dto.getName());
-        return ReportStatusMapper.toDTO(reportStatusRepository.save(entity));
+    public ReportStatusDTO updateStatus(int id, ReportStatusRequest request) {
+        ReportStatus status = reportStatusRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));
+        status.setName(request.getName());
+        return ReportStatusMapper.toDTO(reportStatusRepository.save(status));
     }
 
     @Override
     public void delete(int id) {
-        Optional<ReportStatus> opt = reportStatusRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new NotFoundIdExceptionHandler();
-        }
-        reportStatusRepository.delete(opt.get());
+        ReportStatus status = reportStatusRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));
+        reportStatusRepository.delete(status);
     }
-
 }
