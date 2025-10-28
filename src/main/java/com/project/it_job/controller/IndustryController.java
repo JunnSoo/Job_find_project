@@ -1,16 +1,11 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.entity.Industry;
 import com.project.it_job.request.IndustryRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.IndustryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/industry")

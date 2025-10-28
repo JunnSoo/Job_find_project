@@ -77,9 +77,14 @@ public class BlogServiceImp implements BlogService {
     public BlogDTO updateBlogById(Integer idBlog, SaveUpdateBlogRequest saveUpdateBlogRequest) {
            Blog blog = blogRepository.findById(idBlog).orElseThrow(()
                    -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
-           Blog mappedBlog = blogMapper.updateBlogMapper(idBlog,saveUpdateBlogRequest);
-           mappedBlog.setCreatedDate(blog.getCreatedDate());
-           return  blogMapper.blogToDTO(blogRepository.save(mappedBlog));
+
+          try {
+              Blog mappedBlog = blogMapper.updateBlogMapper(idBlog,saveUpdateBlogRequest);
+              mappedBlog.setCreatedDate(blog.getCreatedDate());
+              return  blogMapper.blogToDTO(blogRepository.save(mappedBlog));
+          } catch (Exception e) {
+                throw new ConflictException("Lỗi cập nhật blog!");
+          }
     }
 
     @Override

@@ -29,6 +29,24 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Lỗi File!", HttpStatus.BAD_REQUEST));
     }
 
+//    Lỗi email không được thay đổi
+    @ExceptionHandler(EmailNotChangeExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleEmailNotChangeException(EmailNotChangeExceptionHandler ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Email không được thay đổi!", HttpStatus.BAD_REQUEST));
+    }
+
+//    Lỗi emai trùng khi thêm
+    @ExceptionHandler(EmailAlreadyExists.class)
+    public ResponseEntity<BaseResponse> handleEmailAlreadyExisException(EmailAlreadyExists ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Email đã tồn tại!", HttpStatus.BAD_REQUEST));
+    }
+
 //    Lỗi tham số
     @ExceptionHandler(ParamExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleParamException(ParamExceptionHandler ex) {

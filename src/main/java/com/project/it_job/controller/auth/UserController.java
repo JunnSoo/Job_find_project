@@ -1,9 +1,47 @@
 package com.project.it_job.controller.auth;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.project.it_job.dto.auth.UserDTO;
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.request.auth.SaveUpdateUserRequest;
+import com.project.it_job.response.BaseResponse;
+import com.project.it_job.service.auth.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
+
+    @GetMapping
+    public ResponseEntity<?> getAllUsers(PageRequestCustom pageRequestCustom) {
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0  && pageRequestCustom.getKeyword() == null ) {
+            return ResponseEntity.ok(BaseResponse.success(userService.getAllUsers(), "OK"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(userService.getAllUsersPage(pageRequestCustom), "OK"));
+    }
+
+    @GetMapping("/{idUser}")
+    public ResponseEntity<?> getUserById(@PathVariable("idUser") String idUser) {
+        return ResponseEntity.ok(BaseResponse.success(userService.getUserById(idUser), "OK"));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> saveUser(@Valid @RequestBody SaveUpdateUserRequest saveUpdateUserRequest) {
+        return ResponseEntity.ok(BaseResponse.success(userService.saveUser(saveUpdateUserRequest), "OK"));
+    }
+
+    @PutMapping("/{idUser}")
+    public ResponseEntity<?> updateUser(@PathVariable String idUser ,@Valid @RequestBody SaveUpdateUserRequest saveUpdateUserRequest) {
+        return ResponseEntity.ok(BaseResponse.success(userService.updateUser(idUser,saveUpdateUserRequest), "OK"));
+    }
+
+    @DeleteMapping("/{idUser}")
+    public ResponseEntity<?> deleteUser(@PathVariable String idUser) {
+        return ResponseEntity.ok(BaseResponse.success(userService.deleteUser(idUser), "OK"));
+    }
+
 }
