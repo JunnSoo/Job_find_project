@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SaveUpdateBlogRequest {
-    @NotNull(message = "id must be not null")
-    @NotEmpty(message = "id must be not empty")
+    @NotNull(message = "title must be not null")
+    @NotEmpty(message = "title must be not empty")
     private String title;
     @NotNull(message = "picture must be not null")
     @NotEmpty(message = "picture must be not empty")

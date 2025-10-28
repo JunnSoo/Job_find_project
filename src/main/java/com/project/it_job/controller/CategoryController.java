@@ -5,15 +5,15 @@ import com.project.it_job.request.SaveUpdateCategoryRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.CategoryService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/category")
+@RequiredArgsConstructor
 public class CategoryController {
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<?> getAllCategories(PageRequestCustom pageRequestCustom) {
