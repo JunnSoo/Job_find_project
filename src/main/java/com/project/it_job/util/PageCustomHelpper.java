@@ -13,6 +13,7 @@ public class PageCustomHelpper {
     public PageRequestCustom validatePageCustom(PageRequestCustom pageRequestCustom) throws ParamExceptionHandler {
         //        Check xem pageSize và pageNumber có phải int không
         int pageSize = integerHelpper.parseIntOrThrow(pageRequestCustom.getPageSize(),"pageSize");
+        int pageNumber = integerHelpper.parseIntOrThrow(pageRequestCustom.getPageSize(),"pageNumber");
 
 
 //        Trường hợp keyword = null
@@ -21,8 +22,20 @@ public class PageCustomHelpper {
         }else{
 //            set pageSize mặc định khi có keyword và pageSize không được truyền
             if (pageSize == 0) {
-                pageRequestCustom.setPageSize(5);
+                pageRequestCustom.setPageSize(10);
             }
+        }
+
+        if (pageRequestCustom.getSortBy() == null || pageRequestCustom.getSortBy().isBlank()) {
+            pageRequestCustom.setSortBy("createdAtDesc");
+        }else{
+            if (pageSize == 0) {
+                pageRequestCustom.setPageSize(10);
+            }
+        }
+
+        if(pageNumber == 0){
+            pageRequestCustom.setPageNumber(1);
         }
 
 //        truyền pageSize không hợp lệ ( > 0 mới tính)

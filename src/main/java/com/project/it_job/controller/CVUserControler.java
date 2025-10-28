@@ -19,7 +19,11 @@ public class CVUserControler {
     @GetMapping
     public ResponseEntity<?> getAll(PageRequestCustom pageRequestCustom) {
 
-        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0  && pageRequestCustom.getKeyword() == null ) {
+        if (pageRequestCustom.getPageNumber() == 0
+                && pageRequestCustom.getPageSize() == 0
+                && pageRequestCustom.getKeyword() == null
+                && pageRequestCustom.getSortBy() == null
+        ) {
             return ResponseEntity.ok(BaseResponse.success(cvUserService.getAll(),"OK"));
         }
 

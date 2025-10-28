@@ -12,7 +12,6 @@ import com.project.it_job.service.CategoryService;
 import com.project.it_job.specification.CategorySpecification;
 import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +42,7 @@ public class CategoryServiceImp implements CategoryService {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 
 //        Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());
 
 //        Tạo search
         Specification<Category> spec = Specification.allOf(

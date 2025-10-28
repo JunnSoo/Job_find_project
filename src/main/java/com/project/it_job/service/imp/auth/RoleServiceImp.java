@@ -48,7 +48,7 @@ public class RoleServiceImp implements RoleService {
         Specification<Role> spec = RoleSpecification.searchByName(req.getKeyword());
 
         //Sort
-        Sort sort = switch (req.getSortBy()) {
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
             case "roleNameAsc" -> Sort.by(Sort.Direction.ASC, "roleName");
             case "roleNameDesc" -> Sort.by(Sort.Direction.DESC, "roleName");
             case "descriptionAsc" -> Sort.by(Sort.Direction.ASC, "description");
@@ -60,7 +60,7 @@ public class RoleServiceImp implements RoleService {
         };
 
         //Page
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(), pageRequestValidate.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
 
         return roleRepository.findAll(spec,pageable)
                 .map(roleMapper::toRoleDTO);
