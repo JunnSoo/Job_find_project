@@ -86,17 +86,14 @@ public class ReportServiceImp implements ReportService {
         reportRepository.delete(report);
     }
     @Override
-    public List<ReportDTO> getAllReportsPage(ReportRequest request) {
-        int pageNumber = request.getPageNumber();
-        int pageSize = request.getPageSize();
+    public Page<ReportDTO> getAllReportsPage(ReportRequest request) {
+        int pageNumber = request.getPageNumber() > 0 ? request.getPageNumber() - 1 : 0;
+        int pageSize = request.getPageSize() > 0 ? request.getPageSize() : 10;
 
         // Dùng phân trang cơ bản
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Report> page = reportRepository.findAll(pageable);
 
-        return page.getContent()
-                .stream()
-                .map(ReportMapper::toDTO)
-                .collect(Collectors.toList());
+        return page.map(ReportMapper::toDTO);
     }
 }

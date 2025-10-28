@@ -2,6 +2,7 @@ package com.project.it_job.service;
 
 import com.project.it_job.dto.ReportDTO;
 import com.project.it_job.request.ReportRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface ReportService {
     ReportDTO createReport(ReportRequest request);
     ReportDTO updateReport(int id, ReportRequest request);
     void deleteReport(int id);
-    List<ReportDTO> getAllReportsPage(ReportRequest request);
+    Page<ReportDTO> getAllReportsPage(ReportRequest request);
 }
