@@ -7,8 +7,10 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReportMapper;
 import com.project.it_job.repository.ReportRepository;
 import com.project.it_job.repository.ReportStatusRepository;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.service.ReportService;
+import com.project.it_job.util.PageCustomHelpper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,9 @@ public class ReportServiceImp implements ReportService {
 
     @Autowired
     private ReportStatusRepository reportStatusRepository;
+    @Autowired
+    private PageCustomHelpper pageCustomHelpper;
+
 
     @Override
     public List<ReportDTO> getAllReports() {
@@ -86,14 +91,12 @@ public class ReportServiceImp implements ReportService {
         reportRepository.delete(report);
     }
     @Override
-    public Page<ReportDTO> getAllReportsPage(ReportRequest request) {
-        int pageNumber = request.getPageNumber() > 0 ? request.getPageNumber() - 1 : 0;
-        int pageSize = request.getPageSize() > 0 ? request.getPageSize() : 10;
+    public Page<ReportDTO> getAllReportsPage(PageRequestCustom pageRequestCustom) {
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
 
-        // Dùng phân trang cơ bản
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Report> page = reportRepository.findAll(pageable);
+        //Page<Report> page = reportRepository.findAll(pageable);
 
-        return page.map(ReportMapper::toDTO);
+        return reportRepository.findAll(pageable).map( report -> ReportMapper.toDTO(report));
     }
 }
