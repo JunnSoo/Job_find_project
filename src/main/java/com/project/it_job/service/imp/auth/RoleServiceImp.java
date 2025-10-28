@@ -10,8 +10,10 @@ import com.project.it_job.repository.auth.RoleRepository;
 import com.project.it_job.request.auth.RoleRequest;
 import com.project.it_job.service.auth.RoleService;
 import com.project.it_job.specification.auth.RoleSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.it_job.util.PageCustomHelpper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,11 +28,12 @@ public class RoleServiceImp implements RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
+    private final PageCustomHelpper pageCustomHelpper;
 
-    @Autowired
-    public RoleServiceImp(RoleRepository roleRepository , RoleMapper roleMapper) {
+    public RoleServiceImp(RoleRepository roleRepository, RoleMapper roleMapper, PageCustomHelpper pageCustomHelpper) {
         this.roleRepository = roleRepository;
         this.roleMapper = roleMapper;
+        this.pageCustomHelpper = pageCustomHelpper;
     }
 
     @Override
@@ -40,6 +43,8 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public Page<RoleDTO> getAllWithPage(PageRequestCustom req) {
+
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
         //Search
         Specification<Role> spec = RoleSpecification.searchByName(req.getKeyword());
 
@@ -55,15 +60,8 @@ public class RoleServiceImp implements RoleService {
             default -> Sort.by(Sort.Direction.ASC, "createdDate");
         };
 
-        if(req.getPageNumber() <= 0){
-            req.setPageNumber(0);
-        }
-        if(req.getPageSize() <= 0){
-            req.setPageSize(10);
-        }
-
         //Page
-        Pageable pageable = org.springframework.data.domain.PageRequest.of(req.getPageNumber(), req.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize(), sort);
 
         return roleRepository.findAll(spec,pageable)
                 .map(roleMapper::toRoleDTO);

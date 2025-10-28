@@ -29,6 +29,16 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Lỗi File!", HttpStatus.BAD_REQUEST));
     }
 
+    // Không có quyền để xoá
+    @ExceptionHandler(UnauthorizedDeleteException.class)
+    public ResponseEntity<BaseResponse> hanldeUnauthorizedDeleteException(UnauthorizedDeleteException ex)
+    {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(BaseResponse.error("Bạn không có quyền để thực hiện điều này!!", HttpStatus.BAD_REQUEST));
+    }
+
 //    Lỗi email không được thay đổi
     @ExceptionHandler(EmailNotChangeExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleEmailNotChangeException(EmailNotChangeExceptionHandler ex) {

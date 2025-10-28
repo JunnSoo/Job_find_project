@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/api/roles")
 public class RoleController {
     private final RoleService roleService;
 
@@ -21,27 +21,12 @@ public class RoleController {
 
     @GetMapping
     public ResponseEntity<?> getAll(PageRequestCustom pageRequestCustom) {
-        if(pageRequestCustom.getPageSize() <= 0) {
 
-            if(roleService.getAll() == null || roleService.getAll().isEmpty()) {
-                return ResponseEntity.ok(
-                        BaseResponse.success(null, "Danh sách role rỗng")
-                );
-            }
-            return ResponseEntity.ok(
-                    BaseResponse.success(roleService.getAll(),"Lấy danh sách role thành công")
-            );
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0  && pageRequestCustom.getKeyword() == null ) {
+            return ResponseEntity.ok(BaseResponse.success(roleService.getAll(),"OK"));
         }
 
-        if(roleService.getAllWithPage(pageRequestCustom) == null || roleService.getAllWithPage(pageRequestCustom).isEmpty()) {
-            return ResponseEntity.ok(
-                    BaseResponse.success(null, "Danh sách role rỗng")
-            );
-        }
-
-        return ResponseEntity.ok(
-                BaseResponse.success(roleService.getAllWithPage(pageRequestCustom), "Lấy danh sách role thành công")
-        );
+        return ResponseEntity.ok(BaseResponse.success(roleService.getAllWithPage(pageRequestCustom),"OK"));
     }
 
     @PostMapping
