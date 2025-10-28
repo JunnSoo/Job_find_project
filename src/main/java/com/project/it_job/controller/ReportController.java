@@ -1,6 +1,7 @@
 package com.project.it_job.controller;
 
 import com.project.it_job.dto.ReportDTO;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportService;
@@ -17,13 +18,13 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping
-    public ResponseEntity<?> getAllReports(ReportRequest reportRequest) {
-        if (reportRequest.getPageNumber() <= 0 || reportRequest.getPageSize() <= 0) {
+    public ResponseEntity<?> getAllReports(PageRequestCustom pageRequestCustom) {
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 && pageRequestCustom.getKeyword() == null) {
             return ResponseEntity.ok(BaseResponse.success(reportService.getAllReports(), "OK"));
         }
 
         // Nếu có phân trang → trả kết quả theo trang
-        return ResponseEntity.ok(BaseResponse.success(reportService.getAllReportsPage(reportRequest), "OK"));
+        return ResponseEntity.ok(BaseResponse.success(reportService.getAllReportsPage(pageRequestCustom),"OK"));
     }
 
     @GetMapping("/{id}")
