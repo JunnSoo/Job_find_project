@@ -29,8 +29,8 @@ public class WardServiceImp implements WardService {
     }
 
     @Override
-    public Optional<WardDTO> getById(int id) {
-        return wardRepository.findById(id).map(wardMapper::toDTO);
+    public WardDTO getById(int id) {
+        return wardRepository.findById(id).map(wardMapper::toDTO).orElse(null);
     }
 
     @Override

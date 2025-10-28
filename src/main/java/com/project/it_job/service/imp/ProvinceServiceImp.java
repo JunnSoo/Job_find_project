@@ -29,8 +29,8 @@ public class ProvinceServiceImp implements ProvinceService {
     }
 
     @Override
-    public Optional<ProvinceDTO> getById(int id) {
-        return provinceRepository.findById(id).map(provinceMapper::toDTO);
+    public ProvinceDTO getById(int id) {
+        return provinceRepository.findById(id).map(provinceMapper::toDTO).orElse(null);
     }
 
     @Override
