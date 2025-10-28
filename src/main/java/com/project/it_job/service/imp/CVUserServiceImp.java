@@ -43,7 +43,7 @@ public class CVUserServiceImp implements CVUserService {
 
         Specification<CVUser> spec = CVUserSpecification.searchByTitle(req.getKeyword());
 
-        Sort sort = switch (req.getSortBy()) {
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
             case "versionAsc" -> Sort.by(Sort.Direction.ASC, "version");
             case "versionDesc" -> Sort.by(Sort.Direction.DESC, "version");
             case "titleAsc" -> Sort.by(Sort.Direction.ASC, "title");
@@ -53,7 +53,7 @@ public class CVUserServiceImp implements CVUserService {
             default -> Sort.by(Sort.Direction.ASC, "createdAt");
         };
 
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(), pageRequestValidate.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
 
         return cvUserRepository.findAll(spec,pageable)
                 .map(cvUserMapper::toCVUserDTO);

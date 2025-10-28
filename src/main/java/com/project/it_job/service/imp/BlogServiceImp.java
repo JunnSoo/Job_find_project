@@ -47,7 +47,7 @@ public class BlogServiceImp implements BlogService {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 
 //        Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());
 
 //        Tạo search
         Specification<Blog> spec = Specification.allOf(blogSpecification.searchByName(pageRequestValidate.getKeyword()));
