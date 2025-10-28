@@ -4,15 +4,29 @@
 		"domain":"https://api.apifox.com",
 		"syncAfterSave":false
 	},
-	"dataList":[],
-	"envList":[],
+	"dataList":[
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8080"
+				}
+			],
+			"name":"it_job"
+		}
+	],
+	"envList":[
+		"local"
+	],
 	"headerList":[],
 	"ignoreParseFieldList":[],
 	"maxDescriptionLength":-1,
 	"pmCollectionId":"",
 	"postScript":"",
 	"preScript":"",
-	"projectList":[],
+	"projectList":[
+		"it_job"
+	],
 	"searchTruncatedCode":"",
 	"syncModel":{
 		"branch":"master",

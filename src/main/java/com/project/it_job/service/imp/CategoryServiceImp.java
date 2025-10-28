@@ -69,8 +69,14 @@ public class CategoryServiceImp implements CategoryService {
                        ()->new NotFoundIdExceptionHandler("Không tìm thấy id cha của category!")
                );
            }
-           return  categoryMapper.categoryToCategoryDTO(
-                   categoryRepository.save(categoryMapper.saveCategoryMapper(categoryParent ,saveUpdateCategoryRequest)));
+
+           try {
+               Category mappedCategory = categoryMapper.saveCategoryMapper(categoryParent ,saveUpdateCategoryRequest);
+               return  categoryMapper.categoryToCategoryDTO(
+                       categoryRepository.save(mappedCategory));
+           } catch (Exception e) {
+               throw new ConflictException("Lỗi thêm category");
+           }
     }
 
     @Override
@@ -85,9 +91,13 @@ public class CategoryServiceImp implements CategoryService {
             Category category  = categoryRepository.findById(idCate)
                     .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id category"));
 
-            Category mapperBlog = categoryMapper.updateCategoryMapper(idCate,categoryParent ,saveUpdateCategoryRequest);
-            mapperBlog.setCreatedDate(category.getCreatedDate());
-            return   categoryMapper.categoryToCategoryDTO(categoryRepository.save(mapperBlog));
+            try {
+                Category mapperBlog = categoryMapper.updateCategoryMapper(idCate,categoryParent ,saveUpdateCategoryRequest);
+                mapperBlog.setCreatedDate(category.getCreatedDate());
+                return   categoryMapper.categoryToCategoryDTO(categoryRepository.save(mapperBlog));
+            } catch (Exception e) {
+                throw new ConflictException("Lỗi cập nhật category!");
+            }
     }
 
     @Override
