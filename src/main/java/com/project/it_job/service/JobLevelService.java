@@ -1,14 +1,15 @@
 package com.project.it_job.service;
 
 import com.project.it_job.dto.JobLevelDTO;
+import com.project.it_job.request.JobLevelRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface JobLevelService {
     List<JobLevelDTO> getAll();
-    Optional<JobLevelDTO> getById(int id);
-    JobLevelDTO create(JobLevelDTO dto);
-    JobLevelDTO update(int id, JobLevelDTO dto);
-    boolean delete(int id);
+    JobLevelDTO getById(int id);
+    JobLevelDTO create(JobLevelRequest request);
+    JobLevelDTO update(int id, JobLevelRequest request);
+    void delete(int id);
+
 }

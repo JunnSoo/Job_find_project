@@ -2,14 +2,24 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.IndustryDTO;
 import com.project.it_job.entity.Industry;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-@Mapper(componentModel = "spring")
-public interface IndustryMapper {
-    IndustryMapper INSTANCE = Mappers.getMapper(com.project.it_job.mapper.IndustryMapper.class);
+import lombok.Getter;
+import lombok.Setter;
 
-        IndustryDTO toDTO(Industry industry);
-        Industry toEntity(IndustryDTO dto);
-
-
+@Getter
+@Setter
+public class IndustryMapper {
+    public static IndustryDTO toDTO(Industry industry) {
+        if(industry == null) return null;
+        IndustryDTO industryDTO = new IndustryDTO();
+        industryDTO.setId(industry.getId());
+        industryDTO.setName(industry.getName());
+        return industryDTO;
+    }
+    public static Industry toEntity(IndustryDTO industryDTO) {
+        if(industryDTO == null) return null;
+        Industry industry = new Industry();
+        industry.setId(industryDTO.getId());
+        industry.setName(industryDTO.getName());
+        return industry;
+    }
 }
