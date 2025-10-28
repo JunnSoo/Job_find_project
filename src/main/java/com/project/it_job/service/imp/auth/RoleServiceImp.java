@@ -11,7 +11,6 @@ import com.project.it_job.request.auth.RoleRequest;
 import com.project.it_job.service.auth.RoleService;
 import com.project.it_job.specification.auth.RoleSpecification;
 import com.project.it_job.util.PageCustomHelpper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +60,7 @@ public class RoleServiceImp implements RoleService {
         };
 
         //Page
-        Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(), pageRequestValidate.getPageSize(), sort);
 
         return roleRepository.findAll(spec,pageable)
                 .map(roleMapper::toRoleDTO);
