@@ -44,8 +44,8 @@ public class CVUserServiceImp implements CVUserService {
         Specification<CVUser> spec = CVUserSpecification.searchByTitle(req.getKeyword());
 
         Sort sort = switch (req.getSortBy()) {
-            case "verisonAsc" -> Sort.by(Sort.Direction.ASC, "verison");
-            case "verisonDesc" -> Sort.by(Sort.Direction.DESC, "verison");
+            case "versionAsc" -> Sort.by(Sort.Direction.ASC, "version");
+            case "versionDesc" -> Sort.by(Sort.Direction.DESC, "version");
             case "titleAsc" -> Sort.by(Sort.Direction.ASC, "title");
             case "titleDesc" -> Sort.by(Sort.Direction.DESC, "title");
             case "isActiveAsc" ->  Sort.by(Sort.Direction.ASC, "isActive");
