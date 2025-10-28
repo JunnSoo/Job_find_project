@@ -27,9 +27,9 @@ public class WardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse> getById(@PathVariable int id) {
-        Optional<WardDTO> optional = wardService.getById(id);
-        if (optional.isPresent())
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Get ward success", optional.get()));
+        WardDTO ward = wardService.getById(id);
+        if (ward != null)
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Get ward success", ward));
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new BaseResponse(HttpStatus.NOT_FOUND.value(), "Ward not found", null));
     }

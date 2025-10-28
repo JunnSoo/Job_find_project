@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ProvinceService {
     List<ProvinceDTO> getAll();
-    Optional<ProvinceDTO> getById(int id);
+    ProvinceDTO getById(int id);
     ProvinceDTO create(ProvinceDTO dto);
     ProvinceDTO update(int id, ProvinceDTO dto);
     boolean delete(int id);

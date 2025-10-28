@@ -28,10 +28,9 @@ public class ProvinceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse> getById(@PathVariable int id) {
-        Optional<ProvinceDTO> optional = provinceService.getById(id);
-        if (optional.isPresent()) {
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Get province success", optional.get()));
-        }
+        ProvinceDTO province = provinceService.getById(id);
+        if (province != null)
+            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Get province success", province));
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new BaseResponse(HttpStatus.NOT_FOUND.value(), "Province not found with id: " + id, null));
     }
