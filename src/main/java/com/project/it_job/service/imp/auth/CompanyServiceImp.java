@@ -3,7 +3,6 @@ package com.project.it_job.service.imp.auth;
 import com.project.it_job.dto.auth.CompanyDTO;
 import com.project.it_job.entity.CompanySize;
 import com.project.it_job.entity.auth.Company;
-import com.project.it_job.exception.ConflictException;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.auth.CompanyMapper;
 import com.project.it_job.repository.CompanySizeRepository;
