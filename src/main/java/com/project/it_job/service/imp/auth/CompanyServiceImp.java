@@ -43,7 +43,7 @@ public class CompanyServiceImp implements CompanyService {
 //        validate pageCustom
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 //        Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());
 
 //        Tạo search
         Specification<Company> spec = Specification.allOf(companySpecification.searchByName(pageRequestValidate.getKeyword()));

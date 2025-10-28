@@ -40,7 +40,7 @@ public class CompanySizeServiceImp implements CompanySizeService {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 
 //        Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());
 
 //        Tạo search
         Specification<CompanySize> spec = Specification.allOf(
