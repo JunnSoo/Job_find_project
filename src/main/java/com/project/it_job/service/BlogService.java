@@ -11,9 +11,9 @@ import java.util.List;
 public interface BlogService {
      List<BlogDTO> getAllBlog();
      Page<BlogDTO> getAllBlogPage(PageRequestCustom pageRequestCustom);
-     BlogDTO getBlogById(int id);
+     BlogDTO getBlogById(Integer id);
      BlogDTO saveBlog(SaveUpdateBlogRequest saveUpdateBlogRequest );
-     BlogDTO updateBlogById(int idBlog,SaveUpdateBlogRequest saveUpdateBlogRequest);
-     BlogDTO deleteBlogById(int id);
-     BlogDetailDTO getBlogDetailById(int id);
+     BlogDTO updateBlogById(Integer idBlog,SaveUpdateBlogRequest saveUpdateBlogRequest);
+     BlogDTO deleteBlogById(Integer id);
+     BlogDetailDTO getBlogDetailById(Integer id);
 }

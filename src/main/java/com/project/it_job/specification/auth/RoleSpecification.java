@@ -1,4 +1,4 @@
-package com.project.it_job.specification;
+package com.project.it_job.specification.auth;
 
 import com.project.it_job.entity.auth.Role;
 import org.springframework.data.jpa.domain.Specification;

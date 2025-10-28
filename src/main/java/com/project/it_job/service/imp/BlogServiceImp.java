@@ -5,13 +5,13 @@ import com.project.it_job.dto.BlogDetailDTO;
 import com.project.it_job.entity.Blog;
 import com.project.it_job.exception.ConflictException;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
-import com.project.it_job.exception.ParamExceptionHandler;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateBlogRequest;
 import com.project.it_job.service.BlogService;
 import com.project.it_job.specification.BlogSpecification;
+import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,8 +27,10 @@ import java.util.List;
 public class BlogServiceImp implements BlogService {
 
     private final BlogRepository blogRepository;
-
     private final BlogMapper blogMapper;
+    private final PageCustomHelpper pageCustomHelpper;
+    private final BlogSpecification blogSpecification;
+
 
 
 
@@ -41,27 +43,20 @@ public class BlogServiceImp implements BlogService {
 
     @Override
     public Page<BlogDTO> getAllBlogPage(PageRequestCustom pageRequestCustom) {
-        //       Trường hợp keyword = null
-        if (pageRequestCustom.getKeyword() == null) {
-            pageRequestCustom.setKeyword("");
-        }else{
-//            set pageSize mặc định khi có keyword và pageSize không được truyền
-            if (pageRequestCustom.getPageSize() == 0) {
-                pageRequestCustom.setPageSize(5);            }
-        }
+//        validate pageCustom
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 
-//        truyền pageSize không hợp lệ ( > 0 mới tính)
-        if (pageRequestCustom.getPageSize() <= 0)
-            throw new ParamExceptionHandler("Truyền pageSize không hợp lệ!");
+//        Tạo page cho api
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
 
-        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber(), pageRequestCustom.getPageSize());
-        Specification<Blog> spec = Specification.allOf(BlogSpecification.searchByName(pageRequestCustom.getKeyword()));
+//        Tạo search
+        Specification<Blog> spec = Specification.allOf(blogSpecification.searchByName(pageRequestValidate.getKeyword()));
         return blogRepository.findAll(spec, pageable).map( blog -> blogMapper.blogToDTO(blog));
     }
 
 
     @Override
-    public BlogDTO getBlogById(int id) {
+    public BlogDTO getBlogById(Integer id) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
         return  blogMapper.blogToDTO(blog);
     }
@@ -79,23 +74,23 @@ public class BlogServiceImp implements BlogService {
 
     @Override
     @Transactional
-    public BlogDTO updateBlogById(int idBlog, SaveUpdateBlogRequest saveUpdateBlogRequest) {
-        Blog blog = blogRepository.findById(idBlog).orElseThrow(()
-                -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
-        Blog mappedBlog = blogMapper.updateBlogMapper(idBlog,saveUpdateBlogRequest);
-        mappedBlog.setCreatedDate(blog.getCreatedDate());
-        return  blogMapper.blogToDTO(blogRepository.save(mappedBlog));
+    public BlogDTO updateBlogById(Integer idBlog, SaveUpdateBlogRequest saveUpdateBlogRequest) {
+           Blog blog = blogRepository.findById(idBlog).orElseThrow(()
+                   -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+           Blog mappedBlog = blogMapper.updateBlogMapper(idBlog,saveUpdateBlogRequest);
+           mappedBlog.setCreatedDate(blog.getCreatedDate());
+           return  blogMapper.blogToDTO(blogRepository.save(mappedBlog));
     }
 
     @Override
-    public BlogDTO deleteBlogById(int id) {
+    public BlogDTO deleteBlogById(Integer id) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
         blogRepository.delete(blog);
         return blogMapper.blogToDTO(blog);
     }
 
     @Override
-    public BlogDetailDTO getBlogDetailById(int id) {
+    public BlogDetailDTO getBlogDetailById(Integer id) {
         Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
         return blogMapper.blogToBlogDetailDTO(blog);
     }

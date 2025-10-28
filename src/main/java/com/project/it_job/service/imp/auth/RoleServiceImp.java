@@ -9,7 +9,7 @@ import com.project.it_job.mapper.auth.RoleMapper;
 import com.project.it_job.repository.auth.RoleRepository;
 import com.project.it_job.request.auth.RoleRequest;
 import com.project.it_job.service.auth.RoleService;
-import com.project.it_job.specification.RoleSpecification;
+import com.project.it_job.specification.auth.RoleSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

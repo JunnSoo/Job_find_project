@@ -12,6 +12,6 @@ public interface CategoryService {
     Page<CategoryDTO> getAllCategoriesPage(PageRequestCustom pageRequestCustom);
     CategoryDTO getCategoryById(Integer id);
     CategoryDTO saveCategory(SaveUpdateCategoryRequest saveUpdateCategoryRequest);
-    CategoryDTO updateCategory(int idCate, SaveUpdateCategoryRequest saveUpdateCategoryRequest);
+    CategoryDTO updateCategory(Integer idCate, SaveUpdateCategoryRequest saveUpdateCategoryRequest);
     CategoryDTO deleteCategoryById(Integer id);
 }
