@@ -1,6 +1,7 @@
 package com.project.it_job.controller;
 
 import com.project.it_job.entity.Industry;
+import com.project.it_job.request.IndustryRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.IndustryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,70 +20,29 @@ public class IndustryController {
     private IndustryService industryService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse> getAll() {
-        List<Industry> list = industryService.getAll();
-        BaseResponse res = new BaseResponse();
-        res.setCode(HttpStatus.OK.value());
-        res.setMessage(list.isEmpty() ? "Industry list is empty" : "Get industry list successfully");
-        res.setData(list);
-        return ResponseEntity.ok(res);
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(BaseResponse.success(industryService.getAll(), "OK"));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse> getById(@PathVariable int id) {
-        Optional<Industry> optional = industryService.getById(id);
-        BaseResponse res = new BaseResponse();
-        if (optional.isPresent()) {
-            res.setCode(HttpStatus.OK.value());
-            res.setMessage("Get industry successfully");
-            res.setData(optional.get());
-            return ResponseEntity.ok(res);
-        } else {
-            res.setCode(HttpStatus.NOT_FOUND.value());
-            res.setMessage("Industry not found with id: " + id);
-            res.setData(null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-        }
+    public ResponseEntity<?> getById(@PathVariable int id) {
+       return ResponseEntity.ok(BaseResponse.success(industryService.getById(id), "OK"));
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody Industry industry) {
-        Industry created = industryService.create(industry);
-        BaseResponse res = new BaseResponse(HttpStatus.CREATED.value(), "Create industry successfully", created);
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    public ResponseEntity<?> create(@RequestBody IndustryRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(industryService.create(request), "Tạo industry thành công"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable int id, @RequestBody Industry industry) {
-        Industry updated = industryService.update(id, industry);
-        BaseResponse res = new BaseResponse();
-        if (updated != null) {
-            res.setCode(HttpStatus.OK.value());
-            res.setMessage("Update industry successfully");
-            res.setData(updated);
-            return ResponseEntity.ok(res);
-        } else {
-            res.setCode(HttpStatus.NOT_FOUND.value());
-            res.setMessage("Industry not found with id: " + id);
-            res.setData(null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-        }
+    public ResponseEntity<?> update(@PathVariable int id, @RequestBody IndustryRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(industryService.update(id, request), "Cập nhật industry thành công"));
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable int id) {
-        boolean deleted = industryService.delete(id);
-        BaseResponse res = new BaseResponse();
-        if (deleted) {
-            res.setCode(HttpStatus.OK.value());
-            res.setMessage("Delete industry successfully");
-            res.setData(null);
-            return ResponseEntity.ok(res);
-        } else {
-            res.setCode(HttpStatus.NOT_FOUND.value());
-            res.setMessage("Industry not found with id: " + id);
-            res.setData(null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-        }
+    public ResponseEntity<?> delete(@PathVariable int id) {
+        industryService.delete(id);
+        return ResponseEntity.ok(BaseResponse.success(null,"Xóa industry có ID "+ id + "thành công"));
     }
 }
