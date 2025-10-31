@@ -38,6 +38,7 @@ public class ReviewServeImp implements ReviewService {
     @Override
     public List<ReviewDTO> getAllReviews() {
         return reviewRepository.findAll().stream().map(review -> reviewMapper.reviewToReviewDTO(review,true)).toList();
+
     }
 
     @Override
@@ -68,6 +69,7 @@ public class ReviewServeImp implements ReviewService {
         Company company = companyRepository.findById(saveUpdateReviewRequest.getCompanyId())
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id company"));
         Review review = reviewMapper.saveReviewMapper(user,company,saveUpdateReviewRequest);
+
         return reviewMapper.reviewToReviewDTO(reviewRepository.save(review), true);
     }
 
@@ -81,6 +83,7 @@ public class ReviewServeImp implements ReviewService {
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id company"));
 
         Review mapperReview = reviewMapper.updateReviewMapper(reviewId ,user,company,saveUpdateReviewRequest);
+
         return reviewMapper.reviewToReviewDTO(reviewRepository.save(mapperReview), true);
     }
 

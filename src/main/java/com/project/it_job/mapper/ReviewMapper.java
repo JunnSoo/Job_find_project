@@ -9,9 +9,7 @@ import com.project.it_job.mapper.auth.UserMapper;
 import com.project.it_job.request.SaveUpdateReviewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class ReviewMapper {
@@ -26,7 +24,6 @@ public class ReviewMapper {
                 .user(getUsers ? userMapper.userToUserReviewDTO(review.getUser()) : null )
                 .build();
     }
-
 
     public Review saveReviewMapper(User user, Company company, SaveUpdateReviewRequest saveUpdateReviewRequest){
         return Review.builder()
