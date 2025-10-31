@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name = "job")
 @Data
 @NoArgsConstructor
@@ -51,4 +54,7 @@ public class Job {
 
     @Column(name = "experience_id")
     private int experienceId;
+
+    @OneToMany(mappedBy = "job")
+    private List<WishlistJob> listWishlistJob = new ArrayList<>();
 }
