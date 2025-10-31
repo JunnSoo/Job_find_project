@@ -17,5 +17,4 @@ public interface ReviewService {
     ReviewDTO deleteReview(Integer reviewId);
     UserReviewDTO getReviewsByUserId(String userId);
     List<ReviewDTO> getReviewsByCompanyId(String companyId);
-
 }

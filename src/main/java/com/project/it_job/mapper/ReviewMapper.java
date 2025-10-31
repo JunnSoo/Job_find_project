@@ -9,15 +9,13 @@ import com.project.it_job.mapper.auth.UserMapper;
 import com.project.it_job.request.SaveUpdateReviewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class ReviewMapper {
     private final UserMapper userMapper;
-
     public ReviewDTO reviewToReviewDTO(Review review, boolean getUsers){
+    public ReviewDTO reviewToReviewDTO(Review review){
         return ReviewDTO.builder()
                 .id(review.getId())
                 .title(review.getTitle())
@@ -26,7 +24,6 @@ public class ReviewMapper {
                 .user(getUsers ? userMapper.userToUserReviewDTO(review.getUser()) : null )
                 .build();
     }
-
 
     public Review saveReviewMapper(User user, Company company, SaveUpdateReviewRequest saveUpdateReviewRequest){
         return Review.builder()
@@ -48,7 +45,6 @@ public class ReviewMapper {
                 .company(company)
                 .build();
     }
-
     public UserReviewDTO reviewToUserReviewDTO(User user, List<ReviewDTO> reviews){
         return UserReviewDTO.builder()
                 .id(user.getId())
