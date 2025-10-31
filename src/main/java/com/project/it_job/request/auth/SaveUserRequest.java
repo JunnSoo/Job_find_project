@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SaveUpdateUserRequest {
+public class SaveUserRequest {
     @NotNull(message = "email must be not null")
     @NotEmpty(message = "email must be not empty")
     @Email(message = "email is not valid")

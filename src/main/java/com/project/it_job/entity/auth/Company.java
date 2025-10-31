@@ -1,16 +1,15 @@
 package com.project.it_job.entity.auth;
 
 import com.project.it_job.entity.CompanySize;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.project.it_job.entity.Review;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "company")
 @Data
@@ -31,4 +30,7 @@ public class Company {
     @ManyToOne
     @JoinColumn(name = "company_size_id")
     private CompanySize companySize;
+
+    @OneToMany(mappedBy = "company")
+    private List<Review> listReview;
 }

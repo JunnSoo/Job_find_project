@@ -13,7 +13,8 @@ import com.project.it_job.repository.auth.CompanyRepository;
 import com.project.it_job.repository.auth.RoleRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.PageRequestCustom;
-import com.project.it_job.request.auth.SaveUpdateUserRequest;
+import com.project.it_job.request.auth.SaveUserRequest;
+import com.project.it_job.request.auth.UpdateUserRequest;
 import com.project.it_job.service.auth.UserService;
 import com.project.it_job.specification.auth.UserSpecification;
 import com.project.it_job.util.PageCustomHelpper;
@@ -63,30 +64,29 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDTO saveUser(SaveUpdateUserRequest saveUpdateUserRequest) {
+    public UserDTO saveUser(SaveUserRequest saveUserRequest) {
 //        check role
         Role role = null;
-        if (saveUpdateUserRequest.getRoleId() != null && !saveUpdateUserRequest.getRoleId().isEmpty()) {
-            role = roleRepository.findById(saveUpdateUserRequest.getRoleId()).orElseThrow(
+        if (saveUserRequest.getRoleId() != null && !saveUserRequest.getRoleId().isEmpty()) {
+            role = roleRepository.findById(saveUserRequest.getRoleId()).orElseThrow(
                     ()-> new NotFoundIdExceptionHandler("Không tìm thấy id role!")
             );
         }
 //      check company
         Company company = null;
-        if (saveUpdateUserRequest.getCompanyId() != null && !saveUpdateUserRequest.getCompanyId().isEmpty()) {
-            company = companyRepository.findById(saveUpdateUserRequest.getCompanyId()).orElseThrow(
+        if (saveUserRequest.getCompanyId() != null && !saveUserRequest.getCompanyId().isEmpty()) {
+            company = companyRepository.findById(saveUserRequest.getCompanyId()).orElseThrow(
                     ()-> new NotFoundIdExceptionHandler("Không tìm thấy id company!")
             );
         }
 
-        User userCheckEmail = userRepository.findByEmail(saveUpdateUserRequest.getEmail()).orElse(null);
+        User userCheckEmail = userRepository.findByEmail(saveUserRequest.getEmail()).orElse(null);
         if (userCheckEmail != null) {
             throw new EmailAlreadyExists("Email đã tồn tại!");
         }
 
         try {
-            User user = userMapper.saveUserMapper(role,company,saveUpdateUserRequest);
-            System.out.println(user.getBirthDate());
+            User user = userMapper.saveUserMapper(role,company, saveUserRequest);
 
             return userMapper.userToUserDTO(userRepository.save(user));
         } catch (Exception e){
@@ -95,32 +95,33 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(String idUser, SaveUpdateUserRequest saveUpdateUserRequest) {
+    public UserDTO updateUser(String idUser, UpdateUserRequest updateUserRequest) {
         User user = userRepository.findById(idUser).orElseThrow(
                 ()-> new NotFoundIdExceptionHandler("Không tìm thấy id user!")
         );
 
-        if (!saveUpdateUserRequest.getEmail().equalsIgnoreCase(user.getEmail())) {
+        if (!updateUserRequest.getEmail().equalsIgnoreCase(user.getEmail())) {
             throw new EmailNotChangeExceptionHandler("Không được thay đổi email!");
         }
 
         Role role = null;
-        if (saveUpdateUserRequest.getRoleId() != null && !saveUpdateUserRequest.getRoleId().isEmpty()) {
-            role = roleRepository.findById(saveUpdateUserRequest.getRoleId()).orElseThrow(
+        if (updateUserRequest.getRoleId() != null && !updateUserRequest.getRoleId().isEmpty()) {
+            role = roleRepository.findById(updateUserRequest.getRoleId()).orElseThrow(
                     ()-> new NotFoundIdExceptionHandler("Không tìm thấy id role!")
             );
         }
 
         Company company = null;
-        if (saveUpdateUserRequest.getCompanyId() != null && !saveUpdateUserRequest.getCompanyId().isEmpty()) {
-            company = companyRepository.findById(saveUpdateUserRequest.getCompanyId()).orElseThrow(
+        if (updateUserRequest.getCompanyId() != null && !updateUserRequest.getCompanyId().isEmpty()) {
+            company = companyRepository.findById(updateUserRequest.getCompanyId()).orElseThrow(
                     ()-> new NotFoundIdExceptionHandler("Không tìm thấy id company!")
             );
         }
 
         try {
-            User mappedUser = userMapper.updateUserMapper(idUser,role,company,saveUpdateUserRequest);
+            User mappedUser = userMapper.updateUserMapper(idUser,role,company, updateUserRequest);
             mappedUser.setCreatedDate(user.getCreatedDate());
+            mappedUser.setPassword(user.getPassword());
             return userMapper.userToUserDTO(userRepository.save(mappedUser));
         } catch (Exception e){
             e.printStackTrace();

@@ -1,0 +1,45 @@
+package com.project.it_job.controller;
+
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.request.SaveUpdateReviewRequest;
+import com.project.it_job.response.BaseResponse;
+import com.project.it_job.service.ReviewService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/review")
+@RequiredArgsConstructor
+public class ReviewController {
+    private final ReviewService reviewService;
+
+    @GetMapping
+    public ResponseEntity<?> getAllReviews(PageRequestCustom pageRequestCustom){
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0  && pageRequestCustom.getKeyword() == null ) {
+            return ResponseEntity.ok(BaseResponse.success(reviewService.getAllReviews(),"OK"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(reviewService.getAllReviewsPage(pageRequestCustom),"OK"));
+    }
+
+    @GetMapping("/{idReview}")
+    public ResponseEntity<?> getReviewById(@PathVariable("idReview") Integer idReview){
+         return ResponseEntity.ok(BaseResponse.success(reviewService.getReviewById(idReview),"OK"));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> saveReview(@Valid @RequestBody SaveUpdateReviewRequest saveUpdateReviewRequest){
+        return ResponseEntity.ok(BaseResponse.success(reviewService.saveReview(saveUpdateReviewRequest), "OK"));
+    }
+
+    @PutMapping("/{idReview}")
+    public ResponseEntity<?> updateReview (@PathVariable Integer idReview ,@Valid @RequestBody SaveUpdateReviewRequest saveUpdateReviewRequest){
+        return ResponseEntity.ok(BaseResponse.success(reviewService.updateReview(idReview ,saveUpdateReviewRequest), "OK"));
+    }
+
+    @DeleteMapping("/{idReview}")
+    public ResponseEntity<?> deleteReview(@PathVariable Integer idReview){
+        return ResponseEntity.ok(BaseResponse.success(reviewService.deleteReview(idReview), "OK"));
+    }
+}
