@@ -1,6 +1,7 @@
 package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.ReviewDTO;
+import com.project.it_job.dto.UserReviewDTO;
 import com.project.it_job.entity.Review;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.User;
@@ -36,7 +37,7 @@ public class ReviewServeImp implements ReviewService {
 
     @Override
     public List<ReviewDTO> getAllReviews() {
-        return reviewRepository.findAll().stream().map(review -> reviewMapper.reviewToReviewDTO(review)).toList();
+        return reviewRepository.findAll().stream().map(review -> reviewMapper.reviewToReviewDTO(review,true)).toList();
     }
 
     @Override
@@ -50,13 +51,13 @@ public class ReviewServeImp implements ReviewService {
 //        Tạo search
 
         Specification<Review> spec = Specification.allOf(reviewSpecification.searchByName(pageRequestValidate.getKeyword()));
-        return reviewRepository.findAll(spec, pageable).map(review -> reviewMapper.reviewToReviewDTO(review));
+        return reviewRepository.findAll(spec, pageable).map(review -> reviewMapper.reviewToReviewDTO(review,true));
     }
 
     @Override
     public ReviewDTO getReviewById(Integer id) {
         Review review= reviewRepository.findById(id).orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id review"));
-        return reviewMapper.reviewToReviewDTO(review);
+        return reviewMapper.reviewToReviewDTO(review, true);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class ReviewServeImp implements ReviewService {
         Company company = companyRepository.findById(saveUpdateReviewRequest.getCompanyId())
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id company"));
         Review review = reviewMapper.saveReviewMapper(user,company,saveUpdateReviewRequest);
-        return reviewMapper.reviewToReviewDTO(reviewRepository.save(review));
+        return reviewMapper.reviewToReviewDTO(reviewRepository.save(review), true);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ReviewServeImp implements ReviewService {
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id company"));
 
         Review mapperReview = reviewMapper.updateReviewMapper(reviewId ,user,company,saveUpdateReviewRequest);
-        return reviewMapper.reviewToReviewDTO(reviewRepository.save(mapperReview));
+        return reviewMapper.reviewToReviewDTO(reviewRepository.save(mapperReview), true);
     }
 
     @Override
@@ -88,6 +89,21 @@ public class ReviewServeImp implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id review"));
         reviewRepository.delete(review);
-        return reviewMapper.reviewToReviewDTO(review);
+        return reviewMapper.reviewToReviewDTO(review,true);
+    }
+
+    @Override
+    public UserReviewDTO getReviewsByUserId(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id user"));
+        List<ReviewDTO> listReview = user.getListReview().stream().map(review -> reviewMapper.reviewToReviewDTO(review , false)).toList();
+        return reviewMapper.reviewToUserReviewDTO(user,listReview);
+    }
+
+    @Override
+    public List<ReviewDTO> getReviewsByCompanyId(String companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id company"));
+        return company.getListReview().stream().map(review -> reviewMapper.reviewToReviewDTO(review,true)).toList();
     }
 }

@@ -28,6 +28,16 @@ public class ReviewController {
          return ResponseEntity.ok(BaseResponse.success(reviewService.getReviewById(idReview),"OK"));
     }
 
+    @GetMapping("/user/{idUser}")
+    public ResponseEntity<?> getReviewByUserId(@PathVariable("idUser") String idUser){
+        return ResponseEntity.ok(BaseResponse.success(reviewService.getReviewsByUserId(idUser),"OK"));
+    }
+
+    @GetMapping("/company/{idCompany}")
+    public ResponseEntity<?> getReviewByCompanyId(@PathVariable("idCompany") String idCompany){
+        return ResponseEntity.ok(BaseResponse.success(reviewService.getReviewsByCompanyId(idCompany),"OK"));
+    }
+
     @PostMapping
     public ResponseEntity<?> saveReview(@Valid @RequestBody SaveUpdateReviewRequest saveUpdateReviewRequest){
         return ResponseEntity.ok(BaseResponse.success(reviewService.saveReview(saveUpdateReviewRequest), "OK"));

@@ -1,6 +1,7 @@
 package com.project.it_job.mapper;
 
 import com.project.it_job.dto.ReviewDTO;
+import com.project.it_job.dto.UserReviewDTO;
 import com.project.it_job.entity.Review;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.User;
@@ -9,20 +10,23 @@ import com.project.it_job.request.SaveUpdateReviewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class ReviewMapper {
     private final UserMapper userMapper;
 
-    public ReviewDTO reviewToReviewDTO(Review review){
+    public ReviewDTO reviewToReviewDTO(Review review, boolean getUsers){
         return ReviewDTO.builder()
                 .id(review.getId())
                 .title(review.getTitle())
                 .description(review.getDescription())
                 .rated(review.getRated())
-                .user(userMapper.userToUserReviewDTO(review.getUser()))
+                .user(getUsers ? userMapper.userToUserReviewDTO(review.getUser()) : null )
                 .build();
     }
+
 
     public Review saveReviewMapper(User user, Company company, SaveUpdateReviewRequest saveUpdateReviewRequest){
         return Review.builder()
@@ -42,6 +46,16 @@ public class ReviewMapper {
                 .rated(saveUpdateReviewRequest.getRated())
                 .user(user)
                 .company(company)
+                .build();
+    }
+
+    public UserReviewDTO reviewToUserReviewDTO(User user, List<ReviewDTO> reviews){
+        return UserReviewDTO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .avatar(user.getAvatar())
+                .listReviews(reviews)
                 .build();
     }
 }

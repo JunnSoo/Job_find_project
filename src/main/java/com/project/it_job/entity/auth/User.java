@@ -1,6 +1,7 @@
 package com.project.it_job.entity.auth;
 
 import com.project.it_job.entity.Review;
+import com.project.it_job.entity.SoftSkillsName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Review> listReview;
+
+    @OneToMany(mappedBy = "user")
+    private List<SoftSkillsName> listSoftSkillsName;
 }
