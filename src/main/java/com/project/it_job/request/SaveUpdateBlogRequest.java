@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SaveUpdateBlogRequest {
-    @NotNull(message = "title must be not null")
-    @NotEmpty(message = "title must be not empty")
+    @NotNull(message = "title không được null")
+    @NotEmpty(message = "title không được rỗng")
     private String title;
-    @NotNull(message = "picture must be not null")
-    @NotEmpty(message = "picture must be not empty")
+    @NotNull(message = "picture không được null")
+    @NotEmpty(message = "picture không được rỗng")
     private String picture;
 
-    @NotNull(message = "shortDescription must be not null")
+    @NotNull(message = "shortDescription không được null")
     private String shortDescription;
 
-    @NotNull(message = "description must be not null")
+    @NotNull(message = "description không được null")
     private String description;
 }

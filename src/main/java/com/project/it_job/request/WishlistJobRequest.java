@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SaveUpdateCompanySizeRequest {
-    @NotNull(message = "minEmployees không được null")
-    private int minEmployees;
+public class WishlistJobRequest {
+    @NotNull(message = "userId không được null")
+    @NotEmpty(message = "userId không được rỗng")
+    private String userId;
 
-    @NotNull(message = "maxEmployees không được null")
-    private int maxEmployees;
+    @NotNull(message = "jobId không được null")
+    private int jobId;
 }

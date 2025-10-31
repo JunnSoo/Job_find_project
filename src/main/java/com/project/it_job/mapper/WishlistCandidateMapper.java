@@ -1,6 +1,6 @@
 package com.project.it_job.mapper;
 
-import com.project.it_job.KeyEntity.WishlistCandidateKey;
+import com.project.it_job.keyentity.WishlistCandidateKey;
 import com.project.it_job.dto.BasicUserDTO;
 import com.project.it_job.dto.WishlistCandidateDTO;
 import com.project.it_job.entity.WishlistCandidate;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class WishlistCandidateMapper {
-    public List<WishlistCandidateDTO> wishlistCandidateToWishlistCandidateDTO(List<WishlistCandidate> wishlistCandidates) {
+    public List<WishlistCandidateDTO> mappedToWishlistCandidateDTO(List<WishlistCandidate> wishlistCandidates) {
 //        Map và group by duy nhất id hr
         List<WishlistCandidateDTO> result = new ArrayList<>();
         Map<String, List<User>> groupByHrId = wishlistCandidates.stream()

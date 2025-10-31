@@ -1,5 +1,6 @@
 package com.project.it_job.controller;
 
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.WishlistCandidateRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.WishlistCandidateService;
@@ -15,8 +16,11 @@ public class WishlistCandidateController {
     private final WishlistCandidateService wishlistCandidateService;
 
     @GetMapping
-    public ResponseEntity<?> getAllWishlistCandidates() {
-        return ResponseEntity.ok(BaseResponse.success(wishlistCandidateService.getAllWishlistCandidates(),"OK"));
+    public ResponseEntity<?> getAllWishlistCandidates(PageRequestCustom pageRequestCustom) {
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 ) {
+            return ResponseEntity.ok(BaseResponse.success(wishlistCandidateService.getAllWishlistCandidates(),"OK"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(wishlistCandidateService.getAllWishlistCandidatesPage(pageRequestCustom),"OK"));
     }
 
     @GetMapping("/{idHr}")

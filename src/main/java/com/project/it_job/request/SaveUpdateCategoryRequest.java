@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SaveUpdateCategoryRequest {
-    @NotNull(message = "name must be not null")
-    @NotEmpty(message = "name must be not empty")
+    @NotNull(message = "name không được null")
+    @NotEmpty(message = "name không được rỗng")
     private String name;
 
-    @NotNull(message = "parent id must be not null")
+    @NotNull(message = "parentId không được null")
     private Integer parentId;
 }

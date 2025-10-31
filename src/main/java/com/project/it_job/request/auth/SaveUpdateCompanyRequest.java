@@ -12,20 +12,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SaveUpdateCompanyRequest {
-    @NotNull(message = "name must be not null")
-    @NotEmpty(message = "name must be not empty")
+    @NotNull(message = "name không được null")
+    @NotEmpty(message = "name không được rỗng")
     private String name;
 
-    @NotNull(message = "description must be not null")
+    @NotNull(message = "description không được null")
     private String description;
 
-    @NotNull(message = "address must be not null")
+    @NotNull(message = "address không được null")
     private String address;
 
-    @NotNull(message = "website must be not null")
+    @NotNull(message = "website không được null")
     private String website;
 
-    @NotNull(message = "logo must be not null")
+    @NotNull(message = "logo không được null")
     private String logo;
 
     private Integer companySizeId;

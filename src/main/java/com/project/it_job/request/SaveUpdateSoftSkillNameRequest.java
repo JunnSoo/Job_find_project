@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SaveUpdateSoftSkillNameRequest {
-    @NotNull(message = "name must be not null")
-    @NotEmpty(message = "name must be not empty")
+    @NotNull(message = "name không được null")
+    @NotEmpty(message = "name không được rỗng")
     private String name;
 }
