@@ -1,4 +1,4 @@
-package com.project.it_job.KeyEntity;
+package com.project.it_job.keyentity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

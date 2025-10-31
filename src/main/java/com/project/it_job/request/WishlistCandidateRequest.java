@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class WishlistCandidateRequest {
-    @NotNull(message = "hrId must be not null")
-    @NotEmpty(message = "hrId must be not empty")
+    @NotNull(message = "hrId không được null")
+    @NotEmpty(message = "hrId không được rỗng")
     private String hrId;
 
-    @NotNull(message = "candidateId must be not null")
-    @NotEmpty(message = "candidateId must be not empty")
+    @NotNull(message = "candidateId không được null")
+    @NotEmpty(message = "candidateId không được rỗng")
     private String candidateId;
 }

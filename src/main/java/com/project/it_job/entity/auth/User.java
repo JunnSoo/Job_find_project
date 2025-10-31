@@ -3,6 +3,7 @@ package com.project.it_job.entity.auth;
 import com.project.it_job.entity.Review;
 import com.project.it_job.entity.SoftSkillsName;
 import com.project.it_job.entity.WishlistCandidate;
+import com.project.it_job.entity.WishlistJob;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,4 +60,7 @@ public class User {
 //    bị wistlist
     @OneToMany(mappedBy = "userCandidate")
     private List<WishlistCandidate> wishedByHRs = new ArrayList<>();;
+
+    @OneToMany(mappedBy = "user")
+    private List<WishlistJob> listWishlistJob = new ArrayList<>();
 }
