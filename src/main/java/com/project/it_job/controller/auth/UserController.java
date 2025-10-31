@@ -1,8 +1,8 @@
 package com.project.it_job.controller.auth;
 
-import com.project.it_job.dto.auth.UserDTO;
 import com.project.it_job.request.PageRequestCustom;
-import com.project.it_job.request.auth.SaveUpdateUserRequest;
+import com.project.it_job.request.auth.SaveUserRequest;
+import com.project.it_job.request.auth.UpdateUserRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.UserService;
 import jakarta.validation.Valid;
@@ -30,13 +30,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@Valid @RequestBody SaveUpdateUserRequest saveUpdateUserRequest) {
-        return ResponseEntity.ok(BaseResponse.success(userService.saveUser(saveUpdateUserRequest), "OK"));
+    public ResponseEntity<?> saveUser(@Valid @RequestBody SaveUserRequest saveUserRequest) {
+        return ResponseEntity.ok(BaseResponse.success(userService.saveUser(saveUserRequest), "OK"));
     }
 
     @PutMapping("/{idUser}")
-    public ResponseEntity<?> updateUser(@PathVariable String idUser ,@Valid @RequestBody SaveUpdateUserRequest saveUpdateUserRequest) {
-        return ResponseEntity.ok(BaseResponse.success(userService.updateUser(idUser,saveUpdateUserRequest), "OK"));
+    public ResponseEntity<?> updateUser(@PathVariable String idUser ,@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+        return ResponseEntity.ok(BaseResponse.success(userService.updateUser(idUser, updateUserRequest), "OK"));
     }
 
     @DeleteMapping("/{idUser}")

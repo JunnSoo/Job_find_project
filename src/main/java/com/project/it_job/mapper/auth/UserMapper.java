@@ -1,10 +1,12 @@
 package com.project.it_job.mapper.auth;
 
 import com.project.it_job.dto.auth.UserDTO;
+import com.project.it_job.dto.auth.UserReviewDTO;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.request.auth.SaveUpdateUserRequest;
+import com.project.it_job.request.auth.SaveUserRequest;
+import com.project.it_job.request.auth.UpdateUserRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,7 +19,6 @@ public class UserMapper {
         return UserDTO.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .password(user.getPassword())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .avatar(user.getAvatar())
@@ -36,22 +37,22 @@ public class UserMapper {
                 .build();
     }
 
-    public User saveUserMapper(Role role, Company company, SaveUpdateUserRequest saveUpdateUserRequest){
+    public User saveUserMapper(Role role, Company company, SaveUserRequest saveUserRequest){
         return User.builder()
                 .id(UUID.randomUUID().toString())
-                .email(saveUpdateUserRequest.getEmail())
-                .password(saveUpdateUserRequest.getPassword())
-                .firstName(saveUpdateUserRequest.getFirstName())
-                .lastName(saveUpdateUserRequest.getLastName())
-                .avatar(saveUpdateUserRequest.getAvatar())
-                .phone(saveUpdateUserRequest.getPhone())
-                .gender(saveUpdateUserRequest.getGender())
-                .education(saveUpdateUserRequest.getEducation())
-                .address(saveUpdateUserRequest.getAddress())
-                .linkweb(saveUpdateUserRequest.getLinkWeb())
-                .birthDate(saveUpdateUserRequest.getBirthDate())
-                .isFindJob(saveUpdateUserRequest.isFindJob())
-                .groupSoftSkill(saveUpdateUserRequest.getGroupSoftSkill())
+                .email(saveUserRequest.getEmail())
+                .password(saveUserRequest.getPassword())
+                .firstName(saveUserRequest.getFirstName())
+                .lastName(saveUserRequest.getLastName())
+                .avatar(saveUserRequest.getAvatar())
+                .phone(saveUserRequest.getPhone())
+                .gender(saveUserRequest.getGender())
+                .education(saveUserRequest.getEducation())
+                .address(saveUserRequest.getAddress())
+                .linkweb(saveUserRequest.getLinkWeb())
+                .birthDate(saveUserRequest.getBirthDate())
+                .isFindJob(saveUserRequest.isFindJob())
+                .groupSoftSkill(saveUserRequest.getGroupSoftSkill())
                 .role(role)
                 .company(company)
                 .createdDate(LocalDateTime.now())
@@ -59,25 +60,33 @@ public class UserMapper {
                 .build();
     }
 
-    public User updateUserMapper(String idUser,Role role, Company company, SaveUpdateUserRequest saveUpdateUserRequest){
+    public User updateUserMapper(String idUser,Role role, Company company, UpdateUserRequest updateUserRequest){
         return User.builder()
                 .id(idUser)
-                .email(saveUpdateUserRequest.getEmail())
-                .password(saveUpdateUserRequest.getPassword())
-                .firstName(saveUpdateUserRequest.getFirstName())
-                .lastName(saveUpdateUserRequest.getLastName())
-                .avatar(saveUpdateUserRequest.getAvatar())
-                .phone(saveUpdateUserRequest.getPhone())
-                .gender(saveUpdateUserRequest.getGender())
-                .education(saveUpdateUserRequest.getEducation())
-                .address(saveUpdateUserRequest.getAddress())
-                .linkweb(saveUpdateUserRequest.getLinkWeb())
-                .birthDate(saveUpdateUserRequest.getBirthDate())
-                .isFindJob(saveUpdateUserRequest.isFindJob())
-                .groupSoftSkill(saveUpdateUserRequest.getGroupSoftSkill())
+                .email(updateUserRequest.getEmail())
+                .firstName(updateUserRequest.getFirstName())
+                .lastName(updateUserRequest.getLastName())
+                .avatar(updateUserRequest.getAvatar())
+                .phone(updateUserRequest.getPhone())
+                .gender(updateUserRequest.getGender())
+                .education(updateUserRequest.getEducation())
+                .address(updateUserRequest.getAddress())
+                .linkweb(updateUserRequest.getLinkWeb())
+                .birthDate(updateUserRequest.getBirthDate())
+                .isFindJob(updateUserRequest.isFindJob())
+                .groupSoftSkill(updateUserRequest.getGroupSoftSkill())
                 .role(role)
                 .company(company)
                 .updatedDate(LocalDateTime.now())
+                .build();
+    }
+
+    public UserReviewDTO userToUserReviewDTO(User user){
+        return UserReviewDTO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .avatar(user.getAvatar())
                 .build();
     }
 }
