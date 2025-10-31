@@ -13,23 +13,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SaveUpdateReviewRequest {
-    @NotNull(message = "title must be not null")
-    @NotEmpty(message = "title must be not empty")
+
+    @NotNull(message = "title không được null")
+    @NotEmpty(message = "title không được rỗng")
     private String title;
-    @NotNull(message = "description must be not null")
-    @NotEmpty(message = "description must be not empty")
+
+    @NotNull(message = "description không được null")
+    @NotEmpty(message = "description không được rỗng")
     private String description;
 
-    @NotNull(message = "rated must be not null")
-    @Min(value = 1, message = "rated must be at least 1")
-    @Max(value = 5, message = "rated must be less than or equal to 5")
+    @NotNull(message = "rated không được null")
+    @Min(value = 1, message = "rated phải ít nhất là 1")
+    @Max(value = 5, message = "rated không được lớn hơn 5")
     private int rated;
 
-    @NotNull(message = "userId must be not null")
-    @NotEmpty(message = "userId must be not empty")
+    @NotNull(message = "userId không được null")
+    @NotEmpty(message = "userId không được rỗng")
     private String userId;
 
-    @NotNull(message = "companyId must be not null")
-    @NotEmpty(message = "companyId must be not empty")
+    @NotNull(message = "companyId không được null")
+    @NotEmpty(message = "companyId không được rỗng")
     private String companyId;
 }
