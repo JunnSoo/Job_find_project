@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "company")
@@ -32,5 +33,5 @@ public class Company {
     private CompanySize companySize;
 
     @OneToMany(mappedBy = "company")
-    private List<Review> listReview;
+    private List<Review> listReview = new ArrayList<>();
 }

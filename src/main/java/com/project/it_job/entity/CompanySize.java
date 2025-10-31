@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "company_size")
@@ -22,5 +23,5 @@ public class CompanySize {
     private int maxEmployees;
 
     @OneToMany(mappedBy = "companySize")
-    private List<Company> companies;
+    private List<Company> companies = new ArrayList<>();
 }
