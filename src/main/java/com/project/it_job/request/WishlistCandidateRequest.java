@@ -19,5 +19,6 @@ public class WishlistCandidateRequest {
 
     @NotNull(message = "candidateId không được null")
     @NotEmpty(message = "candidateId không được rỗng")
+
     private String candidateId;
 }

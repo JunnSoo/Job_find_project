@@ -18,8 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
@@ -85,5 +85,6 @@ public class WishlistCandidateServiceImp implements WishlistCandidateService {
 //        trả ra tk hr không còn user wishlist nữa hoặc mảng rỗng
         List<WishlistCandidate> getDeleteWc = wishlistCandidateRepository.findByUserHr_Id(wishlistCandidateKey.getHrId());
         return wishlistCandidateMapper.mappedToWishlistCandidateDTO(getDeleteWc);
+
     }
 }

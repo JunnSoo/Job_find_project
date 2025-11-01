@@ -5,7 +5,6 @@ import com.project.it_job.entity.WishlistCandidate;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.WishlistCandidateRequest;
 import org.springframework.data.domain.Page;
-
 import java.util.List;
 
 public interface WishlistCandidateService {

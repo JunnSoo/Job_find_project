@@ -21,6 +21,7 @@ public class WishlistCandidateController {
             return ResponseEntity.ok(BaseResponse.success(wishlistCandidateService.getAllWishlistCandidates(),"OK"));
         }
         return ResponseEntity.ok(BaseResponse.success(wishlistCandidateService.getAllWishlistCandidatesPage(pageRequestCustom),"OK"));
+
     }
 
     @GetMapping("/{idHr}")
