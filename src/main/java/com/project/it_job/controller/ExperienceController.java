@@ -1,0 +1,48 @@
+package com.project.it_job.controller;
+
+import com.project.it_job.request.ExperienceRequest;
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.response.BaseResponse;
+import com.project.it_job.service.ExperienceService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api/experience")
+@RequiredArgsConstructor
+public class ExperienceController {
+
+    private final ExperienceService experienceService;
+
+    @GetMapping
+    public ResponseEntity<?> getAllExperience(PageRequestCustom pageRequestCustom) {
+        if (pageRequestCustom.getPageNumber() == 0
+                && pageRequestCustom.getPageSize() == 0
+                && pageRequestCustom.getKeyword() == null) {
+            return ResponseEntity.ok(BaseResponse.success(experienceService.getAllExperience(), "ok"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(experienceService.getAllExperiencePage(pageRequestCustom), "ok"));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getExperienceById(@PathVariable Integer id) {
+        return ResponseEntity.ok(BaseResponse.success(experienceService.getExperienceById(id), "ok"));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createExperience(@RequestBody ExperienceRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(experienceService.createExperience(request), "ok"));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateExperience(@PathVariable Integer id,
+                                              @RequestBody ExperienceRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(experienceService.updateExperience(id, request), "ok"));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteExperience(@PathVariable Integer id) {
+        return ResponseEntity.ok(BaseResponse.success(experienceService.deleteExperience(id), "ok"));
+    }
+}
