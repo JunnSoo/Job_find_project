@@ -31,6 +31,7 @@ public class CVUserServiceImp implements CVUserService {
     private final UserRepository userRepository;
     private final CVUserMapper cvUserMapper;
     private final PageCustomHelpper  pageCustomHelpper;
+    private final CVUserSpecification cvUserSpecification;
 
     @Override
     public List<CVUserDTO> getAll() {
@@ -41,7 +42,7 @@ public class CVUserServiceImp implements CVUserService {
     public Page<CVUserDTO> getAllWithPage(PageRequestCustom req) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
 
-        Specification<CVUser> spec = CVUserSpecification.searchByTitle(req.getKeyword());
+        Specification<CVUser> spec = cvUserSpecification.searchByTitle(req.getKeyword());
 
         Sort sort = switch (req.getSortBy()) {
             case "versionAsc" -> Sort.by(Sort.Direction.ASC, "version");
