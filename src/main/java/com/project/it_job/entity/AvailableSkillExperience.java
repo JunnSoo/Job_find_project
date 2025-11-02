@@ -1,0 +1,39 @@
+package com.project.it_job.entity;
+
+import com.project.it_job.entity.auth.User;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "available_skill_experience")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AvailableSkillExperience {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    // nhóm kỹ năng (group_core_skill)
+    @ManyToOne
+    @JoinColumn(name = "id_group_core")
+    private GroupCoreSkill groupCoreSkill;
+
+    // kỹ năng (available_skills)
+    @ManyToOne
+    @JoinColumn(name = "available_skill_id")
+    private AvailableSkill availableSkill;
+
+    // kinh nghiệm (experience)
+    @ManyToOne
+    @JoinColumn(name = "experience_id")
+    private Experience experience;
+
+    // user
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+}

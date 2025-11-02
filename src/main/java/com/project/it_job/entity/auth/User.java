@@ -1,15 +1,18 @@
 package com.project.it_job.entity.auth;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.project.it_job.entity.Review;
+import com.project.it_job.entity.SoftSkillsName;
+import com.project.it_job.entity.WishlistCandidate;
+import com.project.it_job.entity.WishlistJob;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "user")
 @Data
@@ -43,4 +46,21 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> listReview;
+
+    @OneToMany(mappedBy = "user")
+    private List<SoftSkillsName> listSoftSkillsName;
+
+//    ds wishlist của bản thân
+    @OneToMany(mappedBy = "userHr")
+    private List<WishlistCandidate> wishlistCandidates = new ArrayList<>();;
+
+//    bị wistlist
+    @OneToMany(mappedBy = "userCandidate")
+    private List<WishlistCandidate> wishedByHRs = new ArrayList<>();;
+
+    @OneToMany(mappedBy = "user")
+    private List<WishlistJob> listWishlistJob = new ArrayList<>();
 }
