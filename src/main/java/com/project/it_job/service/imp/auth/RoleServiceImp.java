@@ -42,7 +42,7 @@ public class RoleServiceImp implements RoleService {
 
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
         //Search
-        Specification<Role> spec = roleSpecification.searchByName(req.getKeyword());
+        Specification<Role> spec = roleSpecification.searchByName(pageRequestValidate.getKeyword());
 
         //Sort
         Sort sort = switch (pageRequestValidate.getSortBy()) {
@@ -53,7 +53,7 @@ public class RoleServiceImp implements RoleService {
             case "createdDateDesc" -> Sort.by(Sort.Direction.DESC, "createdDate");
             case "updatedDateAsc" -> Sort.by(Sort.Direction.ASC, "updatedDate");
             case "updatedDateDesc" -> Sort.by(Sort.Direction.DESC, "updatedDate");
-            default -> Sort.by(Sort.Direction.ASC, "createdDate");
+            default -> Sort.by(Sort.Direction.ASC, "id");
         };
 
         //Page
