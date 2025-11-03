@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JobMapper {
-    public static JobDTO toDTO(Job entity) {
+    public JobDTO toDTO(Job entity) {
         if (entity == null) return null;
 
         JobDTO dto = new JobDTO();
@@ -28,7 +28,7 @@ public class JobMapper {
         return dto;
     }
 
-    public static Job toEntity(JobDTO dto) {
+    public Job toEntity(JobDTO dto) {
         if (dto == null) return null;
 
         Job entity = new Job();
@@ -49,7 +49,7 @@ public class JobMapper {
         return entity;
     }
 
-    public static Job toEntity(JobRequest request) {
+    public Job toEntity(JobRequest request) {
         if (request == null) return null;
 
         Job entity = new Job();
@@ -68,7 +68,7 @@ public class JobMapper {
         return entity;
     }
 
-    public static void updateEntity(Job entity, JobRequest request) {
+    public void updateEntity(Job entity, JobRequest request) {
         if (request == null || entity == null) return;
 
         entity.setJobPosition(request.getJobPosition());
