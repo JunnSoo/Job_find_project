@@ -16,13 +16,15 @@ import java.util.stream.Collectors;
 @Service
 public class EmploymentTypeServiceImp implements EmploymentTypeService {
     @Autowired
-    EmploymentTypeRepository employmentTypeRepository;
+    private EmploymentTypeRepository employmentTypeRepository;
 
+    @Autowired
+    private EmploymentTypeMapper employmentTypeMapper;
     @Override
     public List<EmploymentTypeDTO> getAll() {
         return employmentTypeRepository.findAll()
                 .stream()
-                .map(EmploymentTypeMapper::toDTO)
+                .map(employmentTypeMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -30,14 +32,14 @@ public class EmploymentTypeServiceImp implements EmploymentTypeService {
     public EmploymentTypeDTO getById(int id) {
         EmploymentType employmentType = employmentTypeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy EmploymentType với ID: " + id));
-        return EmploymentTypeMapper.toDTO(employmentType);
+        return employmentTypeMapper.toDTO(employmentType);
     }
 
     @Override
     public EmploymentTypeDTO create(EmploymentTypeRequest employmentType) {
         EmploymentType employmentTypeEntity = new EmploymentType();
         employmentTypeEntity.setName(employmentType.getName());
-        return EmploymentTypeMapper.toDTO(employmentTypeRepository.save(employmentTypeEntity));
+        return employmentTypeMapper.toDTO(employmentTypeRepository.save(employmentTypeEntity));
     }
 
     @Override
@@ -45,7 +47,7 @@ public class EmploymentTypeServiceImp implements EmploymentTypeService {
         EmploymentType employmentType = employmentTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy EmploymentType ID: " + id));
         employmentType.setName(request.getName());
-        return EmploymentTypeMapper.toDTO(employmentTypeRepository.save(employmentType));
+        return employmentTypeMapper.toDTO(employmentTypeRepository.save(employmentType));
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DegreeLevelMapper {
 
-    public static DegreeLevelDTO toDTO(DegreeLevel entity) {
+    public DegreeLevelDTO toDTO(DegreeLevel entity) {
         if (entity == null) return null;
         DegreeLevelDTO dto = new DegreeLevelDTO();
         dto.setId(entity.getId());
@@ -15,7 +15,7 @@ public class DegreeLevelMapper {
         return dto;
     }
 
-    public static DegreeLevel toEntity(DegreeLevelDTO dto) {
+    public DegreeLevel toEntity(DegreeLevelDTO dto) {
         if (dto == null) return null;
         DegreeLevel entity = new DegreeLevel();
         entity.setId(dto.getId());

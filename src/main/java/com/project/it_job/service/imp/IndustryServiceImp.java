@@ -17,11 +17,13 @@ import java.util.stream.Collectors;
 public class IndustryServiceImp implements IndustryService {
     @Autowired
     private IndustryRepository industryRepository;
+    @Autowired
+    private IndustryMapper industryMapper;
     @Override
     public List<IndustryDTO> getAll() {
         return industryRepository.findAll()
                 .stream()
-                .map(IndustryMapper::toDTO)
+                .map(industryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -29,14 +31,14 @@ public class IndustryServiceImp implements IndustryService {
     public IndustryDTO getById(int id) {
         Industry industry = industryRepository.findById(id).
                 orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Industry với ID: "+ id));
-        return IndustryMapper.toDTO(industry);
+        return industryMapper.toDTO(industry);
     }
 
     @Override
     public IndustryDTO create(IndustryRequest request) {
         Industry industry = new Industry();
         industry.setName(request.getName());
-        return IndustryMapper.toDTO(industryRepository.save(industry));
+        return industryMapper.toDTO(industryRepository.save(industry));
     }
 
     @Override
@@ -44,7 +46,7 @@ public class IndustryServiceImp implements IndustryService {
         Industry industry = industryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Industry id: "+ id));
         industry.setName(request.getName());
-        return IndustryMapper.toDTO(industryRepository.save(industry));
+        return industryMapper.toDTO(industryRepository.save(industry));
     }
 
     @Override

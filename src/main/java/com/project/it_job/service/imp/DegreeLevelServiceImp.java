@@ -26,7 +26,7 @@ public class DegreeLevelServiceImp implements DegreeLevelService {
     public List<DegreeLevelDTO> getAll() {
         return degreeLevelRepository.findAll()
                 .stream()
-                .map(DegreeLevelMapper::toDTO)
+                .map(degreeLevelMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -34,7 +34,7 @@ public class DegreeLevelServiceImp implements DegreeLevelService {
     public DegreeLevelDTO getById(int id) {
         DegreeLevel degreeLevel = degreeLevelRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Không tìm thấy DegreeLevel ID: " + id));
-        return DegreeLevelMapper.toDTO(degreeLevel);
+        return degreeLevelMapper.toDTO(degreeLevel);
     }
 
     @Override

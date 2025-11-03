@@ -32,12 +32,15 @@ public class ReportServiceImp implements ReportService {
     @Autowired
     private PageCustomHelpper pageCustomHelpper;
 
+    @Autowired
+    private ReportMapper reportMapper;
+
 
     @Override
     public List<ReportDTO> getAllReports() {
         return reportRepository.findAll()
                 .stream()
-                .map(ReportMapper::toDTO)
+                .map(reportMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -45,7 +48,7 @@ public class ReportServiceImp implements ReportService {
     public ReportDTO getReportById(int id) {
         Report report = reportRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
-        return ReportMapper.toDTO(report);
+        return reportMapper.toDTO(report);
     }
 
     @Override
@@ -62,7 +65,7 @@ public class ReportServiceImp implements ReportService {
         report.setReportedJob(request.getReportedJob());
         report.setStatusId(status);
 
-        return ReportMapper.toDTO(reportRepository.save(report));
+        return reportMapper.toDTO(reportRepository.save(report));
     }
 
     @Override
@@ -81,7 +84,7 @@ public class ReportServiceImp implements ReportService {
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + request.getStatusId()));
         report.setStatusId(status);
 
-        return ReportMapper.toDTO(reportRepository.save(report));
+        return reportMapper.toDTO(reportRepository.save(report));
     }
 
     @Override
@@ -97,6 +100,6 @@ public class ReportServiceImp implements ReportService {
 
         //Page<Report> page = reportRepository.findAll(pageable);
 
-        return reportRepository.findAll(pageable).map( report -> ReportMapper.toDTO(report));
+        return reportRepository.findAll(pageable).map( report -> reportMapper.toDTO(report));
     }
 }

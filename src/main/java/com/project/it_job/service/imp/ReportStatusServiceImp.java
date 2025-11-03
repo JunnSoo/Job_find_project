@@ -19,12 +19,14 @@ public class ReportStatusServiceImp implements ReportStatusService {
 
     @Autowired
     private ReportStatusRepository reportStatusRepository;
+    @Autowired
+    private ReportStatusMapper reportStatusMapper;
 
     @Override
     public List<ReportStatusDTO> getAllStatus() {
         return reportStatusRepository.findAll()
                 .stream()
-                .map(ReportStatusMapper::toDTO)
+                .map(reportStatusMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -32,14 +34,14 @@ public class ReportStatusServiceImp implements ReportStatusService {
     public ReportStatusDTO getStatusById(int id) {
         ReportStatus status = reportStatusRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));
-        return ReportStatusMapper.toDTO(status);
+        return reportStatusMapper.toDTO(status);
     }
 
     @Override
     public ReportStatusDTO createStatus(ReportStatusRequest request) {
         ReportStatus status = new ReportStatus();
         status.setName(request.getName());
-        return ReportStatusMapper.toDTO(reportStatusRepository.save(status));
+        return reportStatusMapper.toDTO(reportStatusRepository.save(status));
     }
 
     @Override
@@ -47,7 +49,7 @@ public class ReportStatusServiceImp implements ReportStatusService {
         ReportStatus status = reportStatusRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));
         status.setName(request.getName());
-        return ReportStatusMapper.toDTO(reportStatusRepository.save(status));
+        return reportStatusMapper.toDTO(reportStatusRepository.save(status));
     }
 
     @Override

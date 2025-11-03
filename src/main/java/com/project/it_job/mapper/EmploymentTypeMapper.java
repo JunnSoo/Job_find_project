@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmploymentTypeMapper {
 
-    public static EmploymentTypeDTO toDTO(EmploymentType entity) {
+    public EmploymentTypeDTO toDTO(EmploymentType entity) {
         if (entity == null) return null;
         EmploymentTypeDTO dto = new EmploymentTypeDTO();
         dto.setId(entity.getId());
@@ -15,7 +15,7 @@ public class EmploymentTypeMapper {
         return dto;
     }
 
-    public static EmploymentType toEntity(EmploymentTypeDTO dto) {
+    public EmploymentType toEntity(EmploymentTypeDTO dto) {
         if (dto == null) return null;
         EmploymentType entity = new EmploymentType();
         entity.setId(dto.getId());
