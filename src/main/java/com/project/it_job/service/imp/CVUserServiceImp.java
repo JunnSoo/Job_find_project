@@ -42,7 +42,7 @@ public class CVUserServiceImp implements CVUserService {
     public Page<CVUserDTO> getAllWithPage(PageRequestCustom req) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
 
-        Specification<CVUser> spec = cvUserSpecification.searchByTitle(req.getKeyword());
+        Specification<CVUser> spec = cvUserSpecification.searchByTitle(pageRequestValidate.getKeyword());
 
         Sort sort = switch (pageRequestValidate.getSortBy()) {
             case "versionAsc" -> Sort.by(Sort.Direction.ASC, "version");
@@ -51,7 +51,7 @@ public class CVUserServiceImp implements CVUserService {
             case "titleDesc" -> Sort.by(Sort.Direction.DESC, "title");
             case "isActiveAsc" ->  Sort.by(Sort.Direction.ASC, "isActive");
             case "isActiveDesc" ->  Sort.by(Sort.Direction.DESC, "isActive");
-            default -> Sort.by(Sort.Direction.ASC, "createdAt");
+            default -> Sort.by(Sort.Direction.ASC, "id");
         };
 
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
