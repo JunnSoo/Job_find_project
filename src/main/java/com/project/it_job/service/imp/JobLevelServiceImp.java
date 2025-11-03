@@ -19,11 +19,14 @@ public class JobLevelServiceImp implements JobLevelService {
     @Autowired
     private JobLevelRepository jobLevelRepository;
 
+    @Autowired
+    private JobLevelMapper jobLevelMapper;
+
     @Override
     public List<JobLevelDTO> getAll() {
         return jobLevelRepository.findAll()
                 .stream()
-                .map(JobLevelMapper::toDTO)
+                .map(jobLevelMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -31,14 +34,14 @@ public class JobLevelServiceImp implements JobLevelService {
     public JobLevelDTO getById(int id) {
         JobLevel jobLevel = jobLevelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Joblevel với ID: " + id));
-        return JobLevelMapper.toDTO(jobLevel);
+        return jobLevelMapper.toDTO(jobLevel);
     }
 
     @Override
     public JobLevelDTO create(JobLevelRequest request){
         JobLevel jobLevel = new JobLevel();
         jobLevel.setName(request.getName());
-        return JobLevelMapper.toDTO(jobLevelRepository.save(jobLevel));
+        return jobLevelMapper.toDTO(jobLevelRepository.save(jobLevel));
     }
 
     @Override
@@ -46,7 +49,7 @@ public class JobLevelServiceImp implements JobLevelService {
         JobLevel jobLevel = jobLevelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Joblevel ID: " + id));
         jobLevel.setName(request.getName());
-        return JobLevelMapper.toDTO(jobLevelRepository.save(jobLevel));
+        return jobLevelMapper.toDTO(jobLevelRepository.save(jobLevel));
     }
 
     @Override

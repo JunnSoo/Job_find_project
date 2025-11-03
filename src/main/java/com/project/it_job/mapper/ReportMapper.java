@@ -3,9 +3,11 @@ package com.project.it_job.mapper;
 import com.project.it_job.dto.ReportDTO;
 import com.project.it_job.entity.Report;
 import com.project.it_job.entity.ReportStatus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReportMapper {
-    public static ReportDTO toDTO(Report entity) {
+    public ReportDTO toDTO(Report entity) {
         if (entity == null) return null;
 
         ReportDTO dto = new ReportDTO();
@@ -21,7 +23,7 @@ public class ReportMapper {
         return dto;
     }
 
-    public static Report toEntity(ReportDTO dto, ReportStatus status) {
+    public Report toEntity(ReportDTO dto, ReportStatus status) {
         if (dto == null) return null;
 
         Report entity = new Report();

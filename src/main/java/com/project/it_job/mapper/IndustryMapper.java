@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 public class IndustryMapper {
-    public static IndustryDTO toDTO(Industry industry) {
+    public IndustryDTO toDTO(Industry industry) {
         if(industry == null) return null;
         IndustryDTO industryDTO = new IndustryDTO();
         industryDTO.setId(industry.getId());
         industryDTO.setName(industry.getName());
         return industryDTO;
     }
-    public static Industry toEntity(IndustryDTO industryDTO) {
+    public Industry toEntity(IndustryDTO industryDTO) {
         if(industryDTO == null) return null;
         Industry industry = new Industry();
         industry.setId(industryDTO.getId());
