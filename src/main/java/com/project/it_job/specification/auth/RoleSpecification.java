@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RoleSpecification {
-    public static Specification<Role> searchByName(String keyword) {
+    public Specification<Role> searchByName(String keyword) {
         if (keyword == null || keyword.isEmpty()) return null; // neu trong tra null
         String pattern = "%" + keyword + "%"; //pattern
         return (root, query, cb) -> cb.like(root.get("roleName").as(String.class), pattern );

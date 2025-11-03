@@ -11,6 +11,7 @@ import com.project.it_job.request.auth.RoleRequest;
 import com.project.it_job.service.auth.RoleService;
 import com.project.it_job.specification.auth.RoleSpecification;
 import com.project.it_job.util.PageCustomHelpper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,17 +24,13 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class RoleServiceImp implements RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private final PageCustomHelpper pageCustomHelpper;
-
-    public RoleServiceImp(RoleRepository roleRepository, RoleMapper roleMapper, PageCustomHelpper pageCustomHelpper) {
-        this.roleRepository = roleRepository;
-        this.roleMapper = roleMapper;
-        this.pageCustomHelpper = pageCustomHelpper;
-    }
+    private final RoleSpecification roleSpecification;
 
     @Override
     public List<RoleDTO> getAll() {
@@ -45,7 +42,7 @@ public class RoleServiceImp implements RoleService {
 
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
         //Search
-        Specification<Role> spec = RoleSpecification.searchByName(req.getKeyword());
+        Specification<Role> spec = roleSpecification.searchByName(req.getKeyword());
 
         //Sort
         Sort sort = switch (pageRequestValidate.getSortBy()) {
