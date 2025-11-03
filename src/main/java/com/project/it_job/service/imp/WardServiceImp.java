@@ -5,6 +5,7 @@ import com.project.it_job.entity.Ward;
 import com.project.it_job.mapper.WardMapper;
 import com.project.it_job.repository.WardRepository;
 import com.project.it_job.service.WardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class WardServiceImp implements WardService {
-    @Autowired
-    private WardRepository wardRepository;
-
-    @Autowired
-    private WardMapper wardMapper;
+    private final WardRepository wardRepository;
+    private final WardMapper wardMapper;
 
     @Override
     public List<WardDTO> getAll() {

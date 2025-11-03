@@ -7,6 +7,7 @@ import com.project.it_job.mapper.ReportStatusMapper;
 import com.project.it_job.repository.ReportStatusRepository;
 import com.project.it_job.request.ReportStatusRequest;
 import com.project.it_job.service.ReportStatusService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReportStatusServiceImp implements ReportStatusService {
-
-    @Autowired
-    private ReportStatusRepository reportStatusRepository;
-    @Autowired
-    private ReportStatusMapper reportStatusMapper;
+    private final ReportStatusRepository reportStatusRepository;
+    private final ReportStatusMapper reportStatusMapper;
 
     @Override
     public List<ReportStatusDTO> getAllStatus() {

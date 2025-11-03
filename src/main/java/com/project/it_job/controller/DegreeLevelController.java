@@ -4,6 +4,7 @@ import com.project.it_job.dto.DegreeLevelDTO;
 import com.project.it_job.request.DegreeLevelRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.DegreeLevelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/degree-level")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class DegreeLevelController {
-    @Autowired
-    private DegreeLevelService degreeLevelService;
+
+    private final DegreeLevelService degreeLevelService;
 
     @GetMapping
     public ResponseEntity<?> getAll() {

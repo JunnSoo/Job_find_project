@@ -11,6 +11,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.service.ReportService;
 import com.project.it_job.util.PageCustomHelpper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,18 +23,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImp implements ReportService {
-
-    @Autowired
-    private ReportRepository reportRepository;
-
-    @Autowired
-    private ReportStatusRepository reportStatusRepository;
-    @Autowired
-    private PageCustomHelpper pageCustomHelpper;
-
-    @Autowired
-    private ReportMapper reportMapper;
+    private final ReportRepository reportRepository;
+    private final ReportStatusRepository reportStatusRepository;
+    private final PageCustomHelpper pageCustomHelpper;
+    private final ReportMapper reportMapper;
 
 
     @Override

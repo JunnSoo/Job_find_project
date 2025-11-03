@@ -3,6 +3,7 @@ package com.project.it_job.controller;
 import com.project.it_job.request.IndustryRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.IndustryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/industry")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class IndustryController {
-    @Autowired
-    private IndustryService industryService;
+
+    private final IndustryService industryService;
 
     @GetMapping
     public ResponseEntity<?> getAll() {

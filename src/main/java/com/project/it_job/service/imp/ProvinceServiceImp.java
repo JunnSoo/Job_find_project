@@ -5,6 +5,7 @@ import com.project.it_job.entity.Province;
 import com.project.it_job.mapper.ProvinceMapper;
 import com.project.it_job.repository.ProvinceRepository;
 import com.project.it_job.service.ProvinceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProvinceServiceImp implements ProvinceService {
-    @Autowired
-    private ProvinceRepository provinceRepository;
-
-    @Autowired
-    private ProvinceMapper provinceMapper;
+    private final ProvinceRepository provinceRepository;
+    private final ProvinceMapper provinceMapper;
 
     @Override
     public List<ProvinceDTO> getAll() {

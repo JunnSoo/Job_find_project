@@ -7,6 +7,7 @@ import com.project.it_job.mapper.IndustryMapper;
 import com.project.it_job.repository.IndustryRepository;
 import com.project.it_job.request.IndustryRequest;
 import com.project.it_job.service.IndustryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class IndustryServiceImp implements IndustryService {
-    @Autowired
-    private IndustryRepository industryRepository;
-    @Autowired
-    private IndustryMapper industryMapper;
+
+    private final IndustryRepository industryRepository;
+
+    private final IndustryMapper industryMapper;
     @Override
     public List<IndustryDTO> getAll() {
         return industryRepository.findAll()

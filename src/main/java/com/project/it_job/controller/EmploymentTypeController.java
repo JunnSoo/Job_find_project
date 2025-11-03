@@ -4,6 +4,7 @@ import com.project.it_job.entity.EmploymentType;
 import com.project.it_job.request.EmploymentTypeRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.EmploymentTypeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/employment-type")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class EmploymentTypeController {
-    @Autowired
     private EmploymentTypeService employmentTypeService;
 
     @GetMapping

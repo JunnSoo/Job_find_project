@@ -6,6 +6,7 @@ import com.project.it_job.mapper.ReportStatusMapper;
 import com.project.it_job.request.ReportStatusRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportStatusService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/report-status")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ReportStatusController {
-
-    @Autowired
-    private ReportStatusService reportStatusService;
+    private final ReportStatusService reportStatusService;
 
     @GetMapping
     public ResponseEntity<?> getAllStatus() {
