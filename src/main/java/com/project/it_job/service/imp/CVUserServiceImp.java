@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class CVUserServiceImp implements CVUserService {
     }
 
     @Override
+    @Transactional
     public Page<CVUserDTO> getAllWithPage(PageRequestCustom req) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
 
@@ -67,6 +69,7 @@ public class CVUserServiceImp implements CVUserService {
     }
 
     @Override
+    @Transactional
     public CVUserDTO create(CVUserRequest req) {
         User candidate = userRepository.findById(req.getCandidateId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id User"));
@@ -83,6 +86,7 @@ public class CVUserServiceImp implements CVUserService {
     }
 
     @Override
+    @Transactional
     public CVUserDTO update(Integer id, CVUserRequest req) {
         CVUser cvUser = cvUserRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id CV User "));
 

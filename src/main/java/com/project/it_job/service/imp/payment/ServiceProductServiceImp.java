@@ -40,6 +40,7 @@ public class ServiceProductServiceImp implements ServiceProductService {
     }
 
     @Override
+    @Transactional
     public Page<ServiceProductDTO> getAllWithPage(PageRequestCustom req) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
 

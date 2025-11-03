@@ -38,6 +38,7 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
+    @Transactional
     public Page<RoleDTO> getAllWithPage(PageRequestCustom req) {
 
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
@@ -83,6 +84,7 @@ public class RoleServiceImp implements RoleService {
     }
 
     @Override
+    @Transactional
     public RoleDTO update(String id,RoleRequest req) {
         Role existingRole = roleRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy role Id"));
         roleMapper.toUpdateRole(req, existingRole);

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
+    @Transactional
     public Page<PaymentMethodDTO> getAllWithPage(PageRequestCustom req) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
 
@@ -61,6 +63,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
+    @Transactional
     public PaymentMethodDTO create(PaymentMethodRequest req) {
         PaymentMethod paymentMethod = paymentMethodMapper.savePaymenMethodMapper(req);
 
@@ -68,6 +71,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
+    @Transactional
     public PaymentMethodDTO update(Integer id, PaymentMethodRequest req) {
         PaymentMethod paymentMethod = paymentMethodRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id"));
