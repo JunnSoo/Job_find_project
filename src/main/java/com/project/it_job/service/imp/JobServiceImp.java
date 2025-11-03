@@ -11,6 +11,7 @@ import com.project.it_job.service.JobService;
 import com.project.it_job.specification.JobSpecification;
 import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class JobServiceImp implements JobService {
+    @Autowired
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
     private final PageCustomHelpper pageCustomHelpper;
@@ -32,7 +34,7 @@ public class JobServiceImp implements JobService {
     public List<JobDTO> getAllJob() {
         return jobRepository.findAll()
                 .stream()
-                .map(JobMapper::toDTO)
+                .map(jobMapper::toDTO)
                 .toList();
     }
 
@@ -56,8 +58,8 @@ public class JobServiceImp implements JobService {
     @Override
     @Transactional
     public JobDTO createJob(JobRequest request) {
-        Job job = JobMapper.toEntity(request);
-        return JobMapper.toDTO(jobRepository.save(job));
+        Job job = jobMapper.toEntity(request);
+        return jobMapper.toDTO(jobRepository.save(job));
     }
 
     @Override
@@ -65,8 +67,8 @@ public class JobServiceImp implements JobService {
     public JobDTO updateJob(int id, JobRequest request) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Job ID: " + id));
-        JobMapper.updateEntity(job, request);
-        return JobMapper.toDTO(jobRepository.save(job));
+        jobMapper.updateEntity(job, request);
+        return jobMapper.toDTO(jobRepository.save(job));
     }
 
     @Override

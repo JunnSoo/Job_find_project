@@ -7,6 +7,7 @@ import com.project.it_job.entity.WishlistJob;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.keyentity.WishlistJobKey;
 import com.project.it_job.request.WishlistJobRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class WishlistJobMapper {
+
     public List<WishlistJobDTO> mappedToWishlistJobDTO(List<WishlistJob> wishlistJobs) {
         List<WishlistJobDTO> result = new ArrayList<>();
 
