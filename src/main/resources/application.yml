@@ -1,13 +1,22 @@
 spring:
   application:
     name: it_job
+
   datasource:
     url: ${DB_URL}
     username: ${DB_ROOT}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: none
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration:
+    access: 600000 # 10m
+    refresh: 604800000 # 7d
+
 upload:
   image: ${PATHIMAGE}
