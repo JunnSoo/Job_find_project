@@ -7,6 +7,7 @@ import com.project.it_job.mapper.JobLevelMapper;
 import com.project.it_job.repository.JobLevelRepository;
 import com.project.it_job.request.JobLevelRequest;
 import com.project.it_job.service.JobLevelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class JobLevelServiceImp implements JobLevelService {
-
-    @Autowired
-    private JobLevelRepository jobLevelRepository;
-
-    @Autowired
-    private JobLevelMapper jobLevelMapper;
+    private final JobLevelRepository jobLevelRepository;
+    private final JobLevelMapper jobLevelMapper;
 
     @Override
     public List<JobLevelDTO> getAll() {

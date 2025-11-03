@@ -7,6 +7,7 @@ import com.project.it_job.mapper.DegreeLevelMapper;
 import com.project.it_job.repository.DegreeLevelRepository;
 import com.project.it_job.request.DegreeLevelRequest;
 import com.project.it_job.service.DegreeLevelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DegreeLevelServiceImp implements DegreeLevelService {
-    @Autowired
-    private DegreeLevelRepository degreeLevelRepository;
+
+    private final DegreeLevelRepository degreeLevelRepository;
 
     @Autowired
     private DegreeLevelMapper degreeLevelMapper;

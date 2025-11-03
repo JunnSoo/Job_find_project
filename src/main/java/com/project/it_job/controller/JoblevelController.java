@@ -4,6 +4,7 @@ import com.project.it_job.entity.JobLevel;
 import com.project.it_job.request.JobLevelRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.JobLevelService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/joblevel")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class JoblevelController {
-    @Autowired
-    private JobLevelService jobLevelService;
+
+    private final JobLevelService jobLevelService;
 
     @GetMapping
     public ResponseEntity<?> getAll() {

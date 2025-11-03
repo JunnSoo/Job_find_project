@@ -7,6 +7,7 @@ import com.project.it_job.mapper.EmploymentTypeMapper;
 import com.project.it_job.repository.EmploymentTypeRepository;
 import com.project.it_job.request.EmploymentTypeRequest;
 import com.project.it_job.service.EmploymentTypeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EmploymentTypeServiceImp implements EmploymentTypeService {
-    @Autowired
-    private EmploymentTypeRepository employmentTypeRepository;
 
-    @Autowired
-    private EmploymentTypeMapper employmentTypeMapper;
+    private final EmploymentTypeRepository employmentTypeRepository;
+
+    private final EmploymentTypeMapper employmentTypeMapper;
     @Override
     public List<EmploymentTypeDTO> getAll() {
         return employmentTypeRepository.findAll()

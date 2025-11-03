@@ -5,6 +5,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports")
+@RequiredArgsConstructor
 public class ReportController {
-    @Autowired
-    private ReportService reportService;
+
+    private final ReportService reportService;
 
     @GetMapping
     public ResponseEntity<?> getAllReports(PageRequestCustom pageRequestCustom) {
