@@ -24,7 +24,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class JobServiceImp implements JobService {
-    @Autowired
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
     private final PageCustomHelpper pageCustomHelpper;
