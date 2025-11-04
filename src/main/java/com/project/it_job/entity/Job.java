@@ -55,6 +55,6 @@ public class Job {
     @Column(name = "experience_id")
     private int experienceId;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
 }

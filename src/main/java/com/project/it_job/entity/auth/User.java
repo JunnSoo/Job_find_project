@@ -54,13 +54,13 @@ public class User {
     private List<SoftSkillsName> listSoftSkillsName;
 
 //    ds wishlist của bản thân
-    @OneToMany(mappedBy = "userHr")
+    @OneToMany(mappedBy = "userHr",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistCandidate> wishlistCandidates = new ArrayList<>();;
 
 //    bị wistlist
-    @OneToMany(mappedBy = "userCandidate")
+    @OneToMany(mappedBy = "userCandidate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistCandidate> wishedByHRs = new ArrayList<>();;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
 }

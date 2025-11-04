@@ -7,6 +7,7 @@ import com.project.it_job.entity.WishlistJob;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.keyentity.WishlistJobKey;
 import com.project.it_job.request.WishlistJobRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class WishlistJobMapper {
+    private JobMapper jobMapper;
 
     public List<WishlistJobDTO> mappedToWishlistJobDTO(List<WishlistJob> wishlistJobs) {
         List<WishlistJobDTO> result = new ArrayList<>();
@@ -30,7 +33,7 @@ public class WishlistJobMapper {
                     .filter(user -> user.getId().equalsIgnoreCase(entry.getKey()))
                     .findFirst().orElse(null);
 
-            List<JobDTO> listJobDTO = entry.getValue().stream().map(j -> JobMapper.toDTO(j)).toList();
+            List<JobDTO> listJobDTO = entry.getValue().stream().map(j -> jobMapper.toDTO(j)).toList();
 
             WishlistJobDTO  wishlistJobDTO = WishlistJobDTO.builder()
                     .idUser(userWishlist.getId())
