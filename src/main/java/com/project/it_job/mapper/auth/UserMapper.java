@@ -7,13 +7,17 @@ import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.request.auth.SaveUserRequest;
 import com.project.it_job.request.auth.UpdateUserRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper {
+    private final PasswordEncoder passwordEncoder;
 
     public UserDTO userToUserDTO(User user) {
         return UserDTO.builder()
@@ -41,7 +45,7 @@ public class UserMapper {
         return User.builder()
                 .id(UUID.randomUUID().toString())
                 .email(saveUserRequest.getEmail())
-                .password(saveUserRequest.getPassword())
+                .password(passwordEncoder.encode(saveUserRequest.getPassword()))
                 .firstName(saveUserRequest.getFirstName())
                 .lastName(saveUserRequest.getLastName())
                 .avatar(saveUserRequest.getAvatar())
