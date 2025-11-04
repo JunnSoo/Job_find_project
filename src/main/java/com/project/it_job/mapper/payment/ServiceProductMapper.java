@@ -44,10 +44,22 @@ public class ServiceProductMapper {
     }
 
     public void updateServiceProduct(ServiceProduct serviceProduct, ServiceProductRequest serviceProductRequest){
-        serviceProduct.setName(serviceProductRequest.getName());
-        serviceProduct.setDescription(serviceProductRequest.getDescription());
-        serviceProduct.setPrice(serviceProductRequest.getPrice());
-        serviceProduct.setImages(serviceProductRequest.getImages());
+        if (serviceProductRequest.getName() != null) {
+            serviceProduct.setName(serviceProductRequest.getName());
+        }
+
+        if (serviceProductRequest.getDescription() != null) {
+            serviceProduct.setDescription(serviceProductRequest.getDescription());
+        }
+
+        if (serviceProductRequest.getPrice() != 0) {
+            serviceProduct.setPrice(serviceProductRequest.getPrice());
+        }
+
+        if (serviceProductRequest.getImages() != null) {
+            serviceProduct.setImages(serviceProductRequest.getImages());
+        }
+
         serviceProduct.setCreatedDate(serviceProduct.getCreatedDate());
         serviceProduct.setUpdatedDate(LocalDateTime.now());
 
@@ -57,7 +69,7 @@ public class ServiceProductMapper {
                     .build());
         }
 
-        if (serviceProductRequest.getJobId() <= 0) {
+        if (serviceProductRequest.getJobId() != 0) {
             serviceProduct.setJob(Job.builder()
                     .id(serviceProductRequest.getJobId())
                     .build());

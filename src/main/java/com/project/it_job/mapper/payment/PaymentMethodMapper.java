@@ -26,9 +26,10 @@ public class PaymentMethodMapper {
     }
 
     public void updatePaymenMethodMapper(PaymentMethod paymentMethod, PaymentMethodRequest  paymentMethodRequest) {
-        if (paymentMethodRequest == null || paymentMethod == null) return;
+        if(paymentMethodRequest.getName() != null){
+            paymentMethod.setName(paymentMethodRequest.getName());
+        }
 
-        paymentMethod.setName(paymentMethodRequest.getName());
     }
 
     public List<PaymentMethodDTO> paymentMethodDTOList(List<PaymentMethod> paymentMethodsList) { return paymentMethodsList.stream().map(this::paymentMethodDTO).toList();}
