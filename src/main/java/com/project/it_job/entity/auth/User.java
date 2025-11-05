@@ -63,4 +63,7 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccessToken> listAccessToken = new ArrayList<>();
 }
