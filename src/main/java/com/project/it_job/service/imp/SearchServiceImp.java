@@ -26,6 +26,7 @@ public class SearchServiceImp implements SearchService {
     private final JobSpecification jobSpecification;
     private final CompanySpecification companySpecification;
     private final CompanyMapper companyMapper;
+    private final JobMapper jobMapper;
 
     @Override
     public SearchDTO getSearch(String keyword) {
@@ -33,7 +34,7 @@ public class SearchServiceImp implements SearchService {
         Specification<Job> specJob = Specification.allOf(jobSpecification.searchByName(keyword));
         Specification<Company> specCompany = Specification.allOf(companySpecification.searchByName(keyword));
 
-        List<JobDTO> listJobDTO = jobRepository.findAll(specJob).stream().map( j -> JobMapper.toDTO(j)).toList();
+        List<JobDTO> listJobDTO = jobRepository.findAll(specJob).stream().map( j -> jobMapper.toDTO(j)).toList();
         List<CompanyDTO> listCompanyDTO = companyRepository.findAll(specCompany).stream().map(c->companyMapper.companyToCompanyDTO(c)).toList();
 
         return SearchDTO.builder()
