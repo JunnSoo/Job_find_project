@@ -63,7 +63,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 //    Tạo ra hàm này vì JJWT nó bắt lỗi ở filter luôn mà không vô được @RestControllerAdvise
 //    Nên phải custom ở ngoài này
-
     private void handleJwtException(HttpServletResponse response,String message) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json; charset=UTF-8");

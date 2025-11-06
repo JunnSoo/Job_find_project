@@ -1,7 +1,7 @@
 package com.project.it_job.util;
 
 import com.project.it_job.entity.auth.AccessToken;
-import com.project.it_job.entity.auth.User;
+=import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.repository.auth.AccessTokenRepository;
@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+
 
 @Component
 @RequiredArgsConstructor
