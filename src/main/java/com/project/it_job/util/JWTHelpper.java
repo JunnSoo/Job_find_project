@@ -1,11 +1,13 @@
 package com.project.it_job.util;
 
 import com.project.it_job.entity.auth.AccessToken;
-=import com.project.it_job.entity.auth.User;
+import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.repository.auth.AccessTokenRepository;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
