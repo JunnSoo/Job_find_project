@@ -66,8 +66,6 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Lỗi truyền tham số!", HttpStatus.BAD_REQUEST));
     }
 
-
-
     //Báo lỗi chung 500
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse> handleGeneralException(Exception ex) {
@@ -103,5 +101,15 @@ public class GlobalExceptionHandler {
        return ResponseEntity
                .status(HttpStatus.BAD_REQUEST)
                .body(BaseResponse.validationError(errors));
+    }
+
+
+    //   AccessToken handle exception
+    @ExceptionHandler(AccessTokenExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleAccessTokenException(AccessTokenExceptionHandler ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Token không hợp lê!", HttpStatus.BAD_REQUEST));
     }
 }
