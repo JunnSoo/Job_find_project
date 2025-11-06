@@ -1,6 +1,7 @@
 package com.project.it_job.util;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class JWTTokenUtil {
     private long REFRESH_TOKEN_EXPIRATION;
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
     }
 
     public String generateAccessToken(String username) {
@@ -29,6 +30,8 @@ public class JWTTokenUtil {
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .claim("type", "access_token")
+                .setIssuer("null issuer")
                 .signWith(getSigningKey(), Jwts.SIG.HS512)
                 .compact();
     }
@@ -38,6 +41,7 @@ public class JWTTokenUtil {
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
+                .claim("type", "refresh_token")
                 .signWith(getSigningKey(), Jwts.SIG.HS512)
                 .compact();
     }
@@ -61,5 +65,20 @@ public class JWTTokenUtil {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+    public String extractEmail(String token) {
+//        SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+//        Claims claims = Jwts.parser()
+//                .verifyWith(key)
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload();
+//        return claims.getSubject();
+        Claims claims = Jwts.parser()
+                .verifyWith(getSigningKey()) // ✅ Dùng chung 1 key
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getSubject();
     }
 }
