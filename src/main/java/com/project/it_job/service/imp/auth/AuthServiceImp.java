@@ -37,11 +37,13 @@ public class AuthServiceImp implements AuthService {
         String refreshToken = jwtTokenUtil.generateRefreshToken(email);
         accessTokenRepository.deleteAllByUser(user);
 
-        AccessToken entity = new AccessToken();
-        entity.setToken(accessToken);
-        entity.setUser(user);
-        entity.setIsRevoked(false);
-        entity.setCreateDate(LocalDateTime.now());
+        AccessToken entity = AccessToken.builder()
+                .user(user)
+                .token(accessToken)
+                .isRevoked(false)
+                .createDate(LocalDateTime.now())
+                .build();
+
         accessTokenRepository.save(entity);
         return new TokenDTO(accessToken, refreshToken);
     }
