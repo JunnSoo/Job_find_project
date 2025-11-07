@@ -42,6 +42,7 @@ public class AuthenticationController {
         return token;
     }
 
+    // đã merge file logic authController -> AuthenticationController
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
