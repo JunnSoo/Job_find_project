@@ -3,7 +3,9 @@ package com.project.it_job.util;
 import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.repository.auth.AccessTokenRepository;
+import com.project.it_job.repository.auth.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -30,6 +32,7 @@ public class JWTHelpper {
     private long expirationTime;
 
     private final AccessTokenRepository accessTokenRepository;
+    private final UserRepository userRepository;
 
     public String createAccessToken(String roles, String userId){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
@@ -77,16 +80,22 @@ public class JWTHelpper {
             if(claims.get("type").equals("access_token")
                     && !claims.getSubject().isEmpty()
                     && !claims.getIssuer().isEmpty()){
+                String userId = claims.getIssuer();
 
 //                    token phải có trên database và chưa bị thu hồi
                 AccessToken accessToken = accessTokenRepository.findByToken(token)
                         .orElseThrow(()->  new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
-
-                if(!accessToken.getIsRevoked()){
-                    return claims.getSubject();
-                }else {
+                if(accessToken.getIsRevoked()){
                     throw new AccessTokenExceptionHandler("Access Token hết hạn!");
                 }
+
+                User user = userRepository.findById(userId)
+                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
+                if (!accessToken.getUser().getId().equals(user.getId())){
+                    throw  new AccessTokenExceptionHandler("User token không trùng khớp");
+                }
+
+                return claims.getSubject();
             }
         } catch (JwtException  e) {
             e.printStackTrace();
