@@ -6,8 +6,10 @@ import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
+import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -39,7 +41,7 @@ public class JWTHelpper {
 
     private final AccessTokenRepository accessTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-
+    private final UserRepository userRepository;
     private final UserRepository userRepository;
 
     public String createAccessToken(String roles, String userId){
@@ -130,23 +132,18 @@ public class JWTHelpper {
 
             Claims claims = tokenValidate.getBody();
 
-            
+            if(claims.get("type").equals("refresh_token")
+                    && !claims.getSubject().isEmpty()
+                    && !claims.getIssuer().isEmpty()){
+                userRepository.findById(claims.getIssuer())
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy User"));
+            }
+
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                     .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
 
             if(refreshToken != null && !refreshToken.getIsRevoked()){
                 return claims.getSubject();
-            }
-
-            if(claims.get("type").equals("refresh_token")
-                    && !claims.getSubject().isEmpty()
-                    && !claims.getIssuer().isEmpty()){
-                User user = userRepository.findById(claims.getIssuer())
-                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
-
-                if(!refreshToken.getUser().getId().equals(user.getId())){
-                    throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
-                }
             }
 
         }catch (Exception e){
@@ -175,7 +172,7 @@ public class JWTHelpper {
                 }
 
                 User user = userRepository.findById(userId)
-                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userId"));
+                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
                 if (!accessToken.getUser().getId().equals(user.getId())){
                     throw  new AccessTokenExceptionHandler("User token không trùng khớp");
                 }
