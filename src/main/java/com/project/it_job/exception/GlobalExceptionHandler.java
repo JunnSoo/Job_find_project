@@ -112,4 +112,13 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(BaseResponse.error("Token không hợp lê!", HttpStatus.BAD_REQUEST));
     }
+
+    // RefreshToken handle exception
+    @ExceptionHandler(RefreshTokenExceptionHanlder.class)
+    public ResponseEntity<BaseResponse> handleRefreshTokenException(RefreshTokenExceptionHanlder ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Token không hợp lê!", HttpStatus.BAD_REQUEST));
+    }
 }
