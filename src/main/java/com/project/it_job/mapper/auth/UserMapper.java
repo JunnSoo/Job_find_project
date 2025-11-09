@@ -43,7 +43,6 @@ public class UserMapper {
 
     public User saveUserMapper(Role role, Company company, SaveUserRequest saveUserRequest){
         return User.builder()
-                .id(UUID.randomUUID().toString())
                 .email(saveUserRequest.getEmail())
                 .password(passwordEncoder.encode(saveUserRequest.getPassword()))
                 .firstName(saveUserRequest.getFirstName())
