@@ -7,7 +7,8 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.service.auth.AuthService;
-import com.project.it_job.util.JWTTokenUtil;
+import com.project.it_job.util.JWTHelpper;
+//import com.project.it_job.util.JWTTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,8 @@ import java.time.LocalDateTime;
 public class AuthServiceImp implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTTokenUtil jwtTokenUtil;
+
+    private final JWTHelpper jwtHelpper;
     private final AccessTokenRepository accessTokenRepository;
 
     @Override
@@ -32,8 +34,8 @@ public class AuthServiceImp implements AuthService {
             throw new RuntimeException("Sai mật khẩu!");
         }
 
-        String accessToken = jwtTokenUtil.generateAccessToken(email);
-        String refreshToken = jwtTokenUtil.generateRefreshToken(email);
+        String accessToken = jwtHelpper.generateAccessToken(email);
+        String refreshToken = jwtHelpper.generateRefreshToken(email);
         accessTokenRepository.deleteAllByUser(user);
 
         AccessToken entity = new AccessToken();

@@ -3,7 +3,8 @@ package com.project.it_job.controller.auth;
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.request.auth.AuthRequest;
 import com.project.it_job.service.auth.AuthService;
-import com.project.it_job.util.JWTTokenUtil;
+import com.project.it_job.util.JWTHelpper;
+//import com.project.it_job.util.JWTTokenUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Encoders;
 import jakarta.servlet.http.Cookie;
@@ -20,7 +21,7 @@ import javax.crypto.SecretKey;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthService authService;
-    private final JWTTokenUtil jwtTokenUtil;
+    private final JWTHelpper jwtHelpper;
     @GetMapping
     public String getAuthentication(){
 //        ==> tạo key cho jwt khi nào xong logic authentication thì hãy xóa
@@ -48,7 +49,7 @@ public class AuthenticationController {
         }
 
         String token = authHeader.substring(7); // Cắt bỏ 'Bearer '
-        String email = jwtTokenUtil.extractEmail(token); // lấy email từ token
+        String email = jwtHelpper.verifyAccessToken(token); // lấy email từ token
 
         authService.logout(email);
         return ResponseEntity.ok("Đăng xuất thành công!");

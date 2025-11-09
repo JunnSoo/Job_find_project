@@ -1,7 +1,8 @@
 package com.project.it_job.controller.auth;
 import com.project.it_job.request.auth.ChangePasswordRequest;
 import com.project.it_job.service.auth.ChangePasswordService;
-import com.project.it_job.util.JWTTokenUtil;
+import com.project.it_job.util.JWTHelpper;
+//import com.project.it_job.util.JWTTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ChangePasswordController {
     private final ChangePasswordService changePasswordService;
-    private final JWTTokenUtil jwtTokenUtil;
+    private final JWTHelpper jwtHelpper;
 
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
@@ -20,7 +21,7 @@ public class ChangePasswordController {
     ) {
         // Lấy email từ token
         String token = authHeader.replace("Bearer ", "");
-        String email = jwtTokenUtil.getUsername(token);
+        String email = jwtHelpper.verifyAccessToken(token);
 
         changePasswordService.changePassword(email, request);
 

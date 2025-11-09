@@ -23,16 +23,25 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class JWTHelpper {
-    @Value("${jwt.secret}")
-    private String secretKey;
+//    @Value("${jwt.secret}")
+//    private String secretKey;
 
     @Value("${jwt.expiration.access}")
     private long expirationTime;
 
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+
+    @Value("${jwt.expiration.access}")
+    private long ACCESS_TOKEN_EXPIRATION;
+
+    @Value("${jwt.expiration.refresh}")
+    private long REFRESH_TOKEN_EXPIRATION;
+
     private final AccessTokenRepository accessTokenRepository;
 
     public String createAccessToken(String roles, String userId){
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
 //        Kiểm tra users này có những access token nào
         List<AccessToken> accessTokenDB = accessTokenRepository.findByUser_Id(userId);
 
@@ -70,7 +79,7 @@ public class JWTHelpper {
     }
 
     public String verifyAccessToken(String token){
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
         try {
             Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             Claims claims = tokenValidate.getBody();
@@ -94,4 +103,42 @@ public class JWTHelpper {
         }
         return null;
     }
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+    }
+
+    public String generateAccessToken(String username) {
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .claim("type", "access_token")
+                .setIssuer("null issuer")
+                .signWith(getSigningKey(), Jwts.SIG.HS512)
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
+                .claim("type", "refresh_token")
+                .signWith(getSigningKey(), Jwts.SIG.HS512)
+                .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
 }
