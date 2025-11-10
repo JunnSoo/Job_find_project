@@ -1,20 +1,22 @@
 package com.project.it_job.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
+import lombok.*;
 
 @Entity
 @Table(name = "ward")
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(nullable = false, length = 255)
+    private Integer id;
+
+    @Column(nullable = false)
     private String name;
+
     @ManyToOne
     @JoinColumn(name = "id_province")
     private Province province;

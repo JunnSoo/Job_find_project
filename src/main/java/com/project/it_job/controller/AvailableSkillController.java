@@ -4,6 +4,7 @@ import com.project.it_job.request.AvailableSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.AvailableSkillService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AvailableSkillController {
     public ResponseEntity<?> getAllAvailableSkill(PageRequestCustom pageRequestCustom) {
         if (pageRequestCustom.getPageNumber() == 0
                 && pageRequestCustom.getPageSize() == 0
-                && pageRequestCustom.getKeyword() == null) {
+                && pageRequestCustom.getKeyword().isEmpty()) {
             return ResponseEntity.ok(
                     BaseResponse.success(availableSkillService.getAllAvailableSkill(), "ok")
             );
@@ -37,14 +38,14 @@ public class AvailableSkillController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAvailableSkill(@RequestBody AvailableSkillRequest request) {
+    public ResponseEntity<?> createAvailableSkill(@Valid @RequestBody AvailableSkillRequest request) {
         return ResponseEntity.ok(
                 BaseResponse.success(availableSkillService.createAvailableSkill(request), "ok")
         );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAvailableSkill(@PathVariable Integer id,
+    public ResponseEntity<?> updateAvailableSkill(@Valid @PathVariable Integer id,
                                                   @RequestBody AvailableSkillRequest request) {
         return ResponseEntity.ok(
                 BaseResponse.success(availableSkillService.updateAvailableSkill(id, request), "ok")

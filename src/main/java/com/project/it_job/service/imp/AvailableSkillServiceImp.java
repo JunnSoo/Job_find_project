@@ -8,11 +8,13 @@ import com.project.it_job.repository.AvailableSkillRepository;
 import com.project.it_job.request.AvailableSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.AvailableSkillService;
+import com.project.it_job.specification.AvailableSkillSpecification;
 import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class AvailableSkillServiceImp implements AvailableSkillService {
     private final AvailableSkillRepository availableSkillRepository;
     private final AvailableSkillMapper availableSkillMapper;
     private final PageCustomHelpper pageCustomHelpper;
+    private final AvailableSkillSpecification availableSkillSpecification;
 
     @Override
     public List<AvailableSkillDto> getAllAvailableSkill() {
@@ -36,8 +39,11 @@ public class AvailableSkillServiceImp implements AvailableSkillService {
     @Override
     public Page<AvailableSkillDto> getAllAvailableSkillPage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+
+        Specification<AvailableSkill> spec = availableSkillSpecification.searchByName(validated.getKeyword());
+
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
-        return availableSkillRepository.findAll(pageable).map(availableSkillMapper::toDto);
+        return availableSkillRepository.findAll(spec, pageable).map(availableSkillMapper::toDto);
     }
 
     @Override

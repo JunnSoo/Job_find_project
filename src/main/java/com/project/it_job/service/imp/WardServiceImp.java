@@ -1,22 +1,25 @@
 package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.WardDTO;
+import com.project.it_job.entity.Province;
 import com.project.it_job.entity.Ward;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.WardMapper;
+import com.project.it_job.repository.ProvinceRepository;
 import com.project.it_job.repository.WardRepository;
+import com.project.it_job.request.WardRequest;
 import com.project.it_job.service.WardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class WardServiceImp implements WardService {
     private final WardRepository wardRepository;
+    private final ProvinceRepository provinceRepository;
     private final WardMapper wardMapper;
 
     @Override
@@ -29,24 +32,28 @@ public class WardServiceImp implements WardService {
 
     @Override
     public WardDTO getById(int id) {
-        return wardRepository.findById(id).map(wardMapper::toDTO).orElse(null);
+        return wardRepository.findById(id).map(wardMapper::toDTO)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id Ward"));
     }
 
     @Override
-    public WardDTO create(WardDTO dto) {
-        Ward entity = wardMapper.toEntity(dto);
+    public WardDTO create(WardRequest request) {
+        Ward entity = wardMapper.toEntity(request);
         return wardMapper.toDTO(wardRepository.save(entity));
     }
 
     @Override
-    public WardDTO update(int id, WardDTO dto) {
-        Optional<Ward> optional = wardRepository.findById(id);
-        if (optional.isPresent()) {
-            Ward existing = optional.get();
-            existing.setName(dto.getName());
-            return wardMapper.toDTO(wardRepository.save(existing));
-        }
-        return null;
+    public WardDTO update(Integer id, WardRequest request) {
+        Ward ward = wardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id Ward"));
+
+        Province province= provinceRepository.findById(request.getIdProvince())
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id Province"));
+
+        ward.setName(request.getName());
+        ward.setProvince(province);
+
+        return wardMapper.toDTO(wardRepository.save(ward));
     }
 
     @Override

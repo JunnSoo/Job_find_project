@@ -2,15 +2,19 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.ProvinceDTO;
 import com.project.it_job.entity.Province;
+import com.project.it_job.entity.Ward;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ProvinceMapper;
 import com.project.it_job.repository.ProvinceRepository;
+import com.project.it_job.repository.WardRepository;
+import com.project.it_job.request.ProvinceRequest;
 import com.project.it_job.service.ProvinceService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +22,7 @@ import java.util.stream.Collectors;
 public class ProvinceServiceImp implements ProvinceService {
     private final ProvinceRepository provinceRepository;
     private final ProvinceMapper provinceMapper;
+    private final WardRepository wardRepository;
 
     @Override
     public List<ProvinceDTO> getAll() {
@@ -33,20 +38,48 @@ public class ProvinceServiceImp implements ProvinceService {
     }
 
     @Override
-    public ProvinceDTO create(ProvinceDTO dto) {
-        Province entity = provinceMapper.toEntity(dto);
-        return provinceMapper.toDTO(provinceRepository.save(entity));
+    @Transactional
+    public ProvinceDTO create(ProvinceRequest request) {
+        Province province = provinceMapper.toEntity(request);
+
+        if (request.getWardId() != null && request.getWardId() > 0) {
+            Ward ward = wardRepository.findById(request.getWardId())
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Ward id: " + request.getWardId()));
+
+            ward.setProvince(province);
+            province.setWards(List.of(ward));
+        }
+
+        Province saved = provinceRepository.save(province);
+        return provinceMapper.toDTO(saved);
     }
 
     @Override
-    public ProvinceDTO update(int id, ProvinceDTO dto) {
-        Optional<Province> optional = provinceRepository.findById(id);
-        if (optional.isPresent()) {
-            Province existing = optional.get();
-            existing.setName(dto.getName());
-            return provinceMapper.toDTO(provinceRepository.save(existing));
+    @Transactional
+    public ProvinceDTO update(Integer id, ProvinceRequest request) {
+        Province province = provinceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Province id: " + id));
+
+        province.setName(request.getName());
+
+        if (request.getWardId() != null && request.getWardId() > 0) {
+            Ward ward = wardRepository.findById(request.getWardId())
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Ward id: " + request.getWardId()));
+
+            ward.setProvince(province);
+
+            if (province.getWards() == null) {
+                province.setWards(new ArrayList<>());
+            }
+
+            if (!province.getWards().contains(ward)) {
+                province.getWards().add(ward);
+            }
         }
-        return null;
+
+        Province savedProvince = provinceRepository.save(province);
+
+        return provinceMapper.toDTO(savedProvince);
     }
 
     @Override

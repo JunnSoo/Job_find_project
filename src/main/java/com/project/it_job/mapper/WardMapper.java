@@ -3,6 +3,7 @@ package com.project.it_job.mapper;
 import com.project.it_job.dto.WardDTO;
 import com.project.it_job.entity.Province;
 import com.project.it_job.entity.Ward;
+import com.project.it_job.request.WardRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,6 +11,7 @@ public class WardMapper {
 
     public WardDTO toDTO(Ward entity) {
         if (entity == null) return null;
+
         WardDTO dto = new WardDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
@@ -21,18 +23,22 @@ public class WardMapper {
         return dto;
     }
 
-    public Ward toEntity(WardDTO dto) {
-        if (dto == null) return null;
-        Ward entity = new Ward();
-        entity.setId(dto.getId());
-        entity.setName(dto.getName());
+    public Ward toEntity(WardRequest request) {
+        if (request == null) return null;
 
-        if (dto.getIdProvince() > 0) {
-            Province province = new Province();
-            province.setId(dto.getIdProvince());
+        Ward entity = Ward.builder()
+                .name(request.getName())
+                .build();
+
+        if (request.getIdProvince() != null && request.getIdProvince() > 0) {
+            Province province = Province.builder()
+                    .id(request.getIdProvince())
+                    .build();
             entity.setProvince(province);
         }
 
         return entity;
     }
+
+
 }
