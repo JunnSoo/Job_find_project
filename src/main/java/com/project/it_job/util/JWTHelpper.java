@@ -42,7 +42,6 @@ public class JWTHelpper {
     private final AccessTokenRepository accessTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
-    private final UserRepository userRepository;
 
     public String createAccessToken(String roles, String userId){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
@@ -132,6 +131,7 @@ public class JWTHelpper {
 
             Claims claims = tokenValidate.getBody();
 
+
             if(claims.get("type").equals("refresh_token")
                     && !claims.getSubject().isEmpty()
                     && !claims.getIssuer().isEmpty()){
@@ -144,6 +144,17 @@ public class JWTHelpper {
 
             if(refreshToken != null && !refreshToken.getIsRevoked()){
                 return claims.getSubject();
+            }
+
+            if(claims.get("type").equals("refresh_token")
+                    && !claims.getSubject().isEmpty()
+                    && !claims.getIssuer().isEmpty()){
+                User user = userRepository.findById(claims.getIssuer())
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
+
+                if(!refreshToken.getUser().getId().equals(user.getId())){
+                    throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
+                }
             }
 
         }catch (Exception e){
