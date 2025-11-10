@@ -129,18 +129,23 @@ public class JWTHelpper {
 
             Claims claims = tokenValidate.getBody();
 
-            if(claims.get("type").equals("refresh_token")
-                    && !claims.getSubject().isEmpty()
-                    && !claims.getIssuer().isEmpty()){
-                userRepository.findById(claims.getIssuer())
-                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy User"));
-            }
             
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                     .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
 
             if(refreshToken != null && !refreshToken.getIsRevoked()){
                 return claims.getSubject();
+            }
+
+            if(claims.get("type").equals("refresh_token")
+                    && !claims.getSubject().isEmpty()
+                    && !claims.getIssuer().isEmpty()){
+                User user = userRepository.findById(claims.getIssuer())
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
+
+                if(!refreshToken.getUser().getId().equals(user.getId())){
+                    throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
+                }
             }
 
         }catch (Exception e){
