@@ -6,9 +6,10 @@ import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
+
 import com.project.it_job.repository.auth.AccessTokenRepository;
-import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
+import com.project.it_job.repository.auth.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -48,7 +49,7 @@ public class JWTHelpper {
         List<AccessToken> accessTokenDB = accessTokenRepository.findByUser_Id(userId);
 
 //        Trường hợp có token trên db
-        if(!accessTokenDB.isEmpty()){
+        if(accessTokenDB.size() > 0){
             for(AccessToken accessToken : accessTokenDB){
                 if (!accessToken.getIsRevoked()){
                     accessToken.setIsRevoked(true);
