@@ -39,6 +39,7 @@ public class JWTHelpper {
 
     private final AccessTokenRepository accessTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+
     private final UserRepository userRepository;
 
     public String createAccessToken(String roles, String userId){
@@ -164,16 +165,22 @@ public class JWTHelpper {
             if(claims.get("type").equals("access_token")
                     && !claims.getSubject().isEmpty()
                     && !claims.getIssuer().isEmpty()){
+                String userId = claims.getIssuer();
 
 //                    token phải có trên database và chưa bị thu hồi
                 AccessToken accessToken = accessTokenRepository.findByToken(token)
                         .orElseThrow(()->  new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
-
-                if(!accessToken.getIsRevoked()){
-                    return claims.getSubject();
-                }else {
+                if(accessToken.getIsRevoked()){
                     throw new AccessTokenExceptionHandler("Access Token hết hạn!");
                 }
+
+                User user = userRepository.findById(userId)
+                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
+                if (!accessToken.getUser().getId().equals(user.getId())){
+                    throw  new AccessTokenExceptionHandler("User token không trùng khớp");
+                }
+
+                return claims.getSubject();
             }
         } catch (JwtException  e) {
             e.printStackTrace();
