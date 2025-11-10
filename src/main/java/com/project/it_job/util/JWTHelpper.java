@@ -175,7 +175,7 @@ public class JWTHelpper {
                 }
 
                 User user = userRepository.findById(userId)
-                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
+                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userId"));
                 if (!accessToken.getUser().getId().equals(user.getId())){
                     throw  new AccessTokenExceptionHandler("User token không trùng khớp");
                 }
