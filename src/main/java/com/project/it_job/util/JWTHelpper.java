@@ -1,10 +1,14 @@
 package com.project.it_job.util;
 
 import com.project.it_job.entity.auth.AccessToken;
+import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.RefreshTokenExceptionHanlder;
+
 import com.project.it_job.repository.auth.AccessTokenRepository;
+import com.project.it_job.repository.auth.RefreshTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -31,7 +35,12 @@ public class JWTHelpper {
     @Value("${jwt.expiration.access}")
     private long expirationTime;
 
+    @Value("${jwt.expiration.refresh}")
+    private long expirationRefresh;
+
     private final AccessTokenRepository accessTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
     private final UserRepository userRepository;
 
     public String createAccessToken(String roles, String userId){
@@ -71,6 +80,83 @@ public class JWTHelpper {
         accessTokenRepository.save(accessToken);
         return accessTokenResult;
     }
+
+    public String createRefershToken(String roles, String userId){
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
+        List<RefreshToken> refreshTokenList = refreshTokenRepository.findByUser_Id((userId));
+        if(!refreshTokenList.isEmpty()){
+            for(RefreshToken refreshToken : refreshTokenList){
+                if(!refreshToken.getIsRevoked()){
+                    refreshToken.setIsRevoked(true);
+                    refreshTokenRepository.save(refreshToken);
+                }
+            }
+        }
+
+        Date expirationDate = new Date(System.currentTimeMillis() + expirationRefresh);
+
+
+        String refreshToken = Jwts.builder()
+                .subject(roles)
+                .issuer(userId)
+                .expiration(expirationDate)
+                .claim("type", "refresh_token")
+                .signWith(key)
+                .compact();
+
+        RefreshToken resultToken = RefreshToken.builder()
+                .user(User.builder()
+                        .id(userId)
+                        .build())
+                .token(refreshToken)
+                .expiryDate(LocalDateTime.now().plus(Duration.ofMillis(expirationRefresh)))
+                .createDate(LocalDateTime.now())
+                .isRevoked(false)
+                .build();
+
+        refreshTokenRepository.save(resultToken);
+        return refreshToken;
+    }
+
+
+    public String verifyRefreshToken(String token){
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
+        try{
+            Jws<Claims> tokenValidate = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseClaimsJws(token);
+
+            Claims claims = tokenValidate.getBody();
+
+
+            RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+                    .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
+
+            if(refreshToken != null && !refreshToken.getIsRevoked()){
+                return claims.getSubject();
+            }
+
+            if(claims.get("type").equals("refresh_token")
+                    && !claims.getSubject().isEmpty()
+                    && !claims.getIssuer().isEmpty()){
+                User user = userRepository.findById(claims.getIssuer())
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
+
+                if(!refreshToken.getUser().getId().equals(user.getId())){
+                    throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
+                }
+            }
+
+        }catch (Exception e){
+            throw  new RefreshTokenExceptionHanlder("Token không hợp lệ!");
+        }
+        return null;
+    }
+
+
 
     public String verifyAccessToken(String token){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
