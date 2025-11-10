@@ -73,11 +73,8 @@ public class RoleServiceImp implements RoleService {
     @Override
     @Transactional
     public RoleDTO create(RoleRequest req) {
-        Role existingRole = roleRepository.findRoleByRoleNameIgnoreCase(req.getRoleName());
-
-        if(existingRole != null){
-            throw new ConflictException("Role đã tồn tại");
-        }
+        roleRepository.findByRoleNameIgnoreCase(req.getRoleName())
+                .ifPresent(r -> { throw new ConflictException("Role đã tồn tại!"); });
 
         Role role = roleMapper.toCreateRole(req);
         return roleMapper.toRoleDTO(roleRepository.save(role));
