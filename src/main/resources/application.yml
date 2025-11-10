@@ -20,3 +20,7 @@ jwt:
 
 upload:
   image: ${PATHIMAGE}
+
+
+client:
+  url: ${HOST}

@@ -28,6 +28,9 @@ public class RefreshToken {
     @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
 
+    @Column(name = "is_revoked")
+    private Boolean isRevoked;
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 }
