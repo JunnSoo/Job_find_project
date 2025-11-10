@@ -39,7 +39,7 @@ public class PageCustomHelpper {
         }
 
 //        truyền pageSize không hợp lệ ( > 0 mới tính)
-        if (pageSize <= 0)
+        if (pageSize < 0)
             throw new ParamExceptionHandler("Truyền pageSize không hợp lệ!");
 
         return  pageRequestCustom;
