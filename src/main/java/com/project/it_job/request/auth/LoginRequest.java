@@ -1,4 +1,4 @@
-package com.project.it_job.dto.auth;
+package com.project.it_job.request.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TokenDTO {
-    private String accessToken;
-    private String refreshToken;
+public class LoginRequest {
+    private String email;
+    private String password;
 }

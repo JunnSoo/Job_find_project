@@ -2,10 +2,12 @@ package com.project.it_job.controller.auth;
 
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.request.auth.AuthRequest;
-import com.project.it_job.request.auth.RegisterRequest;
+import com.project.it_job.request.auth.LoginRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.JWTTokenUtil;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Encoders;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthService authService;
     private final JWTTokenUtil jwtTokenUtil;
-
     @GetMapping
     public String getAuthentication(){
 //        ==> tạo key cho jwt khi nào xong logic authentication thì hãy xóa
@@ -32,16 +34,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public TokenDTO login(@Valid @RequestBody AuthRequest request, HttpServletResponse response) {
-        TokenDTO token = authService.login(request.getEmail(), request.getPassword());
-        Cookie cookie = new Cookie("user_email", request.getEmail());
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-        response.addCookie(cookie);
-
-        return token;
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+      return ResponseEntity.ok(BaseResponse.success(authService.login(loginRequest),"OK"));
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
@@ -56,8 +52,9 @@ public class AuthenticationController {
         return ResponseEntity.ok("Đăng xuất thành công!");
     }
 
-    @PostMapping("/regsiter")
-    public ResponseEntity<?> regsiter(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(BaseResponse.success(authService.register(registerRequest), "OK"));
+    @PostMapping
+    public ResponseEntity<?> logout() {
+
+        return ResponseEntity.ok(BaseResponse.success(null, "Logout thành công"));
     }
 }
