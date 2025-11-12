@@ -2,12 +2,17 @@ package com.project.it_job.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.block.UserBlock;
+import com.project.it_job.dto.auth.RegisterDTO;
 import com.project.it_job.dto.auth.TokenDTO;
+import com.project.it_job.entity.auth.AccessToken;
+import com.project.it_job.entity.auth.RefreshToken;
+import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.*;
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.auth.LoginRequest;
+import com.project.it_job.request.auth.RegisterRequest;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.BlockUserHelpper;
 import com.project.it_job.util.JWTHelpper;
@@ -22,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -72,20 +78,48 @@ public class AuthServiceImp implements AuthService {
             throw new WrongPasswordExceptionHandler("Mật khẩu không hợp lệ!");
         };
 
+        boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
+        boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
+
+        if(isActiveAccessToken || isActiveRefreshToken) {
+            throw new AlreadyLoggedInException("Tài khoản này đã được đăng nhập ở nơi khác!");
+        }
+
+
         String accessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(), user.getId());
-        String refreshToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(), user.getId());
+        String refershToken = jwtHelpper.createRefershToken(user.getRole().getRoleName(), user.getId());
+
         return TokenDTO.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(refershToken)
                 .build();
     }
 
     @Override
-    @Transactional
-    public void logout(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailNotFoundExceptionHandler("Không tìm thấy email"));
+    public RegisterDTO register(RegisterRequest registerRequest) {
+        userRepository.existsByEmail(registerRequest.getEmail())
+                .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));
+
+        Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
+                .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
+
+        User user = registerMapper.saveRegister(registerRequest, defaultRole);
+
+        return registerMapper.toRegisterDTO(userRepository.save(user));
+    }
+
+    @Override
+    public void logout(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
+
+        List<AccessToken> accessTokens = accessTokenRepository.findByUser_Email(user.getEmail());
+        accessTokens.forEach(accessToken -> accessToken.setIsRevoked(true));
+        accessTokenRepository.saveAll(accessTokens);
 
 
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getEmail());
+        refreshTokens.forEach(refreshToken -> refreshToken.setIsRevoked(true));
+        refreshTokenRepository.saveAll(refreshTokens);
     }
 }

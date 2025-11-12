@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 
 @Component
@@ -31,7 +30,6 @@ public class RegisterMapper {
 
     public User saveRegister(RegisterRequest request, Role role) {
         return User.builder()
-                .id(UUID.randomUUID().toString())
                 .email(request.getEmail())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
