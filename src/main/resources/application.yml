@@ -22,13 +22,21 @@ upload:
   image: ${PATHIMAGE}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fa3ba8bf0b9f6af13a569f0188e22cfd610548c
 redis:
   host: ${REDIS_HOST}
   password: ${REDIS_PASSWORD}
   port: ${REDIS_PORT}
 
+<<<<<<< HEAD
 =======
 
 client:
   url: ${HOST}
 >>>>>>> a200ec3780a77df27a02421a926cf3a8de1c472e
+=======
+client:
+  url: ${HOST}
+>>>>>>> 4fa3ba8bf0b9f6af13a569f0188e22cfd610548c
