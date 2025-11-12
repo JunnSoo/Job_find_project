@@ -1,21 +1,13 @@
 package com.project.it_job.controller.auth;
 
-import com.project.it_job.dto.auth.TokenDTO;
-import com.project.it_job.request.auth.AuthRequest;
 import com.project.it_job.request.auth.LoginRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.JWTTokenUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Encoders;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.crypto.SecretKey;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -50,11 +42,5 @@ public class AuthenticationController {
 
         authService.logout(email);
         return ResponseEntity.ok("Đăng xuất thành công!");
-    }
-
-    @PostMapping
-    public ResponseEntity<?> logout() {
-
-        return ResponseEntity.ok(BaseResponse.success(null, "Logout thành công"));
     }
 }
