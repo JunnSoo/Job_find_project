@@ -52,7 +52,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             grantedAuthorities.add(grantedAuthority);
 
 //                thẻ thông hành
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("", "", grantedAuthorities);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken("", "", grantedAuthorities);
 
                 SecurityContext securityContext = SecurityContextHolder.getContext();
                 securityContext.setAuthentication(authentication);
@@ -63,13 +64,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 //    Tạo ra hàm này vì JJWT nó bắt lỗi ở filter luôn mà không vô được @RestControllerAdvise
 //    Nên phải custom ở ngoài này
-
     private void handleJwtException(HttpServletResponse response,String message) throws IOException {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json; charset=UTF-8");
-
-        BaseResponse baseResponse = BaseResponse.error(message, HttpStatus.BAD_REQUEST);
-
+        BaseResponse baseResponse = BaseResponse.error(message, HttpStatus.UNAUTHORIZED);
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), baseResponse);
     }

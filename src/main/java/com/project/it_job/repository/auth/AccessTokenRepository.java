@@ -15,10 +15,5 @@ import java.util.Optional;
 public interface AccessTokenRepository extends JpaRepository<AccessToken, Integer> {
     Optional<AccessToken> findByToken(String token);
     List<AccessToken> findByUser_Id(String user_id);
-    void deleteAllByUser(User user);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE access_token a SET a.isRevoked = true WHERE a.user = :user")
-    void revokeAllTokensByUser(User user);
+    List<AccessToken> findByUser_Email(String email);
 }

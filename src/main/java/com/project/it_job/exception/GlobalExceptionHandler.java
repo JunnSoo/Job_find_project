@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(BaseResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST));
+                .body(BaseResponse.error("Không tìm thấy ", HttpStatus.BAD_REQUEST));
     }
 
     @ExceptionHandler(FileExceptionHandler.class)
@@ -55,6 +55,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(BaseResponse.error("Email đã tồn tại!", HttpStatus.BAD_REQUEST));
+    }
+
+    //    Lỗi emai không tìm thấy
+    @ExceptionHandler(EmailNotFoundExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleEmailNotFoundsException(EmailNotFoundExceptionHandler ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Email không được tìm thấy!", HttpStatus.BAD_REQUEST));
     }
 
 //    Lỗi tham số
@@ -110,6 +119,26 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(BaseResponse.error("Token không hợp lê!", HttpStatus.BAD_REQUEST));
+                .body(BaseResponse.error("Token không hợp lệ!", HttpStatus.BAD_REQUEST));
+    }
+
+
+//    Wrong password
+    @ExceptionHandler(WrongPasswordExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleWrongPasswordException(WrongPasswordExceptionHandler ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Tài khoản hoặc mật khẩu không hợp lệ!", HttpStatus.BAD_REQUEST));
+    }
+
+//    Block user
+//    Wrong password
+    @ExceptionHandler(BlockLoginUserExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleBlockUserException(BlockLoginUserExceptionHandler ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error("Bạn đã bị khóa đăng nhập tạm thời! " + ex.getMessage(), HttpStatus.BAD_REQUEST));
     }
 }
