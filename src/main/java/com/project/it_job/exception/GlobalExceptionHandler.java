@@ -121,4 +121,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(BaseResponse.error("Token không hợp lê!", HttpStatus.BAD_REQUEST));
     }
+
+    @ExceptionHandler(AlreadyLoggedInException.class)
+    public ResponseEntity<BaseResponse> handleAlreadyLoggedInException(AlreadyLoggedInException ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(BaseResponse.error("Tài khoản này đã đuược đăng nhập từ nơi khác!!", HttpStatus.CONFLICT));
+    }
 }
