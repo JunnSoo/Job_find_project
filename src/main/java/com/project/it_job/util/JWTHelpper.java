@@ -201,13 +201,12 @@ public class JWTHelpper {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
 
-
         List<AccessToken> accessTokens = accessTokenRepository.findByUser_Id(user.getId());
         accessTokens.forEach(accessToken -> accessToken.setIsRevoked(true));
         accessTokenRepository.saveAll(accessTokens);
 
 
-        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Id(user.getId());
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getId());
         refreshTokens.forEach(refreshToken -> refreshToken.setIsRevoked(true));
         refreshTokenRepository.saveAll(refreshTokens);
     }
