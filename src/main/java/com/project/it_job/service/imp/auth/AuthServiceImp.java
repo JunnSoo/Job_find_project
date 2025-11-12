@@ -100,6 +100,23 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
+    @Transactional
+    public TokenDTO refreshToken(String refreshToken) {
+        String userId = jwtHelpper.verifyRefreshToken(refreshToken);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
+
+        String newAccessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(),user.getId());
+        String newRefreshToken = jwtHelpper.createRefershToken(user.getRole().getRoleName(),user.getId());
+
+        return TokenDTO.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
+    }
+
+    @Override
     public RegisterDTO register(RegisterRequest registerRequest) {
         userRepository.existsByEmail(registerRequest.getEmail())
                 .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));

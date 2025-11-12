@@ -1,16 +1,11 @@
 package com.project.it_job.controller.auth;
 
-import com.project.it_job.request.auth.LoginRequest;
+import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
 import com.project.it_job.request.auth.LoginRequest;
 import com.project.it_job.request.auth.RegisterRequest;
-import com.project.it_job.request.auth.RegisterRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.AuthService;
-import com.project.it_job.util.JWTTokenUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Encoders;
-import jakarta.servlet.http.Cookie;
 import com.project.it_job.util.CookieHelper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthService authService;
     private final CookieHelper cookieHelper;
-
 
     @GetMapping
     public String getAuthentication(){
