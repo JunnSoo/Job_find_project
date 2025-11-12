@@ -1,6 +1,9 @@
 package com.project.it_job.exception;
 
 import com.project.it_job.response.BaseResponse;
+import com.project.it_job.util.CookieHelper;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final CookieHelper cookieHelper;
 
     @ExceptionHandler(NotFoundIdExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleNotFoundIdExceptionHandler(NotFoundIdExceptionHandler ex) {
@@ -128,5 +134,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(BaseResponse.error("Tài khoản này đã đuược đăng nhập từ nơi khác!!", HttpStatus.CONFLICT));
+    }
+
+
+    @ExceptionHandler(ExpireTokenExceptionHanlder.class)
+    public ResponseEntity<?> handleRefreshTokenExpired(ExpireTokenExceptionHanlder ex, HttpServletResponse response) {
+        cookieHelper.clearRefreshTokenCookie(response);
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(BaseResponse.error("Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại!",HttpStatus.UNAUTHORIZED));
     }
 }

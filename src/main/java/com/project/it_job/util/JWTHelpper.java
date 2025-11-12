@@ -4,16 +4,14 @@ import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
+import com.project.it_job.exception.ExpireTokenExceptionHanlder;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
 
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -122,22 +120,20 @@ public class JWTHelpper {
 
     public String verifyRefreshToken(String token){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-        String userId = "";
         try{
             Jws<Claims> tokenValidate = Jwts.parser()
                     .verifyWith(key)
                     .build()
                     .parseClaimsJws(token);
 
-
             Claims claims = tokenValidate.getBody();
-            userId = claims.getIssuer();
+            String userId = claims.getIssuer();
 
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                     .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
 
             if(refreshToken != null && !refreshToken.getIsRevoked()){
-                return claims.getSubject();
+                return claims.getIssuer();
             }
 
             if(claims.get("type").equals("refresh_token")
@@ -152,8 +148,13 @@ public class JWTHelpper {
                 }
             }
 
-        }catch (Exception e){
+        }
+        catch (ExpiredJwtException e){
+            String userId = e.getClaims().getIssuer();
             removeAllToken(userId);
+            throw new ExpireTokenExceptionHanlder("Refresh token hết hạn, vui lòng đăng nhập lại");
+        }
+        catch (Exception e){
             throw  new RefreshTokenExceptionHanlder("Token không hợp lệ!");
         }
         return null;
@@ -163,14 +164,14 @@ public class JWTHelpper {
 
     public String verifyAccessToken(String token){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-        String userId = "";
+
         try {
             Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             Claims claims = tokenValidate.getBody();
             if(claims.get("type").equals("access_token")
                     && !claims.getSubject().isEmpty()
                     && !claims.getIssuer().isEmpty()){
-                userId = claims.getIssuer();
+                String userId = claims.getIssuer();
 
 //                    token phải có trên database và chưa bị thu hồi
                 AccessToken accessToken = accessTokenRepository.findByToken(token)
@@ -187,8 +188,8 @@ public class JWTHelpper {
 
                 return claims.getSubject();
             }
-        } catch (JwtException  e) {
-            removeAllToken(userId);
+        }
+        catch (JwtException  e) {
             e.printStackTrace();
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
@@ -200,12 +201,12 @@ public class JWTHelpper {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
 
-        List<AccessToken> accessTokens = accessTokenRepository.findByUser_Email(user.getEmail());
+        List<AccessToken> accessTokens = accessTokenRepository.findByUser_Id(user.getId());
         accessTokens.forEach(accessToken -> accessToken.setIsRevoked(true));
         accessTokenRepository.saveAll(accessTokens);
 
 
-        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getEmail());
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getId());
         refreshTokens.forEach(refreshToken -> refreshToken.setIsRevoked(true));
         refreshTokenRepository.saveAll(refreshTokens);
     }

@@ -15,8 +15,8 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expiration:
-    access: 600000 # 10m
-    refresh: 604800000 # 7d
+    access: 60000 # 10m
+    refresh: 120000 # 7d
 
 upload:
   image: ${PATHIMAGE}
