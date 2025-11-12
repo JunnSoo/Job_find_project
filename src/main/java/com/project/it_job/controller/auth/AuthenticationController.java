@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthService authService;
     private final CookieHelper cookieHelper;
-
     @GetMapping
     public String getAuthentication(){
 //        ==> tạo key cho jwt khi nào xong logic authentication thì hãy xóa
