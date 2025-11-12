@@ -26,3 +26,5 @@ redis:
   password: ${REDIS_PASSWORD}
   port: ${REDIS_PORT}
 
+client:
+  url: ${HOST}

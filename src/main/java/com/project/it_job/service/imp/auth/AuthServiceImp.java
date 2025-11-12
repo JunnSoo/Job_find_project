@@ -5,9 +5,19 @@ import com.project.it_job.block.UserBlock;
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.*;
+import com.project.it_job.dto.auth.RegisterDTO;
+import com.project.it_job.dto.auth.TokenDTO;
+import com.project.it_job.entity.auth.AccessToken;
+import com.project.it_job.entity.auth.Role;
+import com.project.it_job.entity.auth.User;
+import com.project.it_job.exception.ConflictException;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.mapper.auth.RegisterMapper;
 import com.project.it_job.repository.auth.AccessTokenRepository;
+import com.project.it_job.repository.auth.RoleRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.auth.LoginRequest;
+import com.project.it_job.request.auth.RegisterRequest;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.BlockUserHelpper;
 import com.project.it_job.util.JWTHelpper;
@@ -36,8 +46,9 @@ public class AuthServiceImp implements AuthService {
 
     @Qualifier("redisTemplateDb0")
     private final RedisTemplate<String, String> redisTemplateDb00;
-
     private final TimeHelpper timeHelpper;
+    private final RegisterMapper registerMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -78,6 +89,19 @@ public class AuthServiceImp implements AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    @Override
+    public RegisterDTO register(RegisterRequest registerRequest) {
+        userRepository.existsByEmail(registerRequest.getEmail())
+                .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));
+
+        Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
+                .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
+
+        User user = registerMapper.saveRegister(registerRequest, defaultRole);
+
+        return registerMapper.toRegisterDTO(userRepository.save(user));
     }
 
     @Override
