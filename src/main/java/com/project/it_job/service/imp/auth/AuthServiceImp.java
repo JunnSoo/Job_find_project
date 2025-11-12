@@ -135,8 +135,8 @@ public class AuthServiceImp implements AuthService {
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
 
         List<AccessToken> accessTokens = accessTokenRepository.findByUser_Email(user.getEmail());
-         accessTokens.forEach(accessToken -> accessToken.setIsRevoked(true));
-         accessTokenRepository.saveAll(accessTokens);
+        accessTokens.forEach(accessToken -> accessToken.setIsRevoked(true));
+        accessTokenRepository.saveAll(accessTokens);
 
 
         List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getEmail());
