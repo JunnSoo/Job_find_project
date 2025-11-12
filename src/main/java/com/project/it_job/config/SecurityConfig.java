@@ -31,7 +31,7 @@ public class SecurityConfig {
                 )
 //                add filter authen trước filter security của spring
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(httpBasic -> httpBasic.disable()) // tắt Basic Auth
+                .httpBasic(httpBasic -> httpBasic.disable())// tắt Basic Auth
                 .formLogin(form -> form.disable()); // tắt form login mặc định
 
         return http.build();
