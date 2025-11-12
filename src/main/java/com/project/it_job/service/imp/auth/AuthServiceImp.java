@@ -2,13 +2,18 @@ package com.project.it_job.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.block.UserBlock;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.it_job.block.UserBlock;
 import com.project.it_job.dto.auth.RegisterDTO;
 import com.project.it_job.dto.auth.TokenDTO;
+import com.project.it_job.dto.auth.RegisterDTO;
 import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.*;
+import com.project.it_job.exception.*;
+import com.project.it_job.mapper.auth.RegisterMapper;
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.auth.LoginRequest;
@@ -17,6 +22,7 @@ import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.BlockUserHelpper;
 import com.project.it_job.util.JWTHelpper;
 import com.project.it_job.util.JWTTokenUtil;
+import com.project.it_job.util.TimeHelpper;
 import com.project.it_job.util.TimeHelpper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,14 +34,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImp implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTTokenUtil jwtTokenUtil;
     private final AccessTokenRepository accessTokenRepository;
+    private final JWTHelpper jwtHelpper;
+
+    private final BlockUserHelpper blockUserHelpper;
+
+    @Qualifier("redisTemplateDb0")
+    private final RedisTemplate<String, String> redisTemplateDb00;
+
+    private final TimeHelpper timeHelpper;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final RegisterMapper registerMapper;
+    private final RoleRepository roleRepository;
     private final JWTHelpper jwtHelpper;
 
     private final BlockUserHelpper blockUserHelpper;
@@ -96,6 +111,19 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
+    public RegisterDTO register(RegisterRequest registerRequest) {
+        userRepository.existsByEmail(registerRequest.getEmail())
+                .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));
+
+        Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
+                .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
+
+        User user = registerMapper.saveRegister(registerRequest, defaultRole);
+
+        return registerMapper.toRegisterDTO(userRepository.save(user));
+    }
+
+    @Override
     @Transactional
     public TokenDTO refreshToken(String refreshToken) {
         String userId = jwtHelpper.verifyRefreshToken(refreshToken);
@@ -110,19 +138,6 @@ public class AuthServiceImp implements AuthService {
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
                 .build();
-    }
-
-    @Override
-    public RegisterDTO register(RegisterRequest registerRequest) {
-        userRepository.existsByEmail(registerRequest.getEmail())
-                .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));
-
-        Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
-                .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
-
-        User user = registerMapper.saveRegister(registerRequest, defaultRole);
-
-        return registerMapper.toRegisterDTO(userRepository.save(user));
     }
 
     @Override
