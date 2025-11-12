@@ -1,6 +1,5 @@
 package com.project.it_job.exception;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotFoundIdExceptionHandler extends RuntimeException {
-   private String message;
+public class EmailNotFoundExceptionHandler extends RuntimeException{
+    private String message;
 }

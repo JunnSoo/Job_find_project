@@ -206,7 +206,7 @@ public class JWTHelpper {
         accessTokenRepository.saveAll(accessTokens);
 
 
-        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getId());
+        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Id(user.getId());
         refreshTokens.forEach(refreshToken -> refreshToken.setIsRevoked(true));
         refreshTokenRepository.saveAll(refreshTokens);
     }
