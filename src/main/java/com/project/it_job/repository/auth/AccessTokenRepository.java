@@ -15,4 +15,5 @@ public interface AccessTokenRepository extends JpaRepository<AccessToken, Intege
     List<AccessToken> findByUser_Email(String email);
 
     boolean existsByUser_IdAndIsRevokedFalse(String userId);
+
 }
