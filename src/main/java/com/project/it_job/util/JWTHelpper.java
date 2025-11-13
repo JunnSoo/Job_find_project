@@ -17,6 +17,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class JWTHelpper {
     @Value("${jwt.secret}")
     private String secretKey;
@@ -189,6 +191,9 @@ public class JWTHelpper {
                 return claims.getSubject();
             }
         }
+        catch (ExpiredJwtException e ){
+            throw new AccessTokenExceptionHandler("Access Token hết hạn!");
+        }
         catch (JwtException  e) {
             e.printStackTrace();
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
@@ -197,18 +202,12 @@ public class JWTHelpper {
     }
 
 
+    @Transactional
     public void removeAllToken(String userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
 
-        List<AccessToken> accessTokens = accessTokenRepository.findByUser_Id(user.getId());
-        accessTokens.forEach(accessToken -> accessToken.setIsRevoked(true));
-        accessTokenRepository.saveAll(accessTokens);
-
-
-        List<RefreshToken> refreshTokens = refreshTokenRepository.findByUser_Email(user.getId());
-        refreshTokens.forEach(refreshToken -> refreshToken.setIsRevoked(true));
-        refreshTokenRepository.saveAll(refreshTokens);
-
+        accessTokenRepository.revokeAllAccessTokens(user.getId());
+        refreshTokenRepository.revokeAllRefreshTokens(user.getId());
     }
 }
