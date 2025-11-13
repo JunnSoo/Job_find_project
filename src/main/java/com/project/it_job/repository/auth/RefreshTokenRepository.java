@@ -1,7 +1,10 @@
 package com.project.it_job.repository.auth;
 
 import com.project.it_job.entity.auth.RefreshToken;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,9 +13,11 @@ import java.util.Optional;
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Integer> {
     Optional<RefreshToken> findByToken(String token);
-
     List<RefreshToken> findByUser_Id(String userId);
-    List<RefreshToken> findByUser_Email(String email);
-
     boolean existsByUser_IdAndIsRevokedFalse(String userId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE refresh_token a SET a.isRevoked = true WHERE a.user.id = :userId")
+    void revokeAllRefreshTokens(String userId);
 }

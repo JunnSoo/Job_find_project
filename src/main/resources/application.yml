@@ -21,6 +21,9 @@ jwt:
 upload:
   image: ${PATHIMAGE}
 
+client:
+  url: ${HOST}
+
 redis:
   host: ${REDIS_HOST}
   password: ${REDIS_PASSWORD}
