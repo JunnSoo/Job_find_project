@@ -1,7 +1,7 @@
 package com.project.it_job.repository.auth;
 
 import com.project.it_job.entity.auth.RefreshToken;
-import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +17,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Inte
     boolean existsByUser_IdAndIsRevokedFalse(String userId);
 
     @Modifying
-    @Transactional
     @Query("UPDATE refresh_token a SET a.isRevoked = true WHERE a.user.id = :userId")
     void revokeAllRefreshTokens(String userId);
 }
