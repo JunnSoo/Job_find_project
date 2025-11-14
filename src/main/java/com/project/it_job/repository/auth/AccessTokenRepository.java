@@ -1,7 +1,6 @@
 package com.project.it_job.repository.auth;
 
 import com.project.it_job.entity.auth.AccessToken;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,9 +17,6 @@ public interface AccessTokenRepository extends JpaRepository<AccessToken, Intege
     boolean existsByUser_IdAndIsRevokedFalse(String userId);
 
     @Modifying
-    @Transactional
     @Query("UPDATE access_token a SET a.isRevoked = true WHERE a.user.id = :userId")
     void revokeAllAccessTokens(String userId);
-
-
 }
