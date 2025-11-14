@@ -27,11 +27,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // tắt CSRF (cần cho Postman test)
                 .cors(cors -> corsConfigurationSource())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // cho phép tất cả request
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
+                        .anyRequest().authenticated() // cho phép tất cả request
                 )
 //                add filter authen trước filter security của spring
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(httpBasic -> httpBasic.disable()) // tắt Basic Auth
+                .httpBasic(httpBasic -> httpBasic.disable())// tắt Basic Auth
                 .formLogin(form -> form.disable()); // tắt form login mặc định
 
         return http.build();

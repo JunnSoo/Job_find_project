@@ -1,6 +1,9 @@
 package com.project.it_job.exception;
 
 import com.project.it_job.response.BaseResponse;
+import com.project.it_job.util.CookieHelper;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final CookieHelper cookieHelper;
 
     @ExceptionHandler(NotFoundIdExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleNotFoundIdExceptionHandler(NotFoundIdExceptionHandler ex) {
@@ -39,7 +45,7 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Bạn không có quyền để thực hiện điều này!!", HttpStatus.BAD_REQUEST));
     }
 
-//    Lỗi email không được thay đổi
+    //    Lỗi email không được thay đổi
     @ExceptionHandler(EmailNotChangeExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleEmailNotChangeException(EmailNotChangeExceptionHandler ex) {
         ex.printStackTrace();
@@ -48,7 +54,7 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Email không được thay đổi!", HttpStatus.BAD_REQUEST));
     }
 
-//    Lỗi emai trùng khi thêm
+    //    Lỗi emai trùng khi thêm
     @ExceptionHandler(EmailAlreadyExists.class)
     public ResponseEntity<BaseResponse> handleEmailAlreadyExisException(EmailAlreadyExists ex) {
         ex.printStackTrace();
@@ -66,7 +72,7 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Email không được tìm thấy!", HttpStatus.BAD_REQUEST));
     }
 
-//    Lỗi tham số
+    //    Lỗi tham số
     @ExceptionHandler(ParamExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleParamException(ParamExceptionHandler ex) {
         ex.printStackTrace();
@@ -103,13 +109,13 @@ public class GlobalExceptionHandler {
     // Hứng lỗi validation khi dùng @Valid @RequestBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
-       Map<String,String> errors = new HashMap<>();
+        Map<String,String> errors = new HashMap<>();
 
-       ex.getBindingResult().getFieldErrors().forEach((e)-> errors.put(e.getField(), e.getDefaultMessage()));
+        ex.getBindingResult().getFieldErrors().forEach((e)-> errors.put(e.getField(), e.getDefaultMessage()));
 
-       return ResponseEntity
-               .status(HttpStatus.BAD_REQUEST)
-               .body(BaseResponse.validationError(errors));
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.validationError(errors));
     }
 
 
@@ -123,7 +129,7 @@ public class GlobalExceptionHandler {
     }
 
 
-//    Wrong password
+    //    Wrong password
     @ExceptionHandler(WrongPasswordExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleWrongPasswordException(WrongPasswordExceptionHandler ex) {
         ex.printStackTrace();
@@ -132,7 +138,7 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Tài khoản hoặc mật khẩu không hợp lệ!", HttpStatus.BAD_REQUEST));
     }
 
-//    Block user
+    //    Block user
 //    Wrong password
     @ExceptionHandler(BlockLoginUserExceptionHandler.class)
     public ResponseEntity<BaseResponse> handleBlockUserException(BlockLoginUserExceptionHandler ex) {
@@ -149,5 +155,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(BaseResponse.error("Token không hợp lê!", HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(AlreadyLoggedInException.class)
+    public ResponseEntity<BaseResponse> handleAlreadyLoggedInException(AlreadyLoggedInException ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(BaseResponse.error("Tài khoản này đã đuược đăng nhập từ nơi khác!!", HttpStatus.CONFLICT));
+    }
+
+
+    @ExceptionHandler(ExpireTokenExceptionHanlder.class)
+    public ResponseEntity<?> handleRefreshTokenExpired(ExpireTokenExceptionHanlder ex, HttpServletResponse response) {
+        cookieHelper.clearRefreshTokenCookie(response);
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(BaseResponse.error("Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại!",HttpStatus.UNAUTHORIZED));
     }
 }

@@ -4,21 +4,20 @@ import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
+import com.project.it_job.exception.ExpireTokenExceptionHanlder;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
 
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -28,6 +27,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class JWTHelpper {
     @Value("${jwt.secret}")
     private String secretKey;
@@ -49,7 +49,7 @@ public class JWTHelpper {
         List<AccessToken> accessTokenDB = accessTokenRepository.findByUser_Id(userId);
 
 //        Trường hợp có token trên db
-        if(accessTokenDB.size() > 0){
+        if(!accessTokenDB.isEmpty()){
             for(AccessToken accessToken : accessTokenDB){
                 if (!accessToken.getIsRevoked()){
                     accessToken.setIsRevoked(true);
@@ -122,7 +122,6 @@ public class JWTHelpper {
 
     public String verifyRefreshToken(String token){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-
         try{
             Jws<Claims> tokenValidate = Jwts.parser()
                     .verifyWith(key)
@@ -130,27 +129,34 @@ public class JWTHelpper {
                     .parseClaimsJws(token);
 
             Claims claims = tokenValidate.getBody();
-
+            String userId = claims.getIssuer();
 
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                     .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
 
             if(refreshToken != null && !refreshToken.getIsRevoked()){
-                return claims.getSubject();
+                return claims.getIssuer();
             }
 
             if(claims.get("type").equals("refresh_token")
                     && !claims.getSubject().isEmpty()
                     && !claims.getIssuer().isEmpty()){
-                User user = userRepository.findById(claims.getIssuer())
+
+                userRepository.findById(userId)
                         .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
 
-                if(!refreshToken.getUser().getId().equals(user.getId())){
+                if(!refreshToken.getUser().getId().equals(userId)){
                     throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
                 }
             }
 
-        }catch (Exception e){
+        }
+        catch (ExpiredJwtException e){
+            String userId = e.getClaims().getIssuer();
+            removeAllToken(userId);
+            throw new ExpireTokenExceptionHanlder("Refresh token hết hạn, vui lòng đăng nhập lại");
+        }
+        catch (Exception e){
             throw  new RefreshTokenExceptionHanlder("Token không hợp lệ!");
         }
         return null;
@@ -160,6 +166,7 @@ public class JWTHelpper {
 
     public String verifyAccessToken(String token){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
         try {
             Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             Claims claims = tokenValidate.getBody();
@@ -183,15 +190,24 @@ public class JWTHelpper {
 
                 return claims.getSubject();
             }
-        } catch (JwtException  e) {
+        }
+        catch (ExpiredJwtException e ){
+            throw new AccessTokenExceptionHandler("Access Token hết hạn!");
+        }
+        catch (JwtException  e) {
             e.printStackTrace();
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
         return null;
     }
 
-    public void removeAllToken(){
 
+    @Transactional
+    public void removeAllToken(String userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
 
+        accessTokenRepository.revokeAllAccessTokens(user.getId());
+        refreshTokenRepository.revokeAllRefreshTokens(user.getId());
     }
 }

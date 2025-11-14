@@ -5,15 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.util.JWTHelpper;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +41,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 role = jwtHelpper.verifyAccessToken(token);
             } catch (AccessTokenExceptionHandler e) {
                handleJwtException(response ,e.getMessage());
-                System.out.println("Hẻeeerer");
             }
 
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
