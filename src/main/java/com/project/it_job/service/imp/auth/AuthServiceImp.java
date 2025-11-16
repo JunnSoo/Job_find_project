@@ -126,7 +126,7 @@ public class AuthServiceImp implements AuthService {
         return registerMapper.toRegisterDTO(userRepository.save(user));
     }
 
-
+    @Transactional
     @Override
     public void logout(String userId) {
         User user = userRepository.findById(userId)

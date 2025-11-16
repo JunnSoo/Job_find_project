@@ -7,17 +7,16 @@ import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.exception.ExpireTokenExceptionHanlder;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
-
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
+import com.project.it_job.service.auth.TokenManagerService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -27,7 +26,6 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Transactional
 public class JWTHelpper {
     @Value("${jwt.secret}")
     private String secretKey;
@@ -40,6 +38,8 @@ public class JWTHelpper {
 
     private final AccessTokenRepository accessTokenRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final TokenManagerService tokenManagerService;
 
     private final UserRepository userRepository;
 
@@ -154,7 +154,7 @@ public class JWTHelpper {
         catch (ExpiredJwtException e){
             String userId = e.getClaims().getIssuer();
             removeAllToken(userId);
-            throw new ExpireTokenExceptionHanlder("Refresh token hết hạn, vui lòng đăng nhập lại");
+            throw new ExpireTokenExceptionHanlder("Hết hạn Token, Vui lòng đăng nhập lại");
         }
         catch (Exception e){
             throw  new RefreshTokenExceptionHanlder("Token không hợp lệ!");
@@ -202,12 +202,7 @@ public class JWTHelpper {
     }
 
 
-    @Transactional
     public void removeAllToken(String userId){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
-
-        accessTokenRepository.revokeAllAccessTokens(user.getId());
-        refreshTokenRepository.revokeAllRefreshTokens(user.getId());
+        tokenManagerService.revokeAllTokens(userId);
     }
 }
