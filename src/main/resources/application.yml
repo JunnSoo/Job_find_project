@@ -29,3 +29,12 @@ redis:
   password: ${REDIS_PASSWORD}
   port: ${REDIS_PORT}
 
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+email: # send grid
+  key: ${SENDGRID_API_KEY}
+  link:
+    register: templates/register-email.html
