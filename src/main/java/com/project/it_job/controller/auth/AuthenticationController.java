@@ -38,7 +38,7 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/regsiter")
+    @PostMapping("/register")
     public ResponseEntity<?> regsiter(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity.ok(BaseResponse.success(authService.register(registerRequest), "OK"));
     }
