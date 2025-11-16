@@ -17,6 +17,7 @@ import com.project.it_job.request.auth.RegisterRequest;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.BlockUserHelpper;
 import com.project.it_job.util.JWTHelpper;
+import com.project.it_job.util.SendEmailHelpper;
 import com.project.it_job.util.TimeHelpper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,6 +45,7 @@ public class AuthServiceImp implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RegisterMapper registerMapper;
     private final RoleRepository roleRepository;
+    private final SendEmailHelpper sendEmailHelpper;
 
 
     @Override
@@ -116,14 +118,17 @@ public class AuthServiceImp implements AuthService {
     @Override
     public RegisterDTO register(RegisterRequest registerRequest) {
         userRepository.existsByEmail(registerRequest.getEmail())
-                .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));
+                .orElseThrow(() -> new EmailAlreadyExists("Email đã tồn tại!!"));
 
         Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
                 .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
 
         User user = registerMapper.saveRegister(registerRequest, defaultRole);
-
-        return registerMapper.toRegisterDTO(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        if (!savedUser.getId().isBlank() && !savedUser.getId().isEmpty() && savedUser.getId() !=null){
+            sendEmailHelpper.sendEmailRegister(savedUser);
+        }
+        return registerMapper.toRegisterDTO(savedUser);
     }
 
     @Transactional
