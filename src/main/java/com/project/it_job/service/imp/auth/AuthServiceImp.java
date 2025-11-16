@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -115,8 +116,10 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public RegisterDTO register(RegisterRequest registerRequest) {
-        userRepository.existsByEmail(registerRequest.getEmail())
-                .orElseThrow(() -> new ConflictException("Email đã tồn tại!!"));
+        Optional<User> existingUser = userRepository.existsByEmail(registerRequest.getEmail());
+        if (existingUser.isPresent()) {
+            throw new ConflictException("Email đã tồn tại!!");
+        }
 
         Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
                 .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
