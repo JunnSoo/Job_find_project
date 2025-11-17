@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/language-skill")
+@RequestMapping("/api/language-skill")
 @RequiredArgsConstructor
 public class LanguageSkillController {
 

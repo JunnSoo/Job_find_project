@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/level-language")
+@RequestMapping("/api/level-language")
 @RequiredArgsConstructor
 public class LevelLanguageController {
 

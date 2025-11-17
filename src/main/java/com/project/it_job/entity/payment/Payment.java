@@ -34,7 +34,7 @@ public class Payment {
     private PaymentStatus paymentStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_service_product")
+    @JoinColumn(name = "service_product_id")
     private ServiceProduct serviceProduct;
 
     @ManyToOne(fetch = FetchType.LAZY)

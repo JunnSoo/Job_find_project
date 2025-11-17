@@ -22,16 +22,6 @@ public class RoleMapper {
                 .build();
     }
 
-    public Role toRole(RoleDTO roleDTO) {
-        return Role.builder()
-                .id(roleDTO.getId())
-                .roleName(roleDTO.getRoleName())
-                .description(roleDTO.getDescription())
-                .createdDate(roleDTO.getCreatedDate())
-                .updatedDate(roleDTO.getUpdatedDate())
-                .build();
-    }
-
     public Role toCreateRole(RoleRequest roleRequest) {
         return Role.builder()
                 .roleName(roleRequest.getRoleName())

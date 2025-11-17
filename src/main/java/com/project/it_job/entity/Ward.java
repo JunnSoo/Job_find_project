@@ -19,6 +19,6 @@ public class Ward {
     @Column(nullable = false)
     private String name;
     @ManyToOne
-    @JoinColumn(name = "id_province")
+    @JoinColumn(name = "province_id")
     private Province province;
 }

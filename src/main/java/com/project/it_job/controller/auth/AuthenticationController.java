@@ -20,15 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthService authService;
     private final CookieHelper cookieHelper;
-    @GetMapping
-    public String getAuthentication(){
-//        ==> tạo key cho jwt khi nào xong logic authentication thì hãy xóa
-//        SecretKey key = Jwts.SIG.HS256.key().build();
-//        String secretString = Encoders.BASE64.encode(key.getEncoded());
-//        return secretString;
-
-        return "";
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {

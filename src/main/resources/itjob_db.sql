@@ -1,427 +1,530 @@
-create table if not exists available_skill_experience
-(
-	id int auto_increment
-		primary key,
-	id_group_core int null,
-	available_skill_id int null,
-	experience_id int null,
-	user_id varchar(100) null
+CREATE DATABASE IF NOT EXISTS it_job_db;
+
+USE it_job_db;
+
+CREATE TABLE IF NOT EXISTS role(
+id CHAR(36) NOT NULL PRIMARY KEY,
+role_name VARCHAR(80) NOT NULL,
+description VARCHAR(255) NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+updated_person CHAR(36) NULL,
+CONSTRAINT uk_role_name UNIQUE (role_name)
 );
 
-create table if not exists available_skills
-(
-	id int auto_increment
-		primary key,
-	name varchar(50) null
+CREATE TABLE IF NOT EXISTS company_size(
+id INT AUTO_INCREMENT PRIMARY KEY,
+min_employees INT NOT NULL,
+max_employees INT NOT NULL
 );
 
-create table if not exists award
-(
-	id int auto_increment
-		primary key,
-	user_id varchar(100) null,
-	award_name varchar(255) null,
-	organization varchar(255) null,
-	date timestamp null,
-	description text null
+CREATE TABLE IF NOT EXISTS province(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists blog
-(
-	id int auto_increment
-		primary key,
-	title varchar(255) null,
-	picture varchar(255) null,
-	short_description text null,
-	description longtext null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	updated_person varchar(255) null
+CREATE TABLE IF NOT EXISTS ward(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+province_id INT NULL
 );
 
-create table if not exists category
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) null,
-	parent_id int null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	updated_person varchar(255) null
+CREATE TABLE IF NOT EXISTS industry(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists certificate
-(
-	id int auto_increment
-		primary key,
-	user_id varchar(100) null,
-	certificate_name varchar(255) null,
-	organization varchar(255) null,
-	date date null,
-	link varchar(255) null,
-	description text null
+CREATE TABLE IF NOT EXISTS job_level(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists company_size
-(
-	id int auto_increment
-		primary key,
-	min_employees int not null,
-	max_employees int not null
+CREATE TABLE IF NOT EXISTS degree_level(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists company
-(
-	id varchar(255) not null
-		primary key,
-	name varchar(255) null,
-	description text null,
-	address text null,
-	website text null,
-	company_size_id int null,
-	logo varchar(255) null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	updated_person varchar(255) null,
-	constraint fk_company_companysize
-		foreign key (company_size_id) references company_size (id)
-			on update cascade on delete set null
+CREATE TABLE IF NOT EXISTS employment_type(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists degree_level
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null
+CREATE TABLE IF NOT EXISTS experience(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists employment_type
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null
+CREATE TABLE IF NOT EXISTS language(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL
 );
 
-create table if not exists experience
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null
+CREATE TABLE IF NOT EXISTS level_language(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL
 );
 
-create table if not exists group_core_skill
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) null
+CREATE TABLE IF NOT EXISTS available_skills(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL
 );
 
-create table if not exists industry
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null
+CREATE TABLE IF NOT EXISTS group_core_skill(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
 );
 
-create table if not exists job
-(
-	id int auto_increment
-		primary key,
-	job_position varchar(255) not null,
-	company_id char(36) not null,
-	detail_address text null,
-	description_job text null,
-	requirement text null,
-	benefits text null,
-	province_id int null,
-	industry_id int null,
-	job_level_id int null,
-	degree_level_id int null,
-	employment_type_id int null,
-	experience_id int null
+CREATE TABLE IF NOT EXISTS category(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+parent_id INT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+updated_person VARCHAR(255) NULL
 );
 
-create table if not exists job_level
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null
+CREATE TABLE IF NOT EXISTS payment_method(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name TEXT NOT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-create table if not exists language
-(
-	id int auto_increment
-		primary key,
-	name varchar(50) null
+CREATE TABLE IF NOT EXISTS payment_status(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL,
+CONSTRAINT uk_payment_status_name UNIQUE (name)
 );
 
-create table if not exists language_skill
-(
-	id int auto_increment
-		primary key,
-	language_id int null,
-	level_language_id int null,
-	user_id varchar(100) null
+CREATE TABLE IF NOT EXISTS report_status(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(55) NOT NULL
 );
 
-create table if not exists level_language
-(
-	id int auto_increment
-		primary key,
-	name varchar(50) null
+-- ============================================
+-- MAIN ENTITIES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS company(
+id CHAR(36) NOT NULL PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+description TEXT NULL,
+address TEXT NULL,
+website TEXT NULL,
+company_size_id INT NULL,
+logo VARCHAR(255) NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+updated_person VARCHAR(255) NULL
 );
 
-create table if not exists payment_method
-(
-	id int auto_increment
-		primary key,
-	name text not null,
-	created_date timestamp default CURRENT_TIMESTAMP not null
+CREATE TABLE IF NOT EXISTS user(
+id CHAR(36) NOT NULL PRIMARY KEY,
+email VARCHAR(255) NOT NULL,
+password VARCHAR(250) NOT NULL,
+first_name VARCHAR(255) NULL,
+last_name VARCHAR(255) NULL,
+role_id CHAR(36) NULL,
+avatar VARCHAR(255) NULL,
+phone VARCHAR(30) NULL,
+gender VARCHAR(30) NULL,
+education TEXT NULL,
+address TEXT NULL,
+website_link TEXT NULL,
+birth_date TIMESTAMP NULL,
+is_find_job TINYINT(1) DEFAULT 0 NULL,
+company_id CHAR(36) NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+updated_person VARCHAR(255) NULL,
+group_soft_skill VARCHAR(255) NULL,
+CONSTRAINT uk_user_email UNIQUE (email)
 );
 
-create table if not exists payment_status
-(
-	id int auto_increment
-		primary key,
-	name varchar(50) not null,
-	constraint uk_payment_status_name
-		unique (name)
+CREATE TABLE IF NOT EXISTS job(
+id INT AUTO_INCREMENT PRIMARY KEY,
+job_position VARCHAR(255) NOT NULL,
+company_id CHAR(36) NOT NULL,
+detail_address TEXT NULL,
+description_job TEXT NULL,
+requirement TEXT NULL,
+benefits TEXT NULL,
+province_id INT NULL,
+industry_id INT NULL,
+job_level_id INT NULL,
+degree_level_id INT NULL,
+employment_type_id INT NULL,
+experience_id INT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-create table if not exists project
-(
-	id int auto_increment
-		primary key,
-	user_id varchar(50) null,
-	name varchar(255) null,
-	start_date date null,
-	end_date date null,
-	project_url varchar(255) null,
-	company varchar(255) null
+-- ============================================
+-- USER PROFILE TABLES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS project(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id CHAR(36) NOT NULL,
+name VARCHAR(255) NOT NULL,
+start_date DATE NULL,
+end_date DATE NULL,
+project_url VARCHAR(255) NULL,
+company VARCHAR(255) NULL
 );
 
-create table if not exists province
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null
+CREATE TABLE IF NOT EXISTS certificate(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id CHAR(36) NOT NULL,
+certificate_name VARCHAR(255) NOT NULL,
+organization VARCHAR(255) NULL,
+date DATE NULL,
+link VARCHAR(255) NULL,
+description TEXT NULL
 );
 
-create table if not exists report
-(
-	id int auto_increment
-		primary key,
-	title text not null,
-	description text not null,
-	hinh_anh text null,
-	status_id int null,
-	created_report char(36) not null,
-	reported_user char(36) null,
-	reported_job int null
+CREATE TABLE IF NOT EXISTS award(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id CHAR(36) NOT NULL,
+award_name VARCHAR(255) NOT NULL,
+organization VARCHAR(255) NULL,
+date TIMESTAMP NULL,
+description TEXT NULL
 );
 
-create table if not exists report_status
-(
-	id int auto_increment
-		primary key,
-	name varchar(55) not null
+CREATE TABLE IF NOT EXISTS language_skill(
+id INT AUTO_INCREMENT PRIMARY KEY,
+language_id INT NOT NULL,
+level_language_id INT NOT NULL,
+user_id CHAR(36) NOT NULL
 );
 
-create table if not exists review
-(
-	id int auto_increment
-		primary key,
-	title varchar(255) null,
-	description text null,
-	company_id varchar(255) null,
-	rated int null,
-	user_id varchar(255) null
+CREATE TABLE IF NOT EXISTS available_skill_experience(
+id INT AUTO_INCREMENT PRIMARY KEY,
+id_group_core INT NULL,
+available_skill_id INT NOT NULL,
+experience_id INT NOT NULL,
+user_id CHAR(36) NOT NULL
 );
 
-create table if not exists role
-(
-	id char(36) not null
-		primary key,
-	role_name varchar(80) not null,
-	description varchar(255) null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	updated_person char(36) null,
-	constraint uk_role_name
-		unique (role_name)
+CREATE TABLE IF NOT EXISTS soft_skills_name(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL,
+user_id CHAR(36) NOT NULL
 );
 
-create table if not exists soft_skills_name
-(
-	id int auto_increment
-		primary key,
-	name varchar(50) null,
-	id_user varchar(255) null
+CREATE TABLE IF NOT EXISTS cv_user(
+id INT AUTO_INCREMENT PRIMARY KEY,
+candidate_id CHAR(36) NOT NULL,
+version INT NOT NULL,
+file_url VARCHAR(255) NOT NULL,
+title VARCHAR(255) NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+is_active TINYINT(1) DEFAULT 0 NOT NULL,
+CONSTRAINT uk_cv_user_candidate_version UNIQUE (candidate_id, version)
 );
 
-create table if not exists user
-(
-	id varchar(255) not null
-		primary key,
-	email varchar(255) null,
-	password varchar(250) null,
-	first_name varchar(255) null,
-	last_name varchar(255) null,
-	role_id varchar(255) null,
-	avatar varchar(255) null,
-	phone varchar(30) null,
-	gender varchar(30) null,
-	education text null,
-	address text null,
-	linkweb text null,
-	birth_date timestamp null,
-	is_find_job tinyint(1) null,
-	company_id varchar(255) null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	updated_person varchar(255) null,
-	group_soft_skill varchar(255) null,
-	constraint fk_user_company
-		foreign key (company_id) references company (id)
-			on update cascade on delete set null,
-	constraint fk_user_role
-		foreign key (role_id) references role (id)
-			on update cascade on delete set null
+CREATE INDEX idx_cv_user_candidate ON cv_user (candidate_id);
+
+-- ============================================
+-- AUTHENTICATION TABLES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS access_token(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id CHAR(36) NOT NULL,
+token TEXT NOT NULL,
+expiry_date DATETIME NOT NULL,
+is_revoked TINYINT(1) DEFAULT 0 NOT NULL,
+created_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-create table if not exists access_token
-(
-	id int auto_increment
-		primary key,
-	user_id char(36) not null,
-	token text not null,
-	expiry_date datetime not null,
-	is_revoked tinyint(1) default 0 not null,
-	create_date datetime default CURRENT_TIMESTAMP not null,
-	constraint fk_access_token_user
-		foreign key (user_id) references user (id)
-			on update cascade on delete cascade
+CREATE INDEX idx_access_user ON access_token (user_id);
+
+CREATE TABLE IF NOT EXISTS refresh_token(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id CHAR(36) NOT NULL,
+token TEXT NOT NULL,
+expiry_date DATETIME NOT NULL,
+is_revoked TINYINT(1) DEFAULT 0 NOT NULL,
+created_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-create index idx_access_user
-	on access_token (user_id);
+CREATE INDEX idx_refresh_user ON refresh_token (user_id);
 
-create table if not exists cv_user
-(
-	id int auto_increment
-		primary key,
-	candidate_id char(36) not null,
-	version int not null,
-	file_url varchar(255) not null,
-	title varchar(255) null,
-	created_at timestamp default CURRENT_TIMESTAMP not null,
-	is_active tinyint(1) default 0 not null,
-	constraint uk_cv_user_candidate_version
-		unique (candidate_id, version),
-	constraint fk_cv_user_candidate
-		foreign key (candidate_id) references user (id)
-			on update cascade on delete cascade
+-- ============================================
+-- CONTENT TABLES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS blog(
+id INT AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(255) NOT NULL,
+picture VARCHAR(255) NULL,
+short_description TEXT NULL,
+description LONGTEXT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+updated_person VARCHAR(255) NULL
 );
 
-create index idx_cv_user_candidate
-	on cv_user (candidate_id);
-
-create table if not exists refresh_token
-(
-	id int auto_increment
-		primary key,
-	user_id char(36) not null,
-	token text not null,
-	expiry_date datetime not null,
-	is_revoked tinyint(1) default 0 not null,
-	create_date datetime default CURRENT_TIMESTAMP not null,
-	constraint fk_refresh_token_user
-		foreign key (user_id) references user (id)
-			on update cascade on delete cascade
+CREATE TABLE IF NOT EXISTS review(
+id INT AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(255) NULL,
+description TEXT NULL,
+company_id CHAR(36) NULL,
+rated INT NULL,
+user_id CHAR(36) NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-create index idx_refresh_user
-	on refresh_token (user_id);
-
-create table if not exists service_product
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null,
-	description text null,
-	price double default 0 not null,
-	images varchar(255) null,
-	user_id char(36) null,
-	job_id int null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	constraint fk_service_user
-		foreign key (user_id) references user (id)
-			on update cascade on delete set null,
-	constraint service_product_job_id_fk
-		foreign key (job_id) references job (id)
+CREATE TABLE IF NOT EXISTS report(
+id INT AUTO_INCREMENT PRIMARY KEY,
+title TEXT NOT NULL,
+description TEXT NOT NULL,
+image_url TEXT NULL,
+status_id INT NULL,
+created_report CHAR(36) NOT NULL,
+reported_user CHAR(36) NULL,
+reported_job INT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-create table if not exists payment
-(
-	id int auto_increment
-		primary key,
-	title text null,
-	description text null,
-	payment_method_id int not null,
-	status int not null,
-	id_service_product int not null,
-	user_id char(36) not null,
-	created_date timestamp default CURRENT_TIMESTAMP not null,
-	updated_date timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-	constraint fk_payment_method
-		foreign key (payment_method_id) references payment_method (id)
-			on update cascade,
-	constraint fk_payment_service
-		foreign key (id_service_product) references service_product (id)
-			on update cascade,
-	constraint fk_payment_status
-		foreign key (status) references payment_status (id)
-			on update cascade,
-	constraint fk_payment_user
-		foreign key (user_id) references user (id)
-			on update cascade on delete cascade
+-- ============================================
+-- WISHLIST TABLES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS wishlist_job(
+job_id INT NOT NULL,
+user_id CHAR(36) NOT NULL,
+PRIMARY KEY (job_id, user_id)
 );
 
-create index idx_payment_method
-	on payment (payment_method_id);
-
-create index idx_payment_service
-	on payment (id_service_product);
-
-create index idx_payment_status
-	on payment (status);
-
-create index idx_payment_user
-	on payment (user_id);
-
-create index idx_service_user
-	on service_product (user_id);
-
-create table if not exists ward
-(
-	id int auto_increment
-		primary key,
-	name varchar(255) not null,
-	id_province int null
+CREATE TABLE IF NOT EXISTS wishlist_candidate(
+hr_id CHAR(36) NOT NULL,
+candidate_id CHAR(36) NOT NULL,
+PRIMARY KEY (hr_id, candidate_id)
 );
 
-create table if not exists wishlist_candidate
-(
-	hr_id char(36) not null,
-	ungvien_id varchar(255) not null,
-	primary key (hr_id, ungvien_id)
+-- ============================================
+-- PAYMENT TABLES
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS service_product(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+description TEXT NULL,
+price DOUBLE DEFAULT 0 NOT NULL,
+images VARCHAR(255) NULL,
+user_id CHAR(36) NULL,
+job_id INT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-create table if not exists wishlist_job
-(
-	job_id int not null,
-	user_id varchar(255) not null,
-	primary key (job_id, user_id)
+CREATE INDEX idx_service_user ON service_product (user_id);
+
+CREATE TABLE IF NOT EXISTS payment(
+id INT AUTO_INCREMENT PRIMARY KEY,
+title TEXT NULL,
+description TEXT NULL,
+payment_method_id INT NOT NULL,
+status INT NOT NULL,
+service_product_id INT NOT NULL,
+user_id CHAR(36) NOT NULL,
+created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_payment_method ON payment (payment_method_id);
+CREATE INDEX idx_payment_service ON payment (service_product_id);
+CREATE INDEX idx_payment_status ON payment (status);
+CREATE INDEX idx_payment_user ON payment (user_id);
+
+-- ============================================
+-- FOREIGN KEY CONSTRAINTS
+-- ============================================
+
+-- Ward foreign keys
+ALTER TABLE ward
+ADD CONSTRAINT fk_ward_province
+FOREIGN KEY (province_id) REFERENCES province (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Category foreign keys
+ALTER TABLE category
+ADD CONSTRAINT fk_category_parent
+FOREIGN KEY (parent_id) REFERENCES category (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Company foreign keys
+ALTER TABLE company
+ADD CONSTRAINT fk_company_company_size
+FOREIGN KEY (company_size_id) REFERENCES company_size (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- User foreign keys
+ALTER TABLE user
+ADD CONSTRAINT fk_user_company
+FOREIGN KEY (company_id) REFERENCES company (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_user_role
+FOREIGN KEY (role_id) REFERENCES role (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Job foreign keys
+ALTER TABLE job
+ADD CONSTRAINT fk_job_company
+FOREIGN KEY (company_id) REFERENCES company (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_job_province
+FOREIGN KEY (province_id) REFERENCES province (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_job_industry
+FOREIGN KEY (industry_id) REFERENCES industry (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_job_job_level
+FOREIGN KEY (job_level_id) REFERENCES job_level (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_job_degree_level
+FOREIGN KEY (degree_level_id) REFERENCES degree_level (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_job_employment_type
+FOREIGN KEY (employment_type_id) REFERENCES employment_type (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_job_experience
+FOREIGN KEY (experience_id) REFERENCES experience (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Project foreign keys
+ALTER TABLE project
+ADD CONSTRAINT fk_project_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Certificate foreign keys
+ALTER TABLE certificate
+ADD CONSTRAINT fk_certificate_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Award foreign keys
+ALTER TABLE award
+ADD CONSTRAINT fk_award_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Language Skill foreign keys
+ALTER TABLE language_skill
+ADD CONSTRAINT fk_language_skill_language
+FOREIGN KEY (language_id) REFERENCES language (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_language_skill_level
+FOREIGN KEY (level_language_id) REFERENCES level_language (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_language_skill_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Available Skill Experience foreign keys
+ALTER TABLE available_skill_experience
+ADD CONSTRAINT fk_skill_experience_group_core
+FOREIGN KEY (id_group_core) REFERENCES group_core_skill (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_skill_experience_skill
+FOREIGN KEY (available_skill_id) REFERENCES available_skills (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_skill_experience_experience
+FOREIGN KEY (experience_id) REFERENCES experience (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_skill_experience_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Soft Skills Name foreign keys
+ALTER TABLE soft_skills_name
+ADD CONSTRAINT fk_soft_skills_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- CV User foreign keys
+ALTER TABLE cv_user
+ADD CONSTRAINT fk_cv_user_candidate
+FOREIGN KEY (candidate_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Access Token foreign keys
+ALTER TABLE access_token
+ADD CONSTRAINT fk_access_token_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Refresh Token foreign keys
+ALTER TABLE refresh_token
+ADD CONSTRAINT fk_refresh_token_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Review foreign keys
+ALTER TABLE review
+ADD CONSTRAINT fk_review_company
+FOREIGN KEY (company_id) REFERENCES company (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_review_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Report foreign keys
+ALTER TABLE report
+ADD CONSTRAINT fk_report_status
+FOREIGN KEY (status_id) REFERENCES report_status (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_report_created_user
+FOREIGN KEY (created_report) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_report_reported_user
+FOREIGN KEY (reported_user) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_report_reported_job
+FOREIGN KEY (reported_job) REFERENCES job (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Wishlist Job foreign keys
+ALTER TABLE wishlist_job
+ADD CONSTRAINT fk_wishlist_job_job
+FOREIGN KEY (job_id) REFERENCES job (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_wishlist_job_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Wishlist Candidate foreign keys
+ALTER TABLE wishlist_candidate
+ADD CONSTRAINT fk_wishlist_candidate_hr
+FOREIGN KEY (hr_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE,
+ADD CONSTRAINT fk_wishlist_candidate_candidate
+FOREIGN KEY (candidate_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- Service Product foreign keys
+ALTER TABLE service_product
+ADD CONSTRAINT fk_service_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE SET NULL,
+ADD CONSTRAINT fk_service_product_job
+FOREIGN KEY (job_id) REFERENCES job (id)
+ON UPDATE CASCADE ON DELETE SET NULL;
+
+-- Payment foreign keys
+ALTER TABLE payment
+ADD CONSTRAINT fk_payment_method
+FOREIGN KEY (payment_method_id) REFERENCES payment_method (id)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+ADD CONSTRAINT fk_payment_service
+FOREIGN KEY (service_product_id) REFERENCES service_product (id)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+ADD CONSTRAINT fk_payment_status
+FOREIGN KEY (status) REFERENCES payment_status (id)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+ADD CONSTRAINT fk_payment_user
+FOREIGN KEY (user_id) REFERENCES user (id)
+ON UPDATE CASCADE ON DELETE CASCADE;

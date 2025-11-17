@@ -13,7 +13,7 @@ public class ReportDTO {
     private int id;
     private String title;
     private String description;
-    private String hinhAnh;
+    private String imageUrl;
     private int statusId;
     private String createdReport;
     private String reportedUser;
