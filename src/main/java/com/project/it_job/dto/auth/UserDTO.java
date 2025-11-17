@@ -21,7 +21,7 @@ public class UserDTO {
     private String gender;
     private String education;
     private String address;
-    private String linkweb;
+    private String websiteLink;
     private LocalDateTime birthDate;
     private boolean isFindJob;
     private String groupSoftSkill;

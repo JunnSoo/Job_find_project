@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/degree-level")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class DegreeLevelController {
 

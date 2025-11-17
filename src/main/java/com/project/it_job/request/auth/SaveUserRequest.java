@@ -47,7 +47,7 @@ public class SaveUserRequest {
 
     private String address;
 
-    private String linkWeb;
+    private String websiteLink;
 
 //    @NotNull(message = "birthDate must be not null")
     private LocalDateTime birthDate;

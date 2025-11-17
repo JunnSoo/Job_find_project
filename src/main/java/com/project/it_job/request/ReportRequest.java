@@ -13,7 +13,7 @@ public class ReportRequest {
     @NotBlank(message = "Mô tả không được để trống")
     private String description;
 
-    private String hinhAnh;
+    private String imageUrl;
 
     @NotNull(message = "Status ID không được null")
     @Min(value = 1, message = "Status ID phải lớn hơn 0")

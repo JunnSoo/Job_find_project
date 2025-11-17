@@ -34,7 +34,8 @@ public class User {
     private String gender;
     private String education;
     private String address;
-    private String linkweb;
+    @Column(name = "website_link")
+    private String websiteLink;
     private LocalDateTime birthDate;
     private boolean isFindJob;
     private LocalDateTime createdDate;
@@ -56,15 +57,15 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<SoftSkillsName> listSoftSkillsName;
 
-//    ds wishlist của bản thân
-    @OneToMany(mappedBy = "userHr",cascade = CascadeType.ALL, orphanRemoval = true)
+    // ds wishlist của bản thân
+    @OneToMany(mappedBy = "userHr", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistCandidate> wishlistCandidates = new ArrayList<>();;
 
-//    bị wistlist
+    // bị wistlist
     @OneToMany(mappedBy = "userCandidate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistCandidate> wishedByHRs = new ArrayList<>();;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

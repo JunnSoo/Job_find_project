@@ -32,6 +32,6 @@ public class AccessToken {
     @Column(name = "is_revoked")
     private Boolean isRevoked;
 
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
 }

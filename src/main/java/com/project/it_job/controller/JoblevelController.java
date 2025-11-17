@@ -10,8 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/joblevel")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/jobl-evel")
 @RequiredArgsConstructor
 public class JoblevelController {
 

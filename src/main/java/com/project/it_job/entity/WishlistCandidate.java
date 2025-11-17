@@ -27,7 +27,7 @@ public class WishlistCandidate {
 
     @MapsId("candidateId")
     @ManyToOne
-    @JoinColumn(name = "ungvien_id")
+    @JoinColumn(name = "candidate_id")
     private User userCandidate;
 
 

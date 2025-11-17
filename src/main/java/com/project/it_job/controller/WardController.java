@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ward")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class WardController {
     private final WardService wardService;

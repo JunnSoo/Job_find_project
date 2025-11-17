@@ -22,8 +22,8 @@ public class Report {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
-    @Column(name = "hinh_anh", columnDefinition = "TEXT")
-    private String hinhAnh;
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "status_id")
