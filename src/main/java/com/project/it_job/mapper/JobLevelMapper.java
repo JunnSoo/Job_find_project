@@ -14,14 +14,6 @@ public class JobLevelMapper {
                 .name(entity.getName())
                 .build();
     }
-    
-    public JobLevel toEntity(JobLevelDTO dto) {
-        if(dto == null) return null;
-        return JobLevel.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .build();
-    }
 
     public JobLevel saveJobLevel(JobLevelRequest request) {
         if (request == null) return null;

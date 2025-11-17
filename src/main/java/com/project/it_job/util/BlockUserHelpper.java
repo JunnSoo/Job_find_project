@@ -56,8 +56,8 @@ public class BlockUserHelpper {
                 String json = objectMapper.writeValueAsString(userBlock);
                 redisTemplateDb00.opsForValue().set(email,json,Duration.ofDays(7));
             }
-        } catch (Exception e){
-
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

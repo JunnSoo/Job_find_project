@@ -26,25 +26,6 @@ public class JobMapper {
                 .build();
     }
 
-    public Job toEntity(JobDTO dto) {
-        if (dto == null) return null;
-        return Job.builder()
-                .id(dto.getId())
-                .jobPosition(dto.getJobPosition())
-                .companyId(dto.getCompanyId())
-                .detailAddress(dto.getDetailAddress())
-                .descriptionJob(dto.getDescriptionJob())
-                .requirement(dto.getRequirement())
-                .benefits(dto.getBenefits())
-                .provinceId(dto.getProvinceId())
-                .industryId(dto.getIndustryId())
-                .jobLevelId(dto.getJobLevelId())
-                .degreeLevelId(dto.getDegreeLevelId())
-                .employmentTypeId(dto.getEmploymentTypeId())
-                .experienceId(dto.getExperienceId())
-                .build();
-    }
-
     public Job saveJob(JobRequest request) {
         if (request == null) return null;
         return Job.builder()

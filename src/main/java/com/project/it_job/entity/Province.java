@@ -19,7 +19,7 @@ public class Province {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)

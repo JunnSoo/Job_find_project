@@ -31,7 +31,7 @@ public class CompanySizeServiceImp implements CompanySizeService {
 
     @Override
     public List<CompanySizeDTO> getAllCompany() {
-        return companySizeRepository.findAll().stream().map(cs -> companySizeMapper.companySizeToCompanySizeDTO(cs)).toList();
+        return companySizeRepository.findAll().stream().map(companySizeMapper::companySizeToCompanySizeDTO).toList();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CompanySizeServiceImp implements CompanySizeService {
                 companySizeSpecification.searchByName(pageRequestCustom.getKeyword()));
 
         return companySizeRepository.findAll(spec, pageable).map(
-                cs -> companySizeMapper.companySizeToCompanySizeDTO(cs));
+                companySizeMapper::companySizeToCompanySizeDTO);
     }
 
     @Override

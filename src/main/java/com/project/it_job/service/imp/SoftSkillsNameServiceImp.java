@@ -35,7 +35,7 @@ public class SoftSkillsNameServiceImp implements SoftSkillsNameService {
 
     @Override
     public List<SoftSkillsNameDTO> getAllSoftSkillsName() {
-        return softSkillsNameRepository.findAll().stream().map(skn -> softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(skn)).toList();
+        return softSkillsNameRepository.findAll().stream().map(softSkillsNameMapper::softSkillsNameToSoftSkillsNameDTO).toList();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SoftSkillsNameServiceImp implements SoftSkillsNameService {
 
 //        Tạo search
         Specification<SoftSkillsName> spec = Specification.allOf(softSkillsNameSpecification.searchByName(pageRequestValidate.getKeyword()));
-        return softSkillsNameRepository.findAll(spec, pageable).map(skn -> softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(skn));
+        return softSkillsNameRepository.findAll(spec, pageable).map(softSkillsNameMapper::softSkillsNameToSoftSkillsNameDTO);
     }
 
     @Override
@@ -89,6 +89,6 @@ public class SoftSkillsNameServiceImp implements SoftSkillsNameService {
         User user = userRepository.findById(idUser)
                 .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id User"));
         return user.getListSoftSkillsName()
-                .stream().map(skn -> softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(skn)).toList();
+                .stream().map(softSkillsNameMapper::softSkillsNameToSoftSkillsNameDTO).toList();
     }
 }
