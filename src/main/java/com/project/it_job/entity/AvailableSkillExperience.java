@@ -2,15 +2,17 @@ package com.project.it_job.entity;
 
 import com.project.it_job.entity.auth.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "available_skill_experience")
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AvailableSkillExperience {
 
     @Id

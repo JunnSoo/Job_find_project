@@ -4,6 +4,7 @@ import com.project.it_job.request.AvailableSkillExperienceRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.AvailableSkillExperienceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class AvailableSkillExperienceController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAvailableSkillExperience(@RequestBody AvailableSkillExperienceRequest request) {
+    public ResponseEntity<?> createAvailableSkillExperience(@Valid @RequestBody AvailableSkillExperienceRequest request) {
         return ResponseEntity.ok(
                 BaseResponse.success(availableSkillExperienceService.createAvailableSkillExperience(request), "ok")
         );
@@ -52,7 +53,7 @@ public class AvailableSkillExperienceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAvailableSkillExperience(@PathVariable Integer id,
-                                                            @RequestBody AvailableSkillExperienceRequest request) {
+                                                            @Valid @RequestBody AvailableSkillExperienceRequest request) {
         return ResponseEntity.ok(
                 BaseResponse.success(availableSkillExperienceService.updateAvailableSkillExperience(id, request), "ok")
         );

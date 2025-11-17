@@ -1,8 +1,10 @@
 package com.project.it_job.request.auth;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,37 +17,36 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class SaveUserRequest {
-    @NotNull(message = "email không được null")
-    @NotEmpty(message = "email không được rỗng")
-    @Email(message = "email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
     private String email;
-    @NotNull(message = "password không được null")
-    @NotEmpty(message = "password không được rỗng")
+
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 12, max = 100, message = "Mật khẩu phải từ 12 đến 100 ký tự")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{12,}$",
+            message = "Mật khẩu phải có ít nhất 12 ký tự, bao gồm: 1 chữ thường, 1 chữ hoa, 1 số và 1 ký tự đặc biệt (!@#$%^&*()_+-=[]{};':\"|,.<>/?)."
+    )
     private String password;
 
-    @NotNull(message = "firstName không được null")
-    @NotEmpty(message = "firstName không được rỗng")
+    @NotBlank(message = "Họ không được để trống")
+    @Size(min = 1, max = 50, message = "Họ phải từ 1 đến 50 ký tự")
     private String firstName;
 
-    @NotNull(message = "lastName không được null")
+    @NotBlank(message = "Tên không được để trống")
+    @Size(min = 1, max = 50, message = "Tên phải từ 1 đến 50 ký tự")
     private String lastName;
 
-    @NotNull(message = "avatar không được null")
     private String avatar;
 
-    @NotNull(message = "phone không được null")
     private String phone;
 
-    @NotNull(message = "gender không được null")
     private String gender;
 
-    @NotNull(message = "education không được null")
     private String education;
 
-    @NotNull(message = "address không được null")
     private String address;
 
-    @NotNull(message = "linkWeb không được null")
     private String linkWeb;
 
 //    @NotNull(message = "birthDate must be not null")
@@ -54,12 +55,11 @@ public class SaveUserRequest {
     @NotNull(message = "isFindJob không được null")
     private boolean isFindJob;
 
-    @NotNull(message = "groupSoftSkill không được null")
     private String groupSoftSkill;
 
-    @NotNull(message = "companyId không được null")
+    @NotBlank(message = "Company ID không được để trống")
     private String companyId;
 
-    @NotNull(message = "roleId không được null")
+    @NotBlank(message = "Role ID không được để trống")
     private String roleId;
 }

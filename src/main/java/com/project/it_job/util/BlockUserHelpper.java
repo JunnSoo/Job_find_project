@@ -1,7 +1,7 @@
 package com.project.it_job.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.it_job.block.UserBlock;
+import com.project.it_job.model.UserBlock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;

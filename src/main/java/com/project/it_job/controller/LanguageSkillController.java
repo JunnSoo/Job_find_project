@@ -4,6 +4,7 @@ import com.project.it_job.request.LanguageSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.LanguageSkillService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +37,13 @@ public class LanguageSkillController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLanguageSkill(@RequestBody LanguageSkillRequest request) {
+    public ResponseEntity<?> createLanguageSkill(@Valid @RequestBody LanguageSkillRequest request) {
         return ResponseEntity.ok(BaseResponse.success(languageSkillService.createLanguageSkill(request), "ok"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLanguageSkill(@PathVariable Integer id,
-                                                 @RequestBody LanguageSkillRequest request) {
+                                                 @Valid @RequestBody LanguageSkillRequest request) {
         return ResponseEntity.ok(BaseResponse.success(languageSkillService.updateLanguageSkill(id, request), "ok"));
     }
 

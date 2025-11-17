@@ -1,9 +1,10 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.keyentity.WishlistCandidateKey;
+
 import com.project.it_job.dto.WishlistCandidateDTO;
 import com.project.it_job.entity.WishlistCandidate;
 import com.project.it_job.entity.auth.User;
+import com.project.it_job.entity.key.WishlistCandidateKey;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.ParamExceptionHandler;
 import com.project.it_job.mapper.WishlistCandidateMapper;
@@ -12,7 +13,7 @@ import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.WishlistCandidateRequest;
 import com.project.it_job.service.WishlistCandidateService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,20 +37,13 @@ public class WishlistCandidateServiceImp implements WishlistCandidateService {
 
     @Override
     public Page<WishlistCandidateDTO> getAllWishlistCandidatesPage(PageRequestCustom pageRequestCustom) {
-        List<WishlistCandidateDTO> wishlistCandidates =  wishlistCandidateMapper.mappedToWishlistCandidateDTO(wishlistCandidateRepository.findAll());
-
         if (pageRequestCustom.getPageSize() == 0) {
             throw new ParamExceptionHandler("page size truyền lên không hợp lệ");
         }
-        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber(),pageRequestCustom.getPageSize());
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), wishlistCandidates.size());
-
-//        cắt list
-        List<WishlistCandidateDTO> pageContent = wishlistCandidates.subList(start, end);
-//       tạo page
-        return new PageImpl<>(pageContent, pageable, wishlistCandidates.size());
+        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber() - 1, pageRequestCustom.getPageSize());
+        Page<WishlistCandidate> wishlistCandidatePage = wishlistCandidateRepository.findAll(pageable);
+        List<WishlistCandidateDTO> wishlistCandidates = wishlistCandidateMapper.mappedToWishlistCandidateDTO(wishlistCandidatePage.getContent());
+        return new PageImpl<>(wishlistCandidates, pageable, wishlistCandidatePage.getTotalElements());
     }
 
     @Override
@@ -71,18 +65,19 @@ public class WishlistCandidateServiceImp implements WishlistCandidateService {
         User userCandidate = userRepository.findById(wishlistCandidateRequest.getCandidateId())
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id candidate"));
 
-        WishlistCandidate wc = wishlistCandidateMapper.MappedWishlistCandidate(userHr, userCandidate,  wishlistCandidateRequest );
+        WishlistCandidate wc = wishlistCandidateMapper.saveWishlistCandidate(userHr, userCandidate, wishlistCandidateRequest);
         wishlistCandidateRepository.save(wc);
         return wishlistCandidateMapper.mappedToWishlistCandidateDTO(wishlistCandidateRepository.findByUserHr_Id(userHr.getId()));
     }
 
     @Override
+    @Transactional
     public List<WishlistCandidateDTO> deleteWistListCandidate(WishlistCandidateRequest wishlistCandidateRequest) {
         WishlistCandidateKey wishlistCandidateKey = new WishlistCandidateKey(wishlistCandidateRequest.getHrId(),wishlistCandidateRequest.getCandidateId());
         WishlistCandidate wishlistCandidate =  wishlistCandidateRepository.findById(wishlistCandidateKey)
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy wishlist candidate id"));
         wishlistCandidateRepository.delete(wishlistCandidate);
-//        trả ra tk hr không còn user wishlist nữa hoặc mảng rỗng
+        // Trả ra tk hr không còn user wishlist nữa hoặc mảng rỗng
         List<WishlistCandidate> getDeleteWc = wishlistCandidateRepository.findByUserHr_Id(wishlistCandidateKey.getHrId());
         return wishlistCandidateMapper.mappedToWishlistCandidateDTO(getDeleteWc);
     }

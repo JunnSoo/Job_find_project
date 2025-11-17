@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,19 +38,13 @@ public class WishlistJobServiceImp implements WishlistJobService {
 
     @Override
     public Page<WishlistJobDTO> getAllWishlistJobsPage(PageRequestCustom pageRequestCustom) {
-        List<WishlistJobDTO> listWishlistJobDTO = wishlistJobMapper.mappedToWishlistJobDTO(wishlistJobRepository.findAll());
-
         if (pageRequestCustom.getPageSize() == 0) {
             throw new ParamExceptionHandler("page size truyền lên không hợp lệ");
         }
-        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber(), pageRequestCustom.getPageSize());
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), listWishlistJobDTO.size());
-
-        List<WishlistJobDTO> pageContent = listWishlistJobDTO.subList(start, end);
-
-        return new PageImpl<>(pageContent, pageable, listWishlistJobDTO.size());
+        Pageable pageable = PageRequest.of(pageRequestCustom.getPageNumber() - 1, pageRequestCustom.getPageSize());
+        Page<WishlistJob> wishlistJobPage = wishlistJobRepository.findAll(pageable);
+        List<WishlistJobDTO> listWishlistJobDTO = wishlistJobMapper.mappedToWishlistJobDTO(wishlistJobPage.getContent());
+        return new PageImpl<>(listWishlistJobDTO, pageable, wishlistJobPage.getTotalElements());
     }
 
     @Override
@@ -66,18 +61,19 @@ public class WishlistJobServiceImp implements WishlistJobService {
         Job job = jobRepository.findById(wishlistJobRequest.getJobId())
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id job"));
 
-        WishlistJob wishlistJob = wishlistJobMapper.mappedWishlistJobRequest(user,job,wishlistJobRequest);
+        WishlistJob wishlistJob = wishlistJobMapper.saveWishlistJob(user, job, wishlistJobRequest);
         wishlistJobRepository.save(wishlistJob);
         return wishlistJobMapper.mappedToWishlistJobDTO(wishlistJobRepository.findByUser_Id(user.getId()));
     }
 
     @Override
+    @Transactional
     public List<WishlistJobDTO> deleteWishlistJobs(WishlistJobRequest wishlistJobRequest) {
         User user =  userRepository.findById(wishlistJobRequest.getUserId())
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id user"));
         Job job = jobRepository.findById(wishlistJobRequest.getJobId())
                 .orElseThrow(()->new NotFoundIdExceptionHandler("Không tìm thấy id job"));
-        WishlistJob wishlistJob = wishlistJobMapper.mappedWishlistJobRequest(user,job,wishlistJobRequest);
+        WishlistJob wishlistJob = wishlistJobMapper.saveWishlistJob(user, job, wishlistJobRequest);
         wishlistJobRepository.delete(wishlistJob);
         return wishlistJobMapper.mappedToWishlistJobDTO(wishlistJobRepository.findByUser_Id(user.getId()));
     }

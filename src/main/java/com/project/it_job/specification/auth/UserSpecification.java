@@ -11,15 +11,12 @@ import java.util.List;
 @Component
 public class UserSpecification {
     public Specification<User> searchByName(String keyword) {
-
+        if (keyword == null || keyword.isEmpty()) return null;
+        String pattern = "%" + keyword.toLowerCase() + "%";
         return (root, query, cb) -> {
-            if (keyword == null || keyword.isEmpty()) return null; // neu trong tra null
-            String pattern = "%" + keyword + "%"; //pattern
-            
-            //                import jakarta mới được
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.like(cb.toString(root.get("firstName")), pattern));
-            predicates.add(cb.like(cb.toString(root.get("lastName")), pattern));
+            predicates.add(cb.like(cb.lower(cb.toString(root.get("firstName"))), pattern));
+            predicates.add(cb.like(cb.lower(cb.toString(root.get("lastName"))), pattern));
             return cb.or(predicates.toArray(new Predicate[0]));
         };
     }

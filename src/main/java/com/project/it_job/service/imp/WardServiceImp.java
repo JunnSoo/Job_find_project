@@ -2,59 +2,93 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.WardDTO;
 import com.project.it_job.entity.Ward;
+import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.WardMapper;
 import com.project.it_job.repository.WardRepository;
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.request.WardRequest;
 import com.project.it_job.service.WardService;
+import com.project.it_job.specification.WardSpecification;
+import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class WardServiceImp implements WardService {
     private final WardRepository wardRepository;
     private final WardMapper wardMapper;
+    private final PageCustomHelpper pageCustomHelpper;
+    private final WardSpecification wardSpecification;
 
     @Override
     public List<WardDTO> getAll() {
         return wardRepository.findAll()
                 .stream()
                 .map(wardMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public Page<WardDTO> getAllWithPage(PageRequestCustom req) {
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+
+        //Search
+        Specification<Ward> spec = wardSpecification.searchByName(pageRequestValidate.getKeyword());
+
+        //Sort
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
+            case "provinceNameAsc" -> Sort.by(Sort.Direction.ASC, "province.name");
+            case "provinceNameDesc" -> Sort.by(Sort.Direction.DESC, "province.name");
+            default -> Sort.by(Sort.Direction.ASC, "id");
+        };
+
+        //Page
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
+
+        return wardRepository.findAll(spec, pageable)
+                .map(wardMapper::toDTO);
     }
 
     @Override
     public WardDTO getById(int id) {
-        return wardRepository.findById(id).map(wardMapper::toDTO).orElse(null);
+        Ward ward = wardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Ward ID: " + id));
+        return wardMapper.toDTO(ward);
     }
 
     @Override
-    public WardDTO create(WardDTO dto) {
-        Ward entity = wardMapper.toEntity(dto);
+    @Transactional
+    public WardDTO create(WardRequest request) {
+        Ward entity = wardMapper.saveWard(request);
         return wardMapper.toDTO(wardRepository.save(entity));
     }
 
     @Override
-    public WardDTO update(int id, WardDTO dto) {
-        Optional<Ward> optional = wardRepository.findById(id);
-        if (optional.isPresent()) {
-            Ward existing = optional.get();
-            existing.setName(dto.getName());
-            return wardMapper.toDTO(wardRepository.save(existing));
-        }
-        return null;
+    @Transactional
+    public WardDTO update(int id, WardRequest request) {
+        wardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Ward ID: " + id));
+        Ward entity = wardMapper.updateWard(id, request);
+        return wardMapper.toDTO(wardRepository.save(entity));
     }
 
     @Override
-    public boolean delete(int id) {
-        if (wardRepository.existsById(id)) {
-            wardRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    @Transactional
+    public void delete(int id) {
+        Ward ward = wardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Ward ID: " + id));
+        wardRepository.delete(ward);
     }
 }

@@ -85,21 +85,18 @@ public class PaymentServiceImp implements PaymentService {
     @Transactional
     public PaymentDTO create(PaymentRequest req) {
 
-        if(paymentMethodRepository.findById(req.getPaymentMethodId()).isEmpty()){
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id PaymentMethod");
-        }
+        paymentMethodRepository.findById(req.getPaymentMethodId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id PaymentMethod"));
 
-        if(paymentStatusRepository.findById(req.getStatusId()).isEmpty()){
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id PaymentStatus");
-        }
+        paymentStatusRepository.findById(req.getStatusId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id PaymentStatus"));
 
-        if(serviceProductRepository.findById(req.getServiceProductId()).isEmpty()){
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id ServiceProduct");
-        }
-        //Thgay tế jwt sau này
-        if(userRepository.findById(req.getUserId()).isEmpty()){
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id User");
-        }
+        serviceProductRepository.findById(req.getServiceProductId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id ServiceProduct"));
+
+        // Thay thế jwt sau này
+        userRepository.findById(req.getUserId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id User"));
 
         Payment payment = paymentMapper.savePayment(req);
         return paymentMapper.paymentDTO(paymentRepository.save(payment));
@@ -112,24 +109,24 @@ public class PaymentServiceImp implements PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id Payment"));
 
-        if (req.getPaymentMethodId() == null ||
-                paymentMethodRepository.findById(req.getPaymentMethodId()).isEmpty()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id PaymentMethod");
+        if (req.getPaymentMethodId() != null) {
+            paymentMethodRepository.findById(req.getPaymentMethodId())
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id PaymentMethod"));
         }
 
-        if (req.getStatusId() == null ||
-                paymentStatusRepository.findById(req.getStatusId()).isEmpty()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id PaymentStatus");
+        if (req.getStatusId() != null) {
+            paymentStatusRepository.findById(req.getStatusId())
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id PaymentStatus"));
         }
 
-        if (req.getServiceProductId() == null ||
-                serviceProductRepository.findById(req.getServiceProductId()).isEmpty()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id ServiceProduct");
+        if (req.getServiceProductId() != null) {
+            serviceProductRepository.findById(req.getServiceProductId())
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id ServiceProduct"));
         }
 
-        if (req.getUserId() == null ||
-                userRepository.findById(req.getUserId()).isEmpty()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy id User");
+        if (req.getUserId() != null) {
+            userRepository.findById(req.getUserId())
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id User"));
         }
 
 
@@ -138,6 +135,7 @@ public class PaymentServiceImp implements PaymentService {
     }
 
     @Override
+    @Transactional
     public PaymentDTO deleteById(Integer id) {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id Payment"));

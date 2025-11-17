@@ -4,7 +4,7 @@ import com.project.it_job.dto.auth.RoleDTO;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.entity.auth.Role;
-import com.project.it_job.exception.ConflictException;
+import com.project.it_job.exception.ConflictExceptionHandler;
 import com.project.it_job.mapper.auth.RoleMapper;
 import com.project.it_job.repository.auth.RoleRepository;
 import com.project.it_job.request.auth.RoleRequest;
@@ -74,7 +74,7 @@ public class RoleServiceImp implements RoleService {
     @Transactional
     public RoleDTO create(RoleRequest req) {
         roleRepository.findByRoleNameIgnoreCase(req.getRoleName())
-                .ifPresent(r -> { throw new ConflictException("Role đã tồn tại!"); });
+                .ifPresent(r -> { throw new ConflictExceptionHandler("Role đã tồn tại!"); });
 
         Role role = roleMapper.toCreateRole(req);
         return roleMapper.toRoleDTO(roleRepository.save(role));
@@ -90,6 +90,7 @@ public class RoleServiceImp implements RoleService {
 
 
     @Override
+    @Transactional
     public RoleDTO deleteById(String id) {
         Role role = roleRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy role ID"));
         roleRepository.delete(role);

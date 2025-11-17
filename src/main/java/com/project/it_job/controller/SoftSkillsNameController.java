@@ -1,6 +1,5 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.entity.SoftSkillsName;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateSoftSkillNameRequest;
 import com.project.it_job.response.BaseResponse;

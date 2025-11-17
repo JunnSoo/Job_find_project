@@ -1,6 +1,6 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.dto.LanguageDto;
+import com.project.it_job.dto.LanguageDTO;
 import com.project.it_job.entity.Language;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.LanguageMapper;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class LanguageServiceImp implements LanguageService {
     private final PageCustomHelpper pageCustomHelpper;
 
     @Override
-    public List<LanguageDto> getAllLanguage() {
+    public List<LanguageDTO> getAllLanguage() {
         return languageRepository.findAll()
                 .stream()
                 .map(languageMapper::toDto)
@@ -34,45 +35,43 @@ public class LanguageServiceImp implements LanguageService {
     }
 
     @Override
-    public Page<LanguageDto> getAllLanguagePage(PageRequestCustom pageRequestCustom) {
+    public Page<LanguageDTO> getAllLanguagePage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
         return languageRepository.findAll(pageable).map(languageMapper::toDto);
     }
 
     @Override
-    public LanguageDto getLanguageById(Integer id) {
+    public LanguageDTO getLanguageById(Integer id) {
         Language language = languageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id language"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id language"));
         return languageMapper.toDto(language);
     }
 
     @Override
-    public LanguageDto createLanguage(LanguageRequest languageRequest) {
-        Language language = Language.builder()
-                .name(languageRequest.getName())
-                .build();
+    @Transactional
+    public LanguageDTO createLanguage(LanguageRequest languageRequest) {
+        Language language = languageMapper.saveLanguage(languageRequest);
         languageRepository.save(language);
         return languageMapper.toDto(language);
     }
 
     @Override
-    public LanguageDto updateLanguage(int id, LanguageRequest languageRequest) {
-        Language language = languageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id language"));
+    @Transactional
+    public LanguageDTO updateLanguage(int id, LanguageRequest languageRequest) {
+        languageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id language"));
 
-        language.setName(languageRequest.getName() != null && !languageRequest.getName().isEmpty()
-                ? languageRequest.getName()
-                : language.getName());
-
-        Language updatedLanguage = languageRepository.save(language);
+        Language entity = languageMapper.updateLanguage(id, languageRequest);
+        Language updatedLanguage = languageRepository.save(entity);
         return languageMapper.toDto(updatedLanguage);
     }
 
     @Override
-    public LanguageDto deleteLanguage(int id) {
+    @Transactional
+    public LanguageDTO deleteLanguage(int id) {
         Language language = languageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id language"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id language"));
         languageRepository.delete(language);
         return languageMapper.toDto(language);
     }

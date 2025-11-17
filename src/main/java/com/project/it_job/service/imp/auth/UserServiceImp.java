@@ -4,8 +4,8 @@ import com.project.it_job.dto.auth.UserDTO;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.ConflictException;
-import com.project.it_job.exception.EmailAlreadyExists;
+import com.project.it_job.exception.ConflictExceptionHandler;
+import com.project.it_job.exception.EmailAlreadyExistsExceptionHandler;
 import com.project.it_job.exception.EmailNotChangeExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.auth.UserMapper;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,73 +33,73 @@ import java.util.List;
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PageCustomHelpper  pageCustomHelpper;
+    private final PageCustomHelpper pageCustomHelpper;
     private final UserSpecification userSpecification;
     private final RoleRepository roleRepository;
     private final CompanyRepository companyRepository;
 
     @Override
     public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream().map(u-> userMapper.userToUserDTO(u)).toList();
+        return userRepository.findAll().stream()
+                .map(userMapper::userToUserDTO)
+                .toList();
     }
+
     @Override
     public Page<UserDTO> getAllUsersPage(PageRequestCustom pageRequestCustom) {
-        //        validate pageCustom
+        // Validate pageCustom
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 
-//        Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());
+        // Tạo page cho api
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
 
-//        Tạo search
+        // Tạo search
         Specification<User> spec = Specification.allOf(
                 userSpecification.searchByName(pageRequestValidate.getKeyword()));
-        return userRepository.findAll(spec,pageable ).map(u-> userMapper.userToUserDTO(u));
+        return userRepository.findAll(spec, pageable)
+                .map(userMapper::userToUserDTO);
     }
 
     @Override
     public UserDTO getUserById(String id) {
         User user = userRepository.findById(id).orElseThrow(
-                ()->new NotFoundIdExceptionHandler("Không tìm thấy id user")
-        );
+                () -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
         return userMapper.userToUserDTO(user);
     }
 
     @Override
     public UserDTO saveUser(SaveUserRequest saveUserRequest) {
-//        check role
+        // check role
         Role role = null;
         if (saveUserRequest.getRoleId() != null && !saveUserRequest.getRoleId().isEmpty()) {
             role = roleRepository.findById(saveUserRequest.getRoleId()).orElseThrow(
-                    ()-> new NotFoundIdExceptionHandler("Không tìm thấy id role!")
-            );
+                    () -> new NotFoundIdExceptionHandler("Không tìm thấy id role!"));
         }
-//      check company
+        // check company
         Company company = null;
         if (saveUserRequest.getCompanyId() != null && !saveUserRequest.getCompanyId().isEmpty()) {
             company = companyRepository.findById(saveUserRequest.getCompanyId()).orElseThrow(
-                    ()-> new NotFoundIdExceptionHandler("Không tìm thấy id company!")
-            );
+                    () -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
         }
 
         User userCheckEmail = userRepository.findByEmail(saveUserRequest.getEmail()).orElse(null);
         if (userCheckEmail != null) {
-            throw new EmailAlreadyExists("Email đã tồn tại!");
+            throw new EmailAlreadyExistsExceptionHandler("Email đã tồn tại!");
         }
 
         try {
-            User user = userMapper.saveUserMapper(role,company, saveUserRequest);
+            User user = userMapper.saveUserMapper(role, company, saveUserRequest);
 
             return userMapper.userToUserDTO(userRepository.save(user));
-        } catch (Exception e){
-            throw new ConflictException("Lỗi thêm user!");
+        } catch (Exception e) {
+            throw new ConflictExceptionHandler("Lỗi thêm user!");
         }
     }
 
     @Override
     public UserDTO updateUser(String idUser, UpdateUserRequest updateUserRequest) {
         User user = userRepository.findById(idUser).orElseThrow(
-                ()-> new NotFoundIdExceptionHandler("Không tìm thấy id user!")
-        );
+                () -> new NotFoundIdExceptionHandler("Không tìm thấy id user!"));
 
         if (!updateUserRequest.getEmail().equalsIgnoreCase(user.getEmail())) {
             throw new EmailNotChangeExceptionHandler("Không được thay đổi email!");
@@ -107,33 +108,31 @@ public class UserServiceImp implements UserService {
         Role role = null;
         if (updateUserRequest.getRoleId() != null && !updateUserRequest.getRoleId().isEmpty()) {
             role = roleRepository.findById(updateUserRequest.getRoleId()).orElseThrow(
-                    ()-> new NotFoundIdExceptionHandler("Không tìm thấy id role!")
-            );
+                    () -> new NotFoundIdExceptionHandler("Không tìm thấy id role!"));
         }
 
         Company company = null;
         if (updateUserRequest.getCompanyId() != null && !updateUserRequest.getCompanyId().isEmpty()) {
             company = companyRepository.findById(updateUserRequest.getCompanyId()).orElseThrow(
-                    ()-> new NotFoundIdExceptionHandler("Không tìm thấy id company!")
-            );
+                    () -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
         }
 
         try {
-            User mappedUser = userMapper.updateUserMapper(idUser,role,company, updateUserRequest);
+            User mappedUser = userMapper.updateUserMapper(idUser, role, company, updateUserRequest);
             mappedUser.setCreatedDate(user.getCreatedDate());
             mappedUser.setPassword(user.getPassword());
             return userMapper.userToUserDTO(userRepository.save(mappedUser));
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new ConflictException("Lỗi cập nhật user!");
+            throw new ConflictExceptionHandler("Lỗi cập nhật user!");
         }
     }
 
     @Override
+    @Transactional
     public UserDTO deleteUser(String idUser) {
         User user = userRepository.findById(idUser).orElseThrow(
-                ()-> new NotFoundIdExceptionHandler("Không tìm thấy id user!")
-        );
+                () -> new NotFoundIdExceptionHandler("Không tìm thấy id user!"));
         userRepository.delete(user);
         return userMapper.userToUserDTO(user);
     }

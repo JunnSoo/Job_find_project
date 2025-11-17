@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh","/api/auth/register").permitAll()
                         .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html"
                         ).permitAll()
-                        .anyRequest().authenticated() // cho phép tất cả request
+                        .anyRequest().permitAll() // cho phép tất cả request
                 )
 //                add filter authen trước filter security của spring
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)

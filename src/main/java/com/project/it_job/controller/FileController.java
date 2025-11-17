@@ -1,7 +1,7 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.service.FileService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.it_job.service.file.FileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/file")
+@RequiredArgsConstructor
 public class FileController {
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
 
     @GetMapping("/{filename}")
     public ResponseEntity<?> downloadFile(@PathVariable String filename){

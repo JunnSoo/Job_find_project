@@ -2,22 +2,39 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.JobLevelDTO;
 import com.project.it_job.entity.JobLevel;
+import com.project.it_job.request.JobLevelRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JobLevelMapper {
     public JobLevelDTO toDTO(JobLevel entity) {
         if(entity == null) return null;
-        JobLevelDTO dto = new JobLevelDTO();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        return dto;
+        return JobLevelDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .build();
     }
+    
     public JobLevel toEntity(JobLevelDTO dto) {
         if(dto == null) return null;
-        JobLevel entity = new JobLevel();
-        entity.setId(dto.getId());
-        entity.setName(dto.getName());
-        return entity;
+        return JobLevel.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .build();
+    }
+
+    public JobLevel saveJobLevel(JobLevelRequest request) {
+        if (request == null) return null;
+        return JobLevel.builder()
+                .name(request.getName())
+                .build();
+    }
+
+    public JobLevel updateJobLevel(Integer id, JobLevelRequest request) {
+        if (request == null) return null;
+        return JobLevel.builder()
+                .id(id)
+                .name(request.getName())
+                .build();
     }
 }

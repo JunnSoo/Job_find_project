@@ -1,6 +1,6 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.dto.CertificateDto;
+import com.project.it_job.dto.CertificateDTO;
 import com.project.it_job.entity.Certificate;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class CertificateServiceImp implements CertificateService {
     private final PageCustomHelpper pageCustomHelpper;
 
     @Override
-    public List<CertificateDto> getAllCertificate() {
+    public List<CertificateDTO> getAllCertificate() {
         return certificateRepository.findAll()
                 .stream()
                 .map(certificateMapper::toDto)
@@ -37,14 +38,14 @@ public class CertificateServiceImp implements CertificateService {
     }
 
     @Override
-    public Page<CertificateDto> getAllCertificatePage(PageRequestCustom pageRequestCustom) {
+    public Page<CertificateDTO> getAllCertificatePage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return certificateRepository.findAll(pageable).map(certificateMapper::toDto);
     }
 
     @Override
-    public List<CertificateDto> getCertificateByUser(String userId) {
+    public List<CertificateDTO> getCertificateByUser(String userId) {
         return certificateRepository.findByUser_Id(userId)
                 .stream()
                 .map(certificateMapper::toDto)
@@ -52,57 +53,41 @@ public class CertificateServiceImp implements CertificateService {
     }
 
     @Override
-    public CertificateDto getCertificateById(Integer id) {
+    public CertificateDTO getCertificateById(Integer id) {
         Certificate cert = certificateRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id certificate"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id certificate"));
         return certificateMapper.toDto(cert);
     }
 
     @Override
-    public CertificateDto createCertificate(CertificateRequest request) {
+    @Transactional
+    public CertificateDTO createCertificate(CertificateRequest request) {
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id user"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
 
-        Certificate cert = Certificate.builder()
-                .user(user)
-                .certificateName(request.getCertificateName())
-                .organization(request.getOrganization())
-                .date(request.getDate())
-                .link(request.getLink())
-                .description(request.getDescription())
-                .build();
-
+        Certificate cert = certificateMapper.saveCertificate(user, request);
         certificateRepository.save(cert);
         return certificateMapper.toDto(cert);
     }
 
     @Override
-    public CertificateDto updateCertificate(int id, CertificateRequest request) {
-        Certificate cert = certificateRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id certificate"));
+    @Transactional
+    public CertificateDTO updateCertificate(int id, CertificateRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
+        certificateRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id certificate"));
 
-        cert.setCertificateName(request.getCertificateName() != null && !request.getCertificateName().isEmpty()
-                ? request.getCertificateName()
-                : cert.getCertificateName());
-
-        cert.setOrganization(request.getOrganization() != null && !request.getOrganization().isEmpty()
-                ? request.getOrganization()
-                : cert.getOrganization());
-
-        cert.setDate(request.getDate() != null ? request.getDate() : cert.getDate());
-        cert.setLink(request.getLink() != null && !request.getLink().isEmpty() ? request.getLink() : cert.getLink());
-        cert.setDescription(request.getDescription() != null && !request.getDescription().isEmpty()
-                ? request.getDescription()
-                : cert.getDescription());
-
+        Certificate cert = certificateMapper.updateCertificate(id, user, request);
         Certificate updated = certificateRepository.save(cert);
         return certificateMapper.toDto(updated);
     }
 
     @Override
-    public CertificateDto deleteCertificate(int id) {
+    @Transactional
+    public CertificateDTO deleteCertificate(int id) {
         Certificate cert = certificateRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id certificate"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id certificate"));
         certificateRepository.delete(cert);
         return certificateMapper.toDto(cert);
     }

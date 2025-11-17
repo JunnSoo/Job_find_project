@@ -1,6 +1,6 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.dto.LevelLanguageDto;
+import com.project.it_job.dto.LevelLanguageDTO;
 import com.project.it_job.entity.LevelLanguage;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.LevelLanguageMapper;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class LevelLanguageServiceImp implements LevelLanguageService {
     private final PageCustomHelpper pageCustomHelpper;
 
     @Override
-    public List<LevelLanguageDto> getAllLevelLanguage() {
+    public List<LevelLanguageDTO> getAllLevelLanguage() {
         return levelLanguageRepository.findAll()
                 .stream()
                 .map(levelLanguageMapper::toDto)
@@ -34,45 +35,43 @@ public class LevelLanguageServiceImp implements LevelLanguageService {
     }
 
     @Override
-    public Page<LevelLanguageDto> getAllLevelLanguagePage(PageRequestCustom pageRequestCustom) {
+    public Page<LevelLanguageDTO> getAllLevelLanguagePage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return levelLanguageRepository.findAll(pageable).map(levelLanguageMapper::toDto);
     }
 
     @Override
-    public LevelLanguageDto getLevelLanguageById(Integer id) {
+    public LevelLanguageDTO getLevelLanguageById(Integer id) {
         LevelLanguage levelLanguage = levelLanguageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id level_language"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id level_language"));
         return levelLanguageMapper.toDto(levelLanguage);
     }
 
     @Override
-    public LevelLanguageDto createLevelLanguage(LevelLanguageRequest levelLanguageRequest) {
-        LevelLanguage levelLanguage = LevelLanguage.builder()
-                .name(levelLanguageRequest.getName())
-                .build();
+    @Transactional
+    public LevelLanguageDTO createLevelLanguage(LevelLanguageRequest levelLanguageRequest) {
+        LevelLanguage levelLanguage = levelLanguageMapper.saveLevelLanguage(levelLanguageRequest);
         levelLanguageRepository.save(levelLanguage);
         return levelLanguageMapper.toDto(levelLanguage);
     }
 
     @Override
-    public LevelLanguageDto updateLevelLanguage(int id, LevelLanguageRequest levelLanguageRequest) {
-        LevelLanguage levelLanguage = levelLanguageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id level_language"));
+    @Transactional
+    public LevelLanguageDTO updateLevelLanguage(int id, LevelLanguageRequest levelLanguageRequest) {
+        levelLanguageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id level_language"));
 
-        levelLanguage.setName(levelLanguageRequest.getName() != null && !levelLanguageRequest.getName().isEmpty()
-                ? levelLanguageRequest.getName()
-                : levelLanguage.getName());
-
-        LevelLanguage updated = levelLanguageRepository.save(levelLanguage);
+        LevelLanguage entity = levelLanguageMapper.updateLevelLanguage(id, levelLanguageRequest);
+        LevelLanguage updated = levelLanguageRepository.save(entity);
         return levelLanguageMapper.toDto(updated);
     }
 
     @Override
-    public LevelLanguageDto deleteLevelLanguage(int id) {
+    @Transactional
+    public LevelLanguageDTO deleteLevelLanguage(int id) {
         LevelLanguage levelLanguage = levelLanguageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id level_language"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id level_language"));
         levelLanguageRepository.delete(levelLanguage);
         return levelLanguageMapper.toDto(levelLanguage);
     }

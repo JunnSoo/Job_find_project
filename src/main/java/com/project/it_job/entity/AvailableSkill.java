@@ -1,15 +1,17 @@
 package com.project.it_job.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "available_skill")
-@Getter
-@Setter
-@Builder
+@Table(name = "available_skills")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AvailableSkill {
 
     @Id

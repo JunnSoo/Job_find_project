@@ -6,57 +6,85 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.DegreeLevelMapper;
 import com.project.it_job.repository.DegreeLevelRepository;
 import com.project.it_job.request.DegreeLevelRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.DegreeLevelService;
+import com.project.it_job.specification.DegreeLevelSpecification;
+import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DegreeLevelServiceImp implements DegreeLevelService {
 
     private final DegreeLevelRepository degreeLevelRepository;
-
-    @Autowired
-    private DegreeLevelMapper degreeLevelMapper;
+    private final DegreeLevelMapper degreeLevelMapper;
+    private final PageCustomHelpper pageCustomHelpper;
+    private final DegreeLevelSpecification degreeLevelSpecification;
 
     @Override
     public List<DegreeLevelDTO> getAll() {
         return degreeLevelRepository.findAll()
                 .stream()
                 .map(degreeLevelMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public Page<DegreeLevelDTO> getAllWithPage(PageRequestCustom req) {
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+
+        //Search
+        Specification<DegreeLevel> spec = degreeLevelSpecification.searchByName(pageRequestValidate.getKeyword());
+
+        //Sort
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
+            default -> Sort.by(Sort.Direction.ASC, "id");
+        };
+
+        //Page
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
+
+        return degreeLevelRepository.findAll(spec, pageable)
+                .map(degreeLevelMapper::toDTO);
     }
 
     @Override
     public DegreeLevelDTO getById(int id) {
         DegreeLevel degreeLevel = degreeLevelRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Không tìm thấy DegreeLevel ID: " + id));
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy DegreeLevel ID: " + id));
         return degreeLevelMapper.toDTO(degreeLevel);
     }
 
     @Override
+    @Transactional
     public DegreeLevelDTO create(DegreeLevelRequest request) {
-        DegreeLevel entity = new DegreeLevel();
-        entity.setName(request.getName());
+        DegreeLevel entity = degreeLevelMapper.saveDegreeLevel(request);
         return degreeLevelMapper.toDTO(degreeLevelRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public DegreeLevelDTO update(int id, DegreeLevelRequest dto) {
-        DegreeLevel degreeLevel = degreeLevelRepository.findById(id)
+        degreeLevelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy DegreeLevel ID: " + id));
-        degreeLevel.setName(dto.getName());
-
-        return degreeLevelMapper.toDTO(degreeLevelRepository.save(degreeLevel));
-
+        DegreeLevel entity = degreeLevelMapper.updateDegreeLevel(id, dto);
+        return degreeLevelMapper.toDTO(degreeLevelRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         DegreeLevel degreeLevel = degreeLevelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy DegreeLevel ID: " + id));

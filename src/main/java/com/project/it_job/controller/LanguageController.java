@@ -4,6 +4,7 @@ import com.project.it_job.request.LanguageRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.LanguageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class LanguageController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLanguage(@RequestBody LanguageRequest languageRequest) {
+    public ResponseEntity<?> createLanguage(@Valid @RequestBody LanguageRequest languageRequest) {
         return ResponseEntity.ok(
                 BaseResponse.success(languageService.createLanguage(languageRequest), "ok")
         );
@@ -45,7 +46,7 @@ public class LanguageController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLanguage(@PathVariable Integer id,
-                                            @RequestBody LanguageRequest languageRequest) {
+                                            @Valid @RequestBody LanguageRequest languageRequest) {
         return ResponseEntity.ok(
                 BaseResponse.success(languageService.updateLanguage(id, languageRequest), "ok")
         );

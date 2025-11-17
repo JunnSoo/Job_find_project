@@ -5,10 +5,9 @@ import com.project.it_job.dto.WishlistJobDTO;
 import com.project.it_job.entity.Job;
 import com.project.it_job.entity.WishlistJob;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.keyentity.WishlistJobKey;
+import com.project.it_job.entity.key.WishlistJobKey;
 import com.project.it_job.request.WishlistJobRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,44 +18,45 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class WishlistJobMapper {
-    private JobMapper jobMapper;
+        private final JobMapper jobMapper;
 
-    public List<WishlistJobDTO> mappedToWishlistJobDTO(List<WishlistJob> wishlistJobs) {
-        List<WishlistJobDTO> result = new ArrayList<>();
+        public List<WishlistJobDTO> mappedToWishlistJobDTO(List<WishlistJob> wishlistJobs) {
+                List<WishlistJobDTO> result = new ArrayList<>();
 
-        Map<String, List<Job>> groupByUserId = wishlistJobs.stream()
-                .collect(Collectors.groupingBy(wj -> wj.getUser().getId(),
-                        Collectors.mapping(wj -> wj.getJob(), Collectors.toList())));
+                Map<String, List<Job>> groupByUserId = wishlistJobs.stream()
+                                .collect(Collectors.groupingBy(wj -> wj.getUser().getId(),
+                                                Collectors.mapping(WishlistJob::getJob, Collectors.toList())));
 
-        for (Map.Entry<String, List<Job>> entry : groupByUserId.entrySet()) {
-            User userWishlist = wishlistJobs.stream().map(wj -> wj.getUser())
-                    .filter(user -> user.getId().equalsIgnoreCase(entry.getKey()))
-                    .findFirst().orElse(null);
+                for (Map.Entry<String, List<Job>> entry : groupByUserId.entrySet()) {
+                        User userWishlist = wishlistJobs.stream().map(WishlistJob::getUser)
+                                        .filter(user -> user.getId().equalsIgnoreCase(entry.getKey()))
+                                        .findFirst().orElse(null);
 
-            List<JobDTO> listJobDTO = entry.getValue().stream().map(j -> jobMapper.toDTO(j)).toList();
+                        List<JobDTO> listJobDTO = entry.getValue().stream().map(jobMapper::toDTO).toList();
 
-            WishlistJobDTO  wishlistJobDTO = WishlistJobDTO.builder()
-                    .idUser(userWishlist.getId())
-                    .firstName(userWishlist.getFirstName())
-                    .lastName(userWishlist.getLastName())
-                    .avatar(userWishlist.getAvatar())
-                    .listJobDTOS(listJobDTO)
-                    .build();
-            result.add(wishlistJobDTO);
+                        WishlistJobDTO wishlistJobDTO = WishlistJobDTO.builder()
+                                        .idUser(userWishlist.getId())
+                                        .firstName(userWishlist.getFirstName())
+                                        .lastName(userWishlist.getLastName())
+                                        .avatar(userWishlist.getAvatar())
+                                        .listJobDTOS(listJobDTO)
+                                        .build();
+                        result.add(wishlistJobDTO);
+                }
+                return result;
         }
-        return result;
-    }
 
-    public WishlistJob mappedWishlistJobRequest(User user,Job job ,WishlistJobRequest wishlistJobRequest){
-        return WishlistJob.builder()
-                .wishlistJobKey(
-                        WishlistJobKey.builder()
-                                .jobId(wishlistJobRequest.getJobId())
-                                .userId(wishlistJobRequest.getUserId())
-                                .build()
-                )
-                .user(user)
-                .job(job)
-                .build();
-    }
+        public WishlistJob saveWishlistJob(User user, Job job, WishlistJobRequest wishlistJobRequest) {
+                if (wishlistJobRequest == null)
+                        return null;
+                return WishlistJob.builder()
+                                .wishlistJobKey(
+                                                WishlistJobKey.builder()
+                                                                .jobId(wishlistJobRequest.getJobId())
+                                                                .userId(wishlistJobRequest.getUserId())
+                                                                .build())
+                                .user(user)
+                                .job(job)
+                                .build();
+        }
 }

@@ -4,6 +4,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.payment.PaymentMethodRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.payment.PaymentMethodService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,12 @@ public class PaymentMethodController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PaymentMethodRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody PaymentMethodRequest request) {
         return ResponseEntity.ok(BaseResponse.success(paymentMethodService.create(request), "OK"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody PaymentMethodRequest request) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody PaymentMethodRequest request) {
         return ResponseEntity.ok(BaseResponse.success(paymentMethodService.update(id, request), "OK"));
     }
 

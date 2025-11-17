@@ -73,13 +73,11 @@ public class ServiceProductServiceImp implements ServiceProductService {
     @Transactional
     public ServiceProductDTO create(ServiceProductRequest req) {
 
-        if(userRepository.findById(req.getUserId()).isEmpty()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy Id User");
-        }
+        userRepository.findById(req.getUserId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
-        if (jobRepository.findById(req.getJobId()).isEmpty()) {
-            throw new NotFoundIdExceptionHandler("Không tìm thấy Id Job");
-        }
+        jobRepository.findById(req.getJobId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id Job"));
 
         ServiceProduct serviceProduct = serviceProductMapper.saveServiceProduct(req);
         return serviceProductMapper.serviceProductDTO(serviceProductRepository.save(serviceProduct));
@@ -95,6 +93,7 @@ public class ServiceProductServiceImp implements ServiceProductService {
     }
 
     @Override
+    @Transactional
     public ServiceProductDTO deleteById(Integer id) {
         ServiceProduct serviceProduct = serviceProductRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id"));

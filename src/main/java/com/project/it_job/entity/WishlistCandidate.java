@@ -1,7 +1,8 @@
 package com.project.it_job.entity;
 
-import com.project.it_job.keyentity.WishlistCandidateKey;
+
 import com.project.it_job.entity.auth.User;
+import com.project.it_job.entity.key.WishlistCandidateKey;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

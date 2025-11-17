@@ -1,19 +1,33 @@
 package com.project.it_job.mapper;
 
-import com.project.it_job.dto.AvailableSkillDto;
+import com.project.it_job.dto.AvailableSkillDTO;
 import com.project.it_job.entity.AvailableSkill;
-import lombok.Builder;
+import com.project.it_job.request.AvailableSkillRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-@Builder
 public class AvailableSkillMapper {
 
-    public AvailableSkillDto toDto(AvailableSkill entity) {
+    public AvailableSkillDTO toDto(AvailableSkill entity) {
         if (entity == null) return null;
-        return AvailableSkillDto.builder()
+        return AvailableSkillDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .build();
+    }
+
+    public AvailableSkill saveAvailableSkill(AvailableSkillRequest request) {
+        if (request == null) return null;
+        return AvailableSkill.builder()
+                .name(request.getName())
+                .build();
+    }
+
+    public AvailableSkill updateAvailableSkill(Integer id, AvailableSkillRequest request) {
+        if (request == null) return null;
+        return AvailableSkill.builder()
+                .id(id)
+                .name(request.getName())
                 .build();
     }
 }

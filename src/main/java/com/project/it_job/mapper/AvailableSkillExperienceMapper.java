@@ -1,17 +1,20 @@
 package com.project.it_job.mapper;
 
-import com.project.it_job.dto.AvailableSkillExperienceDto;
+import com.project.it_job.dto.AvailableSkillExperienceDTO;
+import com.project.it_job.entity.AvailableSkill;
 import com.project.it_job.entity.AvailableSkillExperience;
-import lombok.Builder;
+import com.project.it_job.entity.Experience;
+import com.project.it_job.entity.GroupCoreSkill;
+import com.project.it_job.entity.auth.User;
+import com.project.it_job.request.AvailableSkillExperienceRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-@Builder
 public class AvailableSkillExperienceMapper {
 
-    public AvailableSkillExperienceDto toDto(AvailableSkillExperience ase) {
+    public AvailableSkillExperienceDTO toDto(AvailableSkillExperience ase) {
         if (ase == null) return null;
-        return AvailableSkillExperienceDto.builder()
+        return AvailableSkillExperienceDTO.builder()
                 .id(ase.getId())
                 .userId(ase.getUser() != null ? ase.getUser().getId() : null)
 
@@ -23,6 +26,27 @@ public class AvailableSkillExperienceMapper {
 
                 .experienceId(ase.getExperience() != null ? ase.getExperience().getId() : null)
                 .experienceName(ase.getExperience() != null ? ase.getExperience().getName() : null)
+                .build();
+    }
+
+    public AvailableSkillExperience saveAvailableSkillExperience(User user, GroupCoreSkill groupCoreSkill, AvailableSkill availableSkill, Experience experience, AvailableSkillExperienceRequest request) {
+        if (request == null) return null;
+        return AvailableSkillExperience.builder()
+                .user(user)
+                .groupCoreSkill(groupCoreSkill)
+                .availableSkill(availableSkill)
+                .experience(experience)
+                .build();
+    }
+
+    public AvailableSkillExperience updateAvailableSkillExperience(Integer id, User user, GroupCoreSkill groupCoreSkill, AvailableSkill availableSkill, Experience experience, AvailableSkillExperienceRequest request) {
+        if (request == null) return null;
+        return AvailableSkillExperience.builder()
+                .id(id)
+                .user(user)
+                .groupCoreSkill(groupCoreSkill)
+                .availableSkill(availableSkill)
+                .experience(experience)
                 .build();
     }
 }

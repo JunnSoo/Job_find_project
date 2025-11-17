@@ -6,58 +6,88 @@ import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.EmploymentTypeMapper;
 import com.project.it_job.repository.EmploymentTypeRepository;
 import com.project.it_job.request.EmploymentTypeRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.EmploymentTypeService;
+import com.project.it_job.specification.EmploymentTypeSpecification;
+import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class EmploymentTypeServiceImp implements EmploymentTypeService {
 
     private final EmploymentTypeRepository employmentTypeRepository;
-
     private final EmploymentTypeMapper employmentTypeMapper;
+    private final PageCustomHelpper pageCustomHelpper;
+    private final EmploymentTypeSpecification employmentTypeSpecification;
+
     @Override
     public List<EmploymentTypeDTO> getAll() {
         return employmentTypeRepository.findAll()
                 .stream()
                 .map(employmentTypeMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public Page<EmploymentTypeDTO> getAllWithPage(PageRequestCustom req) {
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+
+        //Search
+        Specification<EmploymentType> spec = employmentTypeSpecification.searchByName(pageRequestValidate.getKeyword());
+
+        //Sort
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
+            default -> Sort.by(Sort.Direction.ASC, "id");
+        };
+
+        //Page
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
+
+        return employmentTypeRepository.findAll(spec, pageable)
+                .map(employmentTypeMapper::toDTO);
     }
 
     @Override
     public EmploymentTypeDTO getById(int id) {
         EmploymentType employmentType = employmentTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy EmploymentType với ID: " + id));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy EmploymentType với ID: " + id));
         return employmentTypeMapper.toDTO(employmentType);
     }
 
     @Override
-    public EmploymentTypeDTO create(EmploymentTypeRequest employmentType) {
-        EmploymentType employmentTypeEntity = new EmploymentType();
-        employmentTypeEntity.setName(employmentType.getName());
-        return employmentTypeMapper.toDTO(employmentTypeRepository.save(employmentTypeEntity));
+    @Transactional
+    public EmploymentTypeDTO create(EmploymentTypeRequest request) {
+        EmploymentType entity = employmentTypeMapper.saveEmploymentType(request);
+        return employmentTypeMapper.toDTO(employmentTypeRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public EmploymentTypeDTO update(int id, EmploymentTypeRequest request) {
-        EmploymentType employmentType = employmentTypeRepository.findById(id)
+        employmentTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy EmploymentType ID: " + id));
-        employmentType.setName(request.getName());
-        return employmentTypeMapper.toDTO(employmentTypeRepository.save(employmentType));
+        EmploymentType entity = employmentTypeMapper.updateEmploymentType(id, request);
+        return employmentTypeMapper.toDTO(employmentTypeRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
        EmploymentType employmentType = employmentTypeRepository.findById(id)
                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy EmploymentType ID: " + id));
        employmentTypeRepository.delete(employmentType);
     }
-
-
-
 }

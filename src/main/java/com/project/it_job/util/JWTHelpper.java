@@ -4,7 +4,7 @@ import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
-import com.project.it_job.exception.ExpireTokenExceptionHanlder;
+import com.project.it_job.exception.ExpireTokenExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.exception.RefreshTokenExceptionHanlder;
 import com.project.it_job.repository.auth.AccessTokenRepository;
@@ -154,7 +154,7 @@ public class JWTHelpper {
         catch (ExpiredJwtException e){
             String userId = e.getClaims().getIssuer();
             removeAllToken(userId);
-            throw new ExpireTokenExceptionHanlder("Hết hạn Token, Vui lòng đăng nhập lại");
+            throw new ExpireTokenExceptionHandler("Hết hạn Token, Vui lòng đăng nhập lại");
         }
         catch (Exception e){
             throw  new RefreshTokenExceptionHanlder("Token không hợp lệ!");

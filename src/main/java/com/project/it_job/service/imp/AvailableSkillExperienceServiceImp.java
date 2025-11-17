@@ -1,6 +1,6 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.dto.AvailableSkillExperienceDto;
+import com.project.it_job.dto.AvailableSkillExperienceDTO;
 import com.project.it_job.entity.*;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class AvailableSkillExperienceServiceImp implements AvailableSkillExperie
     private final PageCustomHelpper pageCustomHelpper;
 
     @Override
-    public List<AvailableSkillExperienceDto> getAllAvailableSkillExperience() {
+    public List<AvailableSkillExperienceDTO> getAllAvailableSkillExperience() {
         return availableSkillExperienceRepository.findAll()
                 .stream()
                 .map(mapper::toDto)
@@ -40,14 +41,14 @@ public class AvailableSkillExperienceServiceImp implements AvailableSkillExperie
     }
 
     @Override
-    public Page<AvailableSkillExperienceDto> getAllAvailableSkillExperiencePage(PageRequestCustom pageRequestCustom) {
+    public Page<AvailableSkillExperienceDTO> getAllAvailableSkillExperiencePage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return availableSkillExperienceRepository.findAll(pageable).map(mapper::toDto);
     }
 
     @Override
-    public List<AvailableSkillExperienceDto> getAvailableSkillExperienceByUser(String userId) {
+    public List<AvailableSkillExperienceDTO> getAvailableSkillExperienceByUser(String userId) {
         return availableSkillExperienceRepository.findByUser_Id(userId)
                 .stream()
                 .map(mapper::toDto)
@@ -55,66 +56,63 @@ public class AvailableSkillExperienceServiceImp implements AvailableSkillExperie
     }
 
     @Override
-    public AvailableSkillExperienceDto getAvailableSkillExperienceById(Integer id) {
+    public AvailableSkillExperienceDTO getAvailableSkillExperienceById(Integer id) {
         AvailableSkillExperience ase = availableSkillExperienceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id available_skill_experience"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id available_skill_experience"));
         return mapper.toDto(ase);
     }
 
     @Override
-    public AvailableSkillExperienceDto createAvailableSkillExperience(AvailableSkillExperienceRequest request) {
+    @Transactional
+    public AvailableSkillExperienceDTO createAvailableSkillExperience(AvailableSkillExperienceRequest request) {
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id user"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
 
         GroupCoreSkill groupCoreSkill = null;
         if (request.getGroupCoreId() != null) {
             groupCoreSkill = groupCoreSkillRepository.findById(request.getGroupCoreId())
-                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id group_core_skill"));
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id group_core_skill"));
         }
 
         AvailableSkill availableSkill = availableSkillRepository.findById(request.getAvailableSkillId())
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id available_skill"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id available_skill"));
 
         Experience experience = experienceRepository.findById(request.getExperienceId())
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id experience"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id experience"));
 
         // chặn trùng
         if (availableSkillExperienceRepository.existsByUser_IdAndAvailableSkill_IdAndExperience_Id(
                 user.getId(), availableSkill.getId(), experience.getId())) {
-            throw new NotFoundIdExceptionHandler("User da ton tai available_skill + experience nay");
+            throw new NotFoundIdExceptionHandler("User đã tồn tại available_skill + experience này");
         }
 
-        AvailableSkillExperience ase = AvailableSkillExperience.builder()
-                .user(user)
-                .groupCoreSkill(groupCoreSkill)
-                .availableSkill(availableSkill)
-                .experience(experience)
-                .build();
+        AvailableSkillExperience ase = mapper.saveAvailableSkillExperience(user, groupCoreSkill, availableSkill, experience, request);
 
         availableSkillExperienceRepository.save(ase);
         return mapper.toDto(ase);
     }
 
     @Override
-    public AvailableSkillExperienceDto updateAvailableSkillExperience(int id, AvailableSkillExperienceRequest request) {
+    @Transactional
+    public AvailableSkillExperienceDTO updateAvailableSkillExperience(int id, AvailableSkillExperienceRequest request) {
         AvailableSkillExperience ase = availableSkillExperienceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id available_skill_experience"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id available_skill_experience"));
 
         if (request.getGroupCoreId() != null) {
             GroupCoreSkill groupCoreSkill = groupCoreSkillRepository.findById(request.getGroupCoreId())
-                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id group_core_skill"));
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id group_core_skill"));
             ase.setGroupCoreSkill(groupCoreSkill);
         }
 
         if (request.getAvailableSkillId() != null) {
             AvailableSkill availableSkill = availableSkillRepository.findById(request.getAvailableSkillId())
-                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id available_skill"));
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id available_skill"));
             ase.setAvailableSkill(availableSkill);
         }
 
         if (request.getExperienceId() != null) {
             Experience experience = experienceRepository.findById(request.getExperienceId())
-                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id experience"));
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id experience"));
             ase.setExperience(experience);
         }
 
@@ -123,9 +121,10 @@ public class AvailableSkillExperienceServiceImp implements AvailableSkillExperie
     }
 
     @Override
-    public AvailableSkillExperienceDto deleteAvailableSkillExperience(int id) {
+    @Transactional
+    public AvailableSkillExperienceDTO deleteAvailableSkillExperience(int id) {
         AvailableSkillExperience ase = availableSkillExperienceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id available_skill_experience"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id available_skill_experience"));
         availableSkillExperienceRepository.delete(ase);
         return mapper.toDto(ase);
     }

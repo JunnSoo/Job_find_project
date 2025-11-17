@@ -3,7 +3,7 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.BlogDTO;
 import com.project.it_job.dto.BlogDetailDTO;
 import com.project.it_job.entity.Blog;
-import com.project.it_job.exception.ConflictException;
+import com.project.it_job.exception.ConflictExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.BlogMapper;
 import com.project.it_job.repository.BlogRepository;
@@ -31,72 +31,74 @@ public class BlogServiceImp implements BlogService {
     private final PageCustomHelpper pageCustomHelpper;
     private final BlogSpecification blogSpecification;
 
-
-
-
     @Override
     public List<BlogDTO> getAllBlog() {
-        return blogRepository.findAll().stream().map(blog -> blogMapper.blogToDTO(blog)).toList();
+        return blogRepository.findAll().stream()
+                .map(blogMapper::blogToDTO)
+                .toList();
     }
-
-
 
     @Override
     public Page<BlogDTO> getAllBlogPage(PageRequestCustom pageRequestCustom) {
-//        validate pageCustom
+        // Validate pageCustom
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
 
-//        Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());
+        // Tạo page cho api
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
 
-//        Tạo search
-        Specification<Blog> spec = Specification.allOf(blogSpecification.searchByName(pageRequestValidate.getKeyword()));
-        return blogRepository.findAll(spec, pageable).map( blog -> blogMapper.blogToDTO(blog));
+        // Tạo search
+        Specification<Blog> spec = Specification
+                .allOf(blogSpecification.searchByName(pageRequestValidate.getKeyword()));
+        return blogRepository.findAll(spec, pageable)
+                .map(blogMapper::blogToDTO);
     }
-
 
     @Override
     public BlogDTO getBlogById(Integer id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
-        return  blogMapper.blogToDTO(blog);
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+        return blogMapper.blogToDTO(blog);
     }
 
     @Override
     @Transactional
     public BlogDTO saveBlog(SaveUpdateBlogRequest saveUpdateBlogRequest) {
-       try{
-           Blog blog = blogMapper.saveBlogMapper(saveUpdateBlogRequest);
-           return  blogMapper.blogToDTO(blogRepository.save(blog));
-       }catch (Exception e){
-            throw new ConflictException("Lỗi thêm blog!");
-       }
+        try {
+            Blog blog = blogMapper.saveBlogMapper(saveUpdateBlogRequest);
+            return blogMapper.blogToDTO(blogRepository.save(blog));
+        } catch (Exception e) {
+            throw new ConflictExceptionHandler("Lỗi thêm blog!");
+        }
     }
 
     @Override
     @Transactional
     public BlogDTO updateBlogById(Integer idBlog, SaveUpdateBlogRequest saveUpdateBlogRequest) {
-           Blog blog = blogRepository.findById(idBlog).orElseThrow(()
-                   -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+        Blog blog = blogRepository.findById(idBlog)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
 
-          try {
-              Blog mappedBlog = blogMapper.updateBlogMapper(idBlog,saveUpdateBlogRequest);
-              mappedBlog.setCreatedDate(blog.getCreatedDate());
-              return  blogMapper.blogToDTO(blogRepository.save(mappedBlog));
-          } catch (Exception e) {
-                throw new ConflictException("Lỗi cập nhật blog!");
-          }
+        try {
+            Blog mappedBlog = blogMapper.updateBlogMapper(idBlog, saveUpdateBlogRequest);
+            mappedBlog.setCreatedDate(blog.getCreatedDate());
+            return blogMapper.blogToDTO(blogRepository.save(mappedBlog));
+        } catch (Exception e) {
+            throw new ConflictExceptionHandler("Lỗi cập nhật blog!");
+        }
     }
 
     @Override
+    @Transactional
     public BlogDTO deleteBlogById(Integer id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
         blogRepository.delete(blog);
         return blogMapper.blogToDTO(blog);
     }
 
     @Override
     public BlogDetailDTO getBlogDetailById(Integer id) {
-        Blog blog = blogRepository.findById(id).orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user ID"));
         return blogMapper.blogToBlogDetailDTO(blog);
     }
 }

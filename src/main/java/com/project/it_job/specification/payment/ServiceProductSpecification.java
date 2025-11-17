@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class ServiceProductSpecification {
     public Specification<ServiceProduct> searchByName(String keyword) {
         if (keyword == null || keyword.isEmpty()) return null;
-        String pattern = "%" + keyword + "%";
-        return (root, query, cb) -> cb.like(root.get("name").as(String.class), pattern);
+        String pattern = "%" + keyword.toLowerCase() + "%";
+        return (root, query, cb) -> cb.like(cb.lower(root.get("name")), pattern);
     }
 }

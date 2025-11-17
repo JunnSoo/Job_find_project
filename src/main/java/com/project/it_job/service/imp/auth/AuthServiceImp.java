@@ -1,7 +1,7 @@
 package com.project.it_job.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.it_job.block.UserBlock;
+import com.project.it_job.model.UserBlock;
 import com.project.it_job.dto.auth.RegisterDTO;
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.entity.auth.Role;
@@ -78,14 +78,14 @@ public class AuthServiceImp implements AuthService {
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             blockUserHelpper.updateCountErrorUser(loginRequest.getEmail());
-            throw new WrongPasswordExceptionHandler("Mật khẩu không hợp lệ!");
+            throw new WrongPasswordExceptionHandler("Tài khoản hoặc mật khẩu không hợp lệ!");
         }
 
         boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
         boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
 
         if(isActiveAccessToken || isActiveRefreshToken) {
-            throw new AlreadyLoggedInException("Tài khoản này đã được đăng nhập ở nơi khác!");
+            throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
         }
 
 
@@ -118,7 +118,7 @@ public class AuthServiceImp implements AuthService {
     @Override
     public RegisterDTO register(RegisterRequest registerRequest) {
         userRepository.existsByEmail(registerRequest.getEmail())
-                .orElseThrow(() -> new EmailAlreadyExists("Email đã tồn tại!!"));
+                .orElseThrow(() -> new EmailAlreadyExistsExceptionHandler("Email đã tồn tại!!"));
 
         Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
                 .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
