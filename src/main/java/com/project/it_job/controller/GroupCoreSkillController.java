@@ -4,6 +4,7 @@ import com.project.it_job.request.GroupCoreSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.GroupCoreSkillService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,13 @@ public class GroupCoreSkillController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createGroupCoreSkill(@RequestBody GroupCoreSkillRequest request) {
+    public ResponseEntity<?> createGroupCoreSkill(@Valid @RequestBody GroupCoreSkillRequest request) {
         return ResponseEntity.ok(BaseResponse.success(service.createGroupCoreSkill(request), "ok"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateGroupCoreSkill(@PathVariable Integer id,
-                                                  @RequestBody GroupCoreSkillRequest request) {
+                                                  @Valid @RequestBody GroupCoreSkillRequest request) {
         return ResponseEntity.ok(BaseResponse.success(service.updateGroupCoreSkill(id, request), "ok"));
     }
 

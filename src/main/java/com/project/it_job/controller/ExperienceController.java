@@ -4,6 +4,7 @@ import com.project.it_job.request.ExperienceRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ExperienceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,13 @@ public class ExperienceController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createExperience(@RequestBody ExperienceRequest request) {
+    public ResponseEntity<?> createExperience(@Valid @RequestBody ExperienceRequest request) {
         return ResponseEntity.ok(BaseResponse.success(experienceService.createExperience(request), "ok"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateExperience(@PathVariable Integer id,
-                                              @RequestBody ExperienceRequest request) {
+                                              @Valid @RequestBody ExperienceRequest request) {
         return ResponseEntity.ok(BaseResponse.success(experienceService.updateExperience(id, request), "ok"));
     }
 

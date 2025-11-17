@@ -12,15 +12,13 @@ import com.project.it_job.request.ReportRequest;
 import com.project.it_job.service.ReportService;
 import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +28,12 @@ public class ReportServiceImp implements ReportService {
     private final PageCustomHelpper pageCustomHelpper;
     private final ReportMapper reportMapper;
 
-
     @Override
     public List<ReportDTO> getAllReports() {
         return reportRepository.findAll()
                 .stream()
                 .map(reportMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -47,42 +44,30 @@ public class ReportServiceImp implements ReportService {
     }
 
     @Override
+    @Transactional
     public ReportDTO createReport(ReportRequest request) {
         ReportStatus status = reportStatusRepository.findById(request.getStatusId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + request.getStatusId()));
 
-        Report report = new Report();
-        report.setTitle(request.getTitle());
-        report.setDescription(request.getDescription());
-        report.setHinhAnh(request.getHinhAnh());
-        report.setCreatedReport(request.getCreatedReport());
-        report.setReportedUser(request.getReportedUser());
-        report.setReportedJob(request.getReportedJob());
-        report.setStatusId(status);
-
-        return reportMapper.toDTO(reportRepository.save(report));
+        Report entity = reportMapper.saveReport(request, status);
+        return reportMapper.toDTO(reportRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public ReportDTO updateReport(int id, ReportRequest request) {
-        Report report = reportRepository.findById(id)
+        reportRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
-
-        report.setTitle(request.getTitle());
-        report.setDescription(request.getDescription());
-        report.setHinhAnh(request.getHinhAnh());
-        report.setCreatedReport(request.getCreatedReport());
-        report.setReportedUser(request.getReportedUser());
-        report.setReportedJob(request.getReportedJob());
 
         ReportStatus status = reportStatusRepository.findById(request.getStatusId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + request.getStatusId()));
-        report.setStatusId(status);
 
-        return reportMapper.toDTO(reportRepository.save(report));
+        Report entity = reportMapper.updateReport(id, request, status);
+        return reportMapper.toDTO(reportRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void deleteReport(int id) {
         Report report = reportRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Report với ID: " + id));
@@ -91,10 +76,7 @@ public class ReportServiceImp implements ReportService {
     @Override
     public Page<ReportDTO> getAllReportsPage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber(),pageRequestValidate.getPageSize());
-
-        //Page<Report> page = reportRepository.findAll(pageable);
-
-        return reportRepository.findAll(pageable).map( report -> reportMapper.toDTO(report));
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
+        return reportRepository.findAll(pageable).map(reportMapper::toDTO);
     }
 }

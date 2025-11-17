@@ -82,6 +82,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
+    @Transactional
     public PaymentMethodDTO deleteById(Integer id) {
         PaymentMethod paymentMethod = paymentMethodRepository.findById(id)
                         .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id"));

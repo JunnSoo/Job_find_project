@@ -1,6 +1,6 @@
 package com.project.it_job.service;
 
-import com.project.it_job.dto.AvailableSkillExperienceDto;
+import com.project.it_job.dto.AvailableSkillExperienceDTO;
 import com.project.it_job.request.AvailableSkillExperienceRequest;
 import com.project.it_job.request.PageRequestCustom;
 import org.springframework.data.domain.Page;
@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface AvailableSkillExperienceService {
 
-    List<AvailableSkillExperienceDto> getAllAvailableSkillExperience();
+    List<AvailableSkillExperienceDTO> getAllAvailableSkillExperience();
 
-    Page<AvailableSkillExperienceDto> getAllAvailableSkillExperiencePage(PageRequestCustom pageRequestCustom);
+    Page<AvailableSkillExperienceDTO> getAllAvailableSkillExperiencePage(PageRequestCustom pageRequestCustom);
 
-    List<AvailableSkillExperienceDto> getAvailableSkillExperienceByUser(String userId);
+    List<AvailableSkillExperienceDTO> getAvailableSkillExperienceByUser(String userId);
 
-    AvailableSkillExperienceDto getAvailableSkillExperienceById(Integer id);
+    AvailableSkillExperienceDTO getAvailableSkillExperienceById(Integer id);
 
-    AvailableSkillExperienceDto createAvailableSkillExperience(AvailableSkillExperienceRequest request);
+    AvailableSkillExperienceDTO createAvailableSkillExperience(AvailableSkillExperienceRequest request);
 
-    AvailableSkillExperienceDto updateAvailableSkillExperience(int id, AvailableSkillExperienceRequest request);
+    AvailableSkillExperienceDTO updateAvailableSkillExperience(int id, AvailableSkillExperienceRequest request);
 
-    AvailableSkillExperienceDto deleteAvailableSkillExperience(int id);
+    AvailableSkillExperienceDTO deleteAvailableSkillExperience(int id);
 }

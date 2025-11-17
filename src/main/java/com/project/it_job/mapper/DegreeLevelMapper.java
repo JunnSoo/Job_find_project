@@ -2,6 +2,7 @@ package com.project.it_job.mapper;
 
 import com.project.it_job.dto.DegreeLevelDTO;
 import com.project.it_job.entity.DegreeLevel;
+import com.project.it_job.request.DegreeLevelRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,17 +10,32 @@ public class DegreeLevelMapper {
 
     public DegreeLevelDTO toDTO(DegreeLevel entity) {
         if (entity == null) return null;
-        DegreeLevelDTO dto = new DegreeLevelDTO();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        return dto;
+        return DegreeLevelDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .build();
     }
 
     public DegreeLevel toEntity(DegreeLevelDTO dto) {
         if (dto == null) return null;
-        DegreeLevel entity = new DegreeLevel();
-        entity.setId(dto.getId());
-        entity.setName(dto.getName());
-        return entity;
+        return DegreeLevel.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .build();
+    }
+
+    public DegreeLevel saveDegreeLevel(DegreeLevelRequest request) {
+        if (request == null) return null;
+        return DegreeLevel.builder()
+                .name(request.getName())
+                .build();
+    }
+
+    public DegreeLevel updateDegreeLevel(Integer id, DegreeLevelRequest request) {
+        if (request == null) return null;
+        return DegreeLevel.builder()
+                .id(id)
+                .name(request.getName())
+                .build();
     }
 }

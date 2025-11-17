@@ -4,6 +4,7 @@ import com.project.it_job.request.LevelLanguageRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.LevelLanguageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,13 @@ public class LevelLanguageController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLevelLanguage(@RequestBody LevelLanguageRequest levelLanguageRequest) {
+    public ResponseEntity<?> createLevelLanguage(@Valid @RequestBody LevelLanguageRequest levelLanguageRequest) {
         return ResponseEntity.ok(BaseResponse.success(levelLanguageService.createLevelLanguage(levelLanguageRequest), "ok"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLevelLanguage(@PathVariable Integer id,
-                                                 @RequestBody LevelLanguageRequest levelLanguageRequest) {
+                                                 @Valid @RequestBody LevelLanguageRequest levelLanguageRequest) {
         return ResponseEntity.ok(BaseResponse.success(levelLanguageService.updateLevelLanguage(id, levelLanguageRequest), "ok"));
     }
 

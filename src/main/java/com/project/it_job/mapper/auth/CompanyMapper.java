@@ -4,7 +4,6 @@ import com.project.it_job.dto.auth.CompanyDTO;
 import com.project.it_job.entity.CompanySize;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.request.auth.SaveUpdateCompanyRequest;
-import com.project.it_job.util.IntegerHelpper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class CompanyMapper {
-    private final IntegerHelpper integerHelpper;
 
     public CompanyDTO companyToCompanyDTO(Company company){
         return CompanyDTO.builder()

@@ -1,6 +1,6 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.dto.ProjectDto;
+import com.project.it_job.dto.ProjectDTO;
 import com.project.it_job.entity.Project;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
@@ -16,8 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,7 +29,7 @@ public class ProjectServiceImp implements ProjectService {
     private final PageCustomHelpper pageCustomHelpper;
 
     @Override
-    public List<ProjectDto> getAllProject() {
+    public List<ProjectDTO> getAllProject() {
         return projectRepository.findAll()
                 .stream()
                 .map(projectMapper::toDto)
@@ -37,71 +37,47 @@ public class ProjectServiceImp implements ProjectService {
     }
 
     @Override
-    public Page<ProjectDto> getAllProjectPage(PageRequestCustom pageRequestCustom) {
+    public Page<ProjectDTO> getAllProjectPage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
-        System.out.println("pageRequestValidate:"+pageRequestValidate.getPageNumber());
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber()-1, pageRequestValidate.getPageSize());
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
 
         return projectRepository.findAll(pageable).map(projectMapper::toDto);
     }
 
     @Override
-    public ProjectDto getProjectById(Integer id) {
-        Project project = projectRepository.findById(id).orElseThrow(()-> new NotFoundIdExceptionHandler("Khong tim thay id project"));
+    public ProjectDTO getProjectById(Integer id) {
+        Project project = projectRepository.findById(id).orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id project"));
         return projectMapper.toDto(project);
     }
 
     @Override
-    public ProjectDto createProject(ProjectRequest projectRequest) {
+    @Transactional
+    public ProjectDTO createProject(ProjectRequest projectRequest) {
         User user = userRepository.findById(projectRequest.getUserId())
-                .orElseThrow(()-> new NotFoundIdExceptionHandler("Khong tim thay id user"));
-        Project project = Project.builder()
-                .name(projectRequest.getName())
-                .user(user)
-                .startDate(projectRequest.getStartDate())
-                .endDate(projectRequest.getEndDate())
-                .projectUrl(projectRequest.getProjectUrl())
-                .company(projectRequest.getCompany())
-                .build();
+                .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
+        Project project = projectMapper.saveProject(user, projectRequest);
         projectRepository.save(project);
 
         return projectMapper.toDto(project);
     }
 
     @Override
-    public ProjectDto updateProject(int id,ProjectRequest projectRequest) {
+    @Transactional
+    public ProjectDTO updateProject(int id, ProjectRequest projectRequest) {
         User user = userRepository.findById(projectRequest.getUserId())
-                .orElseThrow(()-> new NotFoundIdExceptionHandler("Khong tim thay id user"));
-        Project project = projectRepository.findById(id)
-                .orElseThrow(()-> new NotFoundIdExceptionHandler("Khong tim thay id project"));
+                .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
+        projectRepository.findById(id)
+                .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id project"));
 
-        project.setName(projectRequest.getName() != null && !projectRequest.getName().isEmpty()
-                ? projectRequest.getName()
-                : project.getName());
-
-        project.setStartDate(projectRequest.getStartDate() != null
-                ? projectRequest.getStartDate()
-                : project.getStartDate());
-
-        project.setEndDate(projectRequest.getEndDate() != null
-                ? projectRequest.getEndDate()
-                : project.getEndDate());
-
-        project.setProjectUrl(projectRequest.getProjectUrl() != null && !projectRequest.getProjectUrl().isEmpty()
-                ? projectRequest.getProjectUrl()
-                : project.getProjectUrl());
-
-        project.setCompany(projectRequest.getCompany() != null && !projectRequest.getCompany().isEmpty()
-                ? projectRequest.getCompany()
-                : project.getCompany());
-
+        Project project = projectMapper.updateProject(id, user, projectRequest);
         Project updatedProject = projectRepository.save(project);
         return projectMapper.toDto(updatedProject);
     }
 
     @Override
-    public ProjectDto deleteProject(int id) {
-        Project project = projectRepository.findById(id).orElseThrow(()-> new NotFoundIdExceptionHandler("Khong tim thay id project"));
+    @Transactional
+    public ProjectDTO deleteProject(int id) {
+        Project project = projectRepository.findById(id).orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id project"));
         projectRepository.delete(project);
         return projectMapper.toDto(project);
     }

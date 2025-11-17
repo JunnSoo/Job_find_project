@@ -1,21 +1,13 @@
 package com.project.it_job.request.auth;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
-
-
-@Getter
-@Setter
+@Data
 public class RoleRequest {
-    @NotEmpty(message = "Role không thể trống!")
-    @NotNull(message = "Vui lòng nhập role!")
+    @NotBlank(message = "Tên vai trò không được để trống")
     private String roleName;
 
-    @NotEmpty(message = "Description không thể trống!")
-    @NotNull(message = "Vui lòng nhập description!")
+    @NotBlank(message = "Mô tả không được để trống")
     private String description;
-
 }

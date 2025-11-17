@@ -1,6 +1,6 @@
 package com.project.it_job.service.imp;
 
-import com.project.it_job.dto.ExperienceDto;
+import com.project.it_job.dto.ExperienceDTO;
 import com.project.it_job.entity.Experience;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ExperienceMapper;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class ExperienceServiceImp implements ExperienceService {
     private final PageCustomHelpper pageCustomHelpper;
 
     @Override
-    public List<ExperienceDto> getAllExperience() {
+    public List<ExperienceDTO> getAllExperience() {
         return experienceRepository.findAll()
                 .stream()
                 .map(experienceMapper::toDto)
@@ -34,45 +35,43 @@ public class ExperienceServiceImp implements ExperienceService {
     }
 
     @Override
-    public Page<ExperienceDto> getAllExperiencePage(PageRequestCustom pageRequestCustom) {
+    public Page<ExperienceDTO> getAllExperiencePage(PageRequestCustom pageRequestCustom) {
         PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return experienceRepository.findAll(pageable).map(experienceMapper::toDto);
     }
 
     @Override
-    public ExperienceDto getExperienceById(Integer id) {
+    public ExperienceDTO getExperienceById(Integer id) {
         Experience entity = experienceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id experience"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id experience"));
         return experienceMapper.toDto(entity);
     }
 
     @Override
-    public ExperienceDto createExperience(ExperienceRequest request) {
-        Experience entity = Experience.builder()
-                .name(request.getName())
-                .build();
+    @Transactional
+    public ExperienceDTO createExperience(ExperienceRequest request) {
+        Experience entity = experienceMapper.saveExperience(request);
         experienceRepository.save(entity);
         return experienceMapper.toDto(entity);
     }
 
     @Override
-    public ExperienceDto updateExperience(int id, ExperienceRequest request) {
-        Experience entity = experienceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id experience"));
+    @Transactional
+    public ExperienceDTO updateExperience(int id, ExperienceRequest request) {
+        experienceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id experience"));
 
-        entity.setName(request.getName() != null && !request.getName().isEmpty()
-                ? request.getName()
-                : entity.getName());
-
+        Experience entity = experienceMapper.updateExperience(id, request);
         Experience updated = experienceRepository.save(entity);
         return experienceMapper.toDto(updated);
     }
 
     @Override
-    public ExperienceDto deleteExperience(int id) {
+    @Transactional
+    public ExperienceDTO deleteExperience(int id) {
         Experience entity = experienceRepository.findById(id)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("Khong tim thay id experience"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id experience"));
         experienceRepository.delete(entity);
         return experienceMapper.toDto(entity);
     }

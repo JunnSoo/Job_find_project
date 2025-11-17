@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -59,24 +60,28 @@ public class SoftSkillsNameServiceImp implements SoftSkillsNameService {
 
     @Override
     public SoftSkillsNameDTO saveSoftSkillsName(SaveUpdateSoftSkillNameRequest saveUpdateSoftSkillNameRequest) {
-        return softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(softSkillsNameMapper.saveSoftSkillsName(saveUpdateSoftSkillNameRequest));
+        SoftSkillsName entity = softSkillsNameMapper.saveSoftSkillsName(saveUpdateSoftSkillNameRequest);
+        SoftSkillsName saved = softSkillsNameRepository.save(entity);
+        return softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(saved);
     }
 
     @Override
+    @Transactional
     public SoftSkillsNameDTO updateSoftSkillsName(Integer idSoftSkillsName, SaveUpdateSoftSkillNameRequest saveUpdateSoftSkillNameRequest) {
-        SoftSkillsName softSkillsName = softSkillsNameRepository.findById(idSoftSkillsName)
+        softSkillsNameRepository.findById(idSoftSkillsName)
                 .orElseThrow( ()->new NotFoundIdExceptionHandler("Không tìm thấy id soft skill name"));
-        return softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(softSkillsNameMapper.updateSoftSkillsName(idSoftSkillsName,saveUpdateSoftSkillNameRequest));
+        SoftSkillsName entity = softSkillsNameMapper.updateSoftSkillsName(idSoftSkillsName, saveUpdateSoftSkillNameRequest);
+        SoftSkillsName saved = softSkillsNameRepository.save(entity);
+        return softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(saved);
     }
 
     @Override
+    @Transactional
     public SoftSkillsNameDTO deleteSoftSkillsNameById(Integer idSoftSkillsName) {
         SoftSkillsName softSkillsName = softSkillsNameRepository.findById(idSoftSkillsName)
                 .orElseThrow( ()->new NotFoundIdExceptionHandler("Không tìm thấy id soft skill name"));
         softSkillsNameRepository.deleteById(idSoftSkillsName);
         return softSkillsNameMapper.softSkillsNameToSoftSkillsNameDTO(softSkillsName);
-
-
     }
 
     @Override

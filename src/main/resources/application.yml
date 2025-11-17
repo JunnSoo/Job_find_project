@@ -15,8 +15,8 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expiration:
-    access: 5000 # 10m
-    refresh: 5000 # 7d
+    access: ${JWT_ACCESS_EXPIRED}
+    refresh: ${JWT_REFRESH_EXPIRED}
 
 upload:
   image: ${PATHIMAGE}
@@ -36,5 +36,6 @@ springdoc:
 
 email: # send grid
   key: ${SENDGRID_API_KEY}
+  mail: ${SENDGRID_EMAIL}
   link:
     register: templates/register-email.html

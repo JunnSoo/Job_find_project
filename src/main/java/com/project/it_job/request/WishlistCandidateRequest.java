@@ -1,8 +1,7 @@
 package com.project.it_job.request;
 
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class WishlistCandidateRequest {
-    @NotNull(message = "hrId không được null")
-    @NotEmpty(message = "hrId không được rỗng")
+    @NotBlank(message = "hrId không được để trống")
     private String hrId;
 
-    @NotNull(message = "candidateId không được null")
-    @NotEmpty(message = "candidateId không được rỗng")
+    @NotBlank(message = "candidateId không được để trống")
     private String candidateId;
 }

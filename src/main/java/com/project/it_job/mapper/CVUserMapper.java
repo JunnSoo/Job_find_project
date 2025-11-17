@@ -23,37 +23,22 @@ public class CVUserMapper {
                 .build();
     }
 
-    public CVUser toCVUser(CVUserDTO cvUserDTO, User candidate) {
-        return CVUser.builder()
-                .id(cvUserDTO.getId())
-                .candidate(candidate)
-                .title(cvUserDTO.getTitle())
-                .version(cvUserDTO.getVersion())
-                .fileUrl(cvUserDTO.getFileUrl())
-                .createdAt(LocalDateTime.now())
-                .isActive(cvUserDTO.isActive())
-                .build();
-    }
-
-    public CVUser toCreateCVUser(CVUserRequest cvUserRequest,User candidate) {
+    public CVUser toCreateCVUser(CVUserRequest cvUserRequest, User candidate, String fileUrl) {
         return CVUser.builder()
                 .title(cvUserRequest.getTitle())
                 .candidate(candidate)
-                .fileUrl(cvUserRequest.getFileUrl())
+                .fileUrl(fileUrl)
                 .createdAt(LocalDateTime.now())
                 .isActive(cvUserRequest.getIsActive())
                 .build();
     }
 
-    public CVUser toUpdateCVUser(CVUser cvUser, CVUserRequest cvUserRequest) {
+    public CVUser toUpdateCVUser(CVUser cvUser, CVUserRequest cvUserRequest, String fileUrl) {
         if (cvUserRequest.getTitle() != null) {
             cvUser.setTitle(cvUserRequest.getTitle());
         }
 
-        if(cvUserRequest.getFileUrl() != null) {
-            cvUser.setFileUrl(cvUserRequest.getFileUrl());
-        }
-
+        cvUser.setFileUrl(fileUrl);
 
         if (cvUserRequest.getIsActive() != null) {
             cvUser.setActive(cvUserRequest.getIsActive());

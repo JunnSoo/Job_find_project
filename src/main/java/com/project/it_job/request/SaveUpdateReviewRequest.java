@@ -2,8 +2,9 @@ package com.project.it_job.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,12 +15,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SaveUpdateReviewRequest {
 
-    @NotNull(message = "title không được null")
-    @NotEmpty(message = "title không được rỗng")
+    @NotBlank(message = "title không được để trống")
     private String title;
 
-    @NotNull(message = "description không được null")
-    @NotEmpty(message = "description không được rỗng")
+    @NotBlank(message = "description không được để trống")
     private String description;
 
     @NotNull(message = "rated không được null")
@@ -27,11 +26,9 @@ public class SaveUpdateReviewRequest {
     @Max(value = 5, message = "rated không được lớn hơn 5")
     private int rated;
 
-    @NotNull(message = "userId không được null")
-    @NotEmpty(message = "userId không được rỗng")
+    @NotBlank(message = "userId không được để trống")
     private String userId;
 
-    @NotNull(message = "companyId không được null")
-    @NotEmpty(message = "companyId không được rỗng")
+    @NotBlank(message = "companyId không được để trống")
     private String companyId;
 }

@@ -1,28 +1,27 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.entity.EmploymentType;
 import com.project.it_job.request.EmploymentTypeRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.EmploymentTypeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employment-type")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class EmploymentTypeController {
-    private EmploymentTypeService employmentTypeService;
+    private final EmploymentTypeService employmentTypeService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
-        return ResponseEntity.ok(BaseResponse.success(employmentTypeService.getAll(), "OK"));
+    public ResponseEntity<?> getAll(PageRequestCustom pageRequestCustom){
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 && pageRequestCustom.getKeyword() == null) {
+            return ResponseEntity.ok(BaseResponse.success(employmentTypeService.getAll(), "OK"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(employmentTypeService.getAllWithPage(pageRequestCustom), "OK"));
     }
 
     @GetMapping("/{id}")
@@ -31,12 +30,12 @@ public class EmploymentTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody EmploymentTypeRequest employmentType){
+    public ResponseEntity<?> create(@Valid @RequestBody EmploymentTypeRequest employmentType){
         return ResponseEntity.ok(BaseResponse.success(employmentTypeService.create(employmentType), "Tạo EmploymentType thành công"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @RequestBody EmploymentTypeRequest employmentType) {
+    public ResponseEntity<?> update(@PathVariable int id, @Valid @RequestBody EmploymentTypeRequest employmentType) {
         return ResponseEntity.ok(BaseResponse.success(employmentTypeService.update(id, employmentType), "Cập nhật Joblevel thành công"));
     }
 

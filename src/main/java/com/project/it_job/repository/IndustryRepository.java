@@ -2,6 +2,9 @@ package com.project.it_job.repository;
 
 import com.project.it_job.entity.Industry;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
-public interface IndustryRepository extends JpaRepository<Industry, Integer> {
+@Repository
+public interface IndustryRepository extends JpaRepository<Industry, Integer>, JpaSpecificationExecutor<Industry> {
 }

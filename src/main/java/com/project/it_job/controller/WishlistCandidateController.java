@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/wistlist-candidate")
+@RequestMapping("/api/wishlist-candidate")
 public class WishlistCandidateController {
     private final WishlistCandidateService wishlistCandidateService;
 

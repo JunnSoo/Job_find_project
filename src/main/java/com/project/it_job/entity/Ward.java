@@ -1,14 +1,17 @@
 package com.project.it_job.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "ward")
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Ward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

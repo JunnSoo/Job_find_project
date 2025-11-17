@@ -1,11 +1,11 @@
 package com.project.it_job.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Data
 public class ReportStatusRequest {
+    @NotBlank(message = "Tên trạng thái báo cáo không được để trống")
     private String name;
 }

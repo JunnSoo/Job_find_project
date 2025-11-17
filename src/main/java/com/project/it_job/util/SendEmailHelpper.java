@@ -1,8 +1,8 @@
 package com.project.it_job.util;
 
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.SendEmailFailException;
-import com.project.it_job.service.EmailService;
+import com.project.it_job.exception.SendEmailFailExceptionHandler;
+import com.project.it_job.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -35,7 +35,7 @@ public class SendEmailHelpper {
             );
         } catch (IOException e) {
             e.printStackTrace();
-            throw new SendEmailFailException("Gửi email register thất bại");
+            throw new SendEmailFailExceptionHandler("Gửi email register thất bại");
         }
     }
 }

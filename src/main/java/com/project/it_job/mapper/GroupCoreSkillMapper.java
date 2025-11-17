@@ -1,18 +1,32 @@
 package com.project.it_job.mapper;
 
-import com.project.it_job.dto.GroupCoreSkillDto;
+import com.project.it_job.dto.GroupCoreSkillDTO;
 import com.project.it_job.entity.GroupCoreSkill;
-import lombok.Builder;
+import com.project.it_job.request.GroupCoreSkillRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-@Builder
 public class GroupCoreSkillMapper {
-    public GroupCoreSkillDto toDto(GroupCoreSkill entity) {
+    public GroupCoreSkillDTO toDto(GroupCoreSkill entity) {
         if (entity == null) return null;
-        return GroupCoreSkillDto.builder()
+        return GroupCoreSkillDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .build();
+    }
+
+    public GroupCoreSkill saveGroupCoreSkill(GroupCoreSkillRequest request) {
+        if (request == null) return null;
+        return GroupCoreSkill.builder()
+                .name(request.getName())
+                .build();
+    }
+
+    public GroupCoreSkill updateGroupCoreSkill(Integer id, GroupCoreSkillRequest request) {
+        if (request == null) return null;
+        return GroupCoreSkill.builder()
+                .id(id)
+                .name(request.getName())
                 .build();
     }
 }

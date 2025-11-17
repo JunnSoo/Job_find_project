@@ -4,6 +4,7 @@ import com.project.it_job.request.CertificateRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.CertificateService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +37,13 @@ public class CertificateController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCertificate(@RequestBody CertificateRequest request) {
+    public ResponseEntity<?> createCertificate(@Valid @RequestBody CertificateRequest request) {
         return ResponseEntity.ok(BaseResponse.success(certificateService.createCertificate(request), "ok"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCertificate(@PathVariable Integer id,
-                                               @RequestBody CertificateRequest request) {
+                                               @Valid @RequestBody CertificateRequest request) {
         return ResponseEntity.ok(BaseResponse.success(certificateService.updateCertificate(id, request), "ok"));
     }
 

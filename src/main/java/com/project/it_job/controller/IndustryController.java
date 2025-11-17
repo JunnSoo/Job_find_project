@@ -1,10 +1,11 @@
 package com.project.it_job.controller;
 
 import com.project.it_job.request.IndustryRequest;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.IndustryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,11 @@ public class IndustryController {
     private final IndustryService industryService;
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(BaseResponse.success(industryService.getAll(), "OK"));
+    public ResponseEntity<?> getAll(PageRequestCustom pageRequestCustom) {
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 && pageRequestCustom.getKeyword() == null) {
+            return ResponseEntity.ok(BaseResponse.success(industryService.getAll(), "OK"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(industryService.getAllWithPage(pageRequestCustom), "OK"));
     }
 
     @GetMapping("/{id}")
@@ -27,12 +31,12 @@ public class IndustryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody IndustryRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody IndustryRequest request) {
         return ResponseEntity.ok(BaseResponse.success(industryService.create(request), "Tạo industry thành công"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @RequestBody IndustryRequest request) {
+    public ResponseEntity<?> update(@PathVariable int id, @Valid @RequestBody IndustryRequest request) {
         return ResponseEntity.ok(BaseResponse.success(industryService.update(id, request), "Cập nhật industry thành công"));
 
     }

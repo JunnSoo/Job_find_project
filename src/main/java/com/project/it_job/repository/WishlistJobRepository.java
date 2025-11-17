@@ -1,7 +1,7 @@
 package com.project.it_job.repository;
 
 import com.project.it_job.entity.WishlistJob;
-import com.project.it_job.keyentity.WishlistJobKey;
+import com.project.it_job.entity.key.WishlistJobKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

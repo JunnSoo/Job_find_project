@@ -4,6 +4,7 @@ import com.project.it_job.request.AwardRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.AwardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +37,13 @@ public class AwardController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createAward(@RequestBody AwardRequest request) {
+    public ResponseEntity<?> createAward(@Valid @RequestBody AwardRequest request) {
         return ResponseEntity.ok(BaseResponse.success(awardService.createAward(request), "ok"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAward(@PathVariable Integer id,
-                                         @RequestBody AwardRequest request) {
+                                         @Valid @RequestBody AwardRequest request) {
         return ResponseEntity.ok(BaseResponse.success(awardService.updateAward(id, request), "ok"));
     }
 

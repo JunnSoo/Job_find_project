@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class PaymentSpecification {
     public Specification<Payment> searchByTitle(String keyword) {
         if(keyword==null || keyword.isEmpty()) return null;
-        String pattern = "%" + keyword + "%";
-        return (root, query, cb) -> cb.like(root.get("title").as(String.class), pattern);
+        String pattern = "%" + keyword.toLowerCase() + "%";
+        return (root, query, cb) -> cb.like(cb.lower(root.get("title")), pattern);
     }
 }

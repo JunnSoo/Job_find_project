@@ -5,28 +5,58 @@ import com.project.it_job.entity.ReportStatus;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReportStatusMapper;
 import com.project.it_job.repository.ReportStatusRepository;
+import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportStatusRequest;
 import com.project.it_job.service.ReportStatusService;
+import com.project.it_job.specification.ReportStatusSpecification;
+import com.project.it_job.util.PageCustomHelpper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ReportStatusServiceImp implements ReportStatusService {
     private final ReportStatusRepository reportStatusRepository;
     private final ReportStatusMapper reportStatusMapper;
+    private final PageCustomHelpper pageCustomHelpper;
+    private final ReportStatusSpecification reportStatusSpecification;
 
     @Override
     public List<ReportStatusDTO> getAllStatus() {
         return reportStatusRepository.findAll()
                 .stream()
                 .map(reportStatusMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public Page<ReportStatusDTO> getAllStatusWithPage(PageRequestCustom req) {
+        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+
+        //Search
+        Specification<ReportStatus> spec = reportStatusSpecification.searchByName(pageRequestValidate.getKeyword());
+
+        //Sort
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
+            default -> Sort.by(Sort.Direction.ASC, "id");
+        };
+
+        //Page
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(), sort);
+
+        return reportStatusRepository.findAll(spec, pageable)
+                .map(reportStatusMapper::toDTO);
     }
 
     @Override
@@ -37,21 +67,23 @@ public class ReportStatusServiceImp implements ReportStatusService {
     }
 
     @Override
+    @Transactional
     public ReportStatusDTO createStatus(ReportStatusRequest request) {
-        ReportStatus status = new ReportStatus();
-        status.setName(request.getName());
-        return reportStatusMapper.toDTO(reportStatusRepository.save(status));
+        ReportStatus entity = reportStatusMapper.saveReportStatus(request);
+        return reportStatusMapper.toDTO(reportStatusRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public ReportStatusDTO updateStatus(int id, ReportStatusRequest request) {
-        ReportStatus status = reportStatusRepository.findById(id)
+        reportStatusRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));
-        status.setName(request.getName());
-        return reportStatusMapper.toDTO(reportStatusRepository.save(status));
+        ReportStatus entity = reportStatusMapper.updateReportStatus(id, request);
+        return reportStatusMapper.toDTO(reportStatusRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         ReportStatus status = reportStatusRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy ReportStatus với ID: " + id));

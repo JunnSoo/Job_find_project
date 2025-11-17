@@ -2,7 +2,7 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.CompanySizeDTO;
 import com.project.it_job.entity.CompanySize;
-import com.project.it_job.exception.ConflictException;
+import com.project.it_job.exception.ConflictExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.CompanySizeMapper;
 import com.project.it_job.repository.CompanySizeRepository;
@@ -11,13 +11,13 @@ import com.project.it_job.request.SaveUpdateCompanySizeRequest;
 import com.project.it_job.service.CompanySizeService;
 import com.project.it_job.specification.CompanySizeSpecification;
 import com.project.it_job.util.PageCustomHelpper;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class CompanySizeServiceImp implements CompanySizeService {
             CompanySize companySize = companySizeMapper.saveCompanySizeMapper(saveUpdateCompanySizeRequest);
             return companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository.save(companySize));
         } catch (Exception e){
-            throw new ConflictException("Lỗi thêm category size!");
+            throw new ConflictExceptionHandler("Lỗi thêm category size!");
         }
 
     }
@@ -73,16 +73,17 @@ public class CompanySizeServiceImp implements CompanySizeService {
     @Transactional
     public CompanySizeDTO updateCompanySize(Integer idCompanySize, SaveUpdateCompanySizeRequest saveUpdateCompanySizeRequest) {
         try {
-            CompanySize companySize = companySizeRepository.findById(idCompanySize)
+            companySizeRepository.findById(idCompanySize)
                     .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy id company size!"));
             CompanySize mappedCompanySize = companySizeMapper.updateCompanySizeMapper(idCompanySize,saveUpdateCompanySizeRequest);
             return companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository.save(mappedCompanySize));
         } catch (Exception e){
-            throw new ConflictException("Lỗi cập nhật category size!");
+            throw new ConflictExceptionHandler("Lỗi cập nhật category size!");
         }
     }
 
     @Override
+    @Transactional
     public CompanySizeDTO deleteCompanySize(Integer id) {
         CompanySize companySize = companySizeRepository.findById(id)
                 .orElseThrow( ()-> new NotFoundIdExceptionHandler("Không tìm thấy id company size"));

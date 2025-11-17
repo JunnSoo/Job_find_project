@@ -2,8 +2,8 @@ package com.project.it_job.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CVUserRequest {
@@ -11,8 +11,7 @@ public class CVUserRequest {
     @NotBlank(message = "Candidate không được để trống")
     private String candidateId;
 
-    @NotNull(message = "Url không được dể trống")
-    private String fileUrl;
+    private MultipartFile fileUrl;
 
     @NotBlank(message = "Tiêu đề (title) không được để trống")
     private String title;

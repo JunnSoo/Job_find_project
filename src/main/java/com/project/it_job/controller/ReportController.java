@@ -1,16 +1,13 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.dto.ReportDTO;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.ReportService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -35,12 +32,12 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createReport(@RequestBody ReportRequest request) {
+    public ResponseEntity<?> createReport(@Valid @RequestBody ReportRequest request) {
         return ResponseEntity.ok(BaseResponse.success(reportService.createReport(request), "Tạo report thành công"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateReport(@PathVariable int id, @RequestBody ReportRequest request) {
+    public ResponseEntity<?> updateReport(@PathVariable int id, @Valid @RequestBody ReportRequest request) {
         return ResponseEntity.ok(BaseResponse.success(reportService.updateReport(id, request), "Cập nhật report thành công"));
     }
 

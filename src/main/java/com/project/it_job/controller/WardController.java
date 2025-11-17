@@ -1,16 +1,14 @@
 package com.project.it_job.controller;
 
-import com.project.it_job.dto.WardDTO;
+import com.project.it_job.request.PageRequestCustom;
+import com.project.it_job.request.WardRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.WardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/ward")
@@ -20,43 +18,32 @@ public class WardController {
     private final WardService wardService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse> getAll() {
-        List<WardDTO> list = wardService.getAll();
-        return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(),
-                list.isEmpty() ? "Ward list is empty" : "Get list of wards success", list));
+    public ResponseEntity<BaseResponse> getAll(PageRequestCustom pageRequestCustom) {
+        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 && pageRequestCustom.getKeyword() == null) {
+            return ResponseEntity.ok(BaseResponse.success(wardService.getAll(), "Lấy danh sách ward thành công"));
+        }
+        return ResponseEntity.ok(BaseResponse.success(wardService.getAllWithPage(pageRequestCustom), "Lấy danh sách ward thành công"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse> getById(@PathVariable int id) {
-        WardDTO ward = wardService.getById(id);
-        if (ward != null)
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Get ward success", ward));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new BaseResponse(HttpStatus.NOT_FOUND.value(), "Ward not found", null));
+        return ResponseEntity.ok(BaseResponse.success(wardService.getById(id), "Lấy ward thành công"));
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse> create(@RequestBody WardDTO dto) {
-        WardDTO created = wardService.create(dto);
+    public ResponseEntity<BaseResponse> create(@Valid @RequestBody WardRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new BaseResponse(HttpStatus.CREATED.value(), "Create ward success", created));
+                .body(BaseResponse.success(wardService.create(request), "Tạo ward thành công"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable int id, @RequestBody WardDTO dto) {
-        WardDTO updated = wardService.update(id, dto);
-        if (updated != null)
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Update ward success", updated));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new BaseResponse(HttpStatus.NOT_FOUND.value(), "Ward not found", null));
+    public ResponseEntity<BaseResponse> update(@PathVariable int id, @Valid @RequestBody WardRequest request) {
+        return ResponseEntity.ok(BaseResponse.success(wardService.update(id, request), "Cập nhật ward thành công"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable int id) {
-        boolean deleted = wardService.delete(id);
-        if (deleted)
-            return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), "Xóa phường/xã thành công", null));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new BaseResponse(HttpStatus.NOT_FOUND.value(), "Không tìm thấy ward", null));
+        wardService.delete(id);
+        return ResponseEntity.ok(BaseResponse.success(null, "Xóa ward có ID " + id + " thành công"));
     }
 }
