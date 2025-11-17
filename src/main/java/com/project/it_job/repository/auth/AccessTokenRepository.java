@@ -12,7 +12,9 @@ import java.util.Optional;
 @Repository
 public interface AccessTokenRepository extends JpaRepository<AccessToken, Integer> {
     Optional<AccessToken> findByToken(String token);
+
     List<AccessToken> findByUser_Id(String user_id);
+
     boolean existsByUser_IdAndIsRevokedFalse(String userId);
 
     @Modifying
