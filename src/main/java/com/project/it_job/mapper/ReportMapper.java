@@ -11,33 +11,16 @@ public class ReportMapper {
     public ReportDTO toDTO(Report entity) {
         if (entity == null) return null;
 
-        ReportDTO dto = new ReportDTO();
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setDescription(entity.getDescription());
-        dto.setHinhAnh(entity.getHinhAnh());
-        dto.setStatusId(entity.getStatusId() != null ? entity.getStatusId().getId() : 0);
-        dto.setCreatedReport(entity.getCreatedReport());
-        dto.setReportedUser(entity.getReportedUser());
-        dto.setReportedJob(entity.getReportedJob() != null ? entity.getReportedJob() : 0);
-
-        return dto;
-    }
-
-    public Report toEntity(ReportDTO dto, ReportStatus status) {
-        if (dto == null) return null;
-
-        Report entity = new Report();
-        entity.setId(dto.getId());
-        entity.setTitle(dto.getTitle());
-        entity.setDescription(dto.getDescription());
-        entity.setHinhAnh(dto.getHinhAnh());
-        entity.setStatusId(status);
-        entity.setCreatedReport(dto.getCreatedReport());
-        entity.setReportedUser(dto.getReportedUser());
-        entity.setReportedJob(dto.getReportedJob());
-
-        return entity;
+        return ReportDTO.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .description(entity.getDescription())
+                .hinhAnh(entity.getHinhAnh())
+                .statusId(entity.getStatusId() != null ? entity.getStatusId().getId() : 0)
+                .createdReport(entity.getCreatedReport())
+                .reportedUser(entity.getReportedUser())
+                .reportedJob(entity.getReportedJob() != null ? entity.getReportedJob() : 0)
+                .build();
     }
 
     public Report saveReport(ReportRequest request, ReportStatus status) {

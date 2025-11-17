@@ -26,18 +26,6 @@ public class ProvinceMapper {
                 .build();
     }
 
-    public Province toEntity(ProvinceDTO dto) {
-        if (dto == null)
-            return null;
-        return Province.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .wards(dto.getWards() != null ? dto.getWards().stream()
-                        .map(wardMapper::toEntity)
-                        .collect(Collectors.toList()) : null)
-                .build();
-    }
-
     public Province saveProvince(ProvinceRequest request) {
         if (request == null)
             return null;

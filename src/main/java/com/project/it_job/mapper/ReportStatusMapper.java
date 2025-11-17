@@ -16,14 +16,6 @@ public class ReportStatusMapper {
                 .build();
     }
 
-    public ReportStatus toEntity(ReportStatusDTO dto) {
-        if (dto == null) return null;
-        return ReportStatus.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .build();
-    }
-
     public ReportStatus saveReportStatus(ReportStatusRequest request) {
         if (request == null) return null;
         return ReportStatus.builder()

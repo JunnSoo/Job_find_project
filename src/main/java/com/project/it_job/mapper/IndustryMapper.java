@@ -15,14 +15,6 @@ public class IndustryMapper {
                 .build();
     }
 
-    public Industry toEntity(IndustryDTO industryDTO) {
-        if(industryDTO == null) return null;
-        return Industry.builder()
-                .id(industryDTO.getId())
-                .name(industryDTO.getName())
-                .build();
-    }
-
     public Industry saveIndustry(IndustryRequest request) {
         if(request == null) return null;
         return Industry.builder()

@@ -16,14 +16,6 @@ public class EmploymentTypeMapper {
                 .build();
     }
 
-    public EmploymentType toEntity(EmploymentTypeDTO dto) {
-        if (dto == null) return null;
-        return EmploymentType.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .build();
-    }
-
     public EmploymentType saveEmploymentType(EmploymentTypeRequest request) {
         if (request == null) return null;
         return EmploymentType.builder()

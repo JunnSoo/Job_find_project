@@ -16,14 +16,6 @@ public class DegreeLevelMapper {
                 .build();
     }
 
-    public DegreeLevel toEntity(DegreeLevelDTO dto) {
-        if (dto == null) return null;
-        return DegreeLevel.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .build();
-    }
-
     public DegreeLevel saveDegreeLevel(DegreeLevelRequest request) {
         if (request == null) return null;
         return DegreeLevel.builder()
