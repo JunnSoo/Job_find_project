@@ -47,19 +47,18 @@ public class AuthServiceImp implements AuthService {
     private final RoleRepository roleRepository;
     private final SendEmailHelpper sendEmailHelpper;
 
-
     @Override
     @Transactional
     public TokenDTO login(LoginRequest loginRequest) {
         ObjectMapper objectMapper = new ObjectMapper();
 
-//        kiểm tra block
-        String stringTime  = "";
+        // kiểm tra block
+        String stringTime = "";
         try {
             if (redisTemplateDb00.hasKey(loginRequest.getEmail())) {
                 String json = redisTemplateDb00.opsForValue().get(loginRequest.getEmail());
                 UserBlock userBlock = objectMapper.readValue(json, UserBlock.class);
-                if (userBlock.isBlocked()){
+                if (userBlock.isBlocked()) {
                     stringTime = timeHelpper
                             .parseLocalDateTimeToSimpleTime(LocalDateTime.parse(userBlock.getExpireTime()));
                     throw new BlockLoginUserExceptionHandler(stringTime);
@@ -71,7 +70,7 @@ public class AuthServiceImp implements AuthService {
 
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> {
-//                    điếm số lần nhập sai
+                    // điếm số lần nhập sai
                     blockUserHelpper.updateCountErrorUser(loginRequest.getEmail());
                     return new EmailNotFoundExceptionHandler("Không tìm thấy email!");
                 });
@@ -84,10 +83,9 @@ public class AuthServiceImp implements AuthService {
         boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
         boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
 
-        if(isActiveAccessToken || isActiveRefreshToken) {
+        if (isActiveAccessToken || isActiveRefreshToken) {
             throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
         }
-
 
         String accessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(), user.getId());
         String refershToken = jwtHelpper.createRefershToken(user.getRole().getRoleName(), user.getId());
@@ -106,12 +104,11 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
-        String newAccessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(),user.getId());
-        String newRefreshToken = jwtHelpper.createRefershToken(user.getRole().getRoleName(),user.getId());
+        String newAccessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(), user.getId());
 
         return TokenDTO.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(newRefreshToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -121,11 +118,15 @@ public class AuthServiceImp implements AuthService {
                 .orElseThrow(() -> new EmailAlreadyExistsExceptionHandler("Email đã tồn tại!!"));
 
         Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
-                .orElseGet(() -> roleRepository.save(Role.builder().roleName("USER").build()));
+                .orElseGet(() -> roleRepository.save(Role.builder()
+                        .roleName("USER")
+                        .createdDate(LocalDateTime.now())
+                        .updatedDate(LocalDateTime.now())
+                        .build()));
 
         User user = registerMapper.saveRegister(registerRequest, defaultRole);
         User savedUser = userRepository.save(user);
-        if (!savedUser.getId().isBlank() && !savedUser.getId().isEmpty() && savedUser.getId() !=null){
+        if (!savedUser.getId().isBlank() && !savedUser.getId().isEmpty() && savedUser.getId() != null) {
             sendEmailHelpper.sendEmailRegister(savedUser);
         }
         return registerMapper.toRegisterDTO(savedUser);

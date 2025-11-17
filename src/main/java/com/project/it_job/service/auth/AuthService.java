@@ -7,7 +7,10 @@ import com.project.it_job.request.auth.RegisterRequest;
 
 public interface AuthService {
     TokenDTO login(LoginRequest request);
+
     TokenDTO refreshToken(String refreshToken);
+
     RegisterDTO register(RegisterRequest registerRequest);
+
     void logout(String email);
 }

@@ -43,22 +43,22 @@ public class JWTHelpper {
 
     private final UserRepository userRepository;
 
-    public String createAccessToken(String roles, String userId){
+    public String createAccessToken(String roles, String userId) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-//        Kiểm tra users này có những access token nào
+        // Kiểm tra users này có những access token nào
         List<AccessToken> accessTokenDB = accessTokenRepository.findByUser_Id(userId);
 
-//        Trường hợp có token trên db
-        if(!accessTokenDB.isEmpty()){
-            for(AccessToken accessToken : accessTokenDB){
-                if (!accessToken.getIsRevoked()){
+        // Trường hợp có token trên db
+        if (!accessTokenDB.isEmpty()) {
+            for (AccessToken accessToken : accessTokenDB) {
+                if (!accessToken.getIsRevoked()) {
                     accessToken.setIsRevoked(true);
                     accessTokenRepository.save(accessToken);
                 }
             }
         }
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
-//        accessToken trả ra
+        // accessToken trả ra
         String accessTokenResult = Jwts.builder()
                 .subject(roles) // lưu roles
                 .issuer(userId) // lưu id user
@@ -67,27 +67,27 @@ public class JWTHelpper {
                 .signWith(key)
                 .compact();
 
-//        Tạo lưu lên db
+        // Tạo lưu lên db
         AccessToken accessToken = AccessToken.builder()
                 .user(User.builder()
                         .id(userId)
                         .build())
                 .token(accessTokenResult)
                 .expiryDate(LocalDateTime.now().plus(Duration.ofMillis(expirationTime)))
-                .createDate(LocalDateTime.now())
+                .createdDate(LocalDateTime.now())
                 .isRevoked(false)
                 .build();
         accessTokenRepository.save(accessToken);
         return accessTokenResult;
     }
 
-    public String createRefershToken(String roles, String userId){
+    public String createRefershToken(String roles, String userId) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 
         List<RefreshToken> refreshTokenList = refreshTokenRepository.findByUser_Id((userId));
-        if(!refreshTokenList.isEmpty()){
-            for(RefreshToken refreshToken : refreshTokenList){
-                if(!refreshToken.getIsRevoked()){
+        if (!refreshTokenList.isEmpty()) {
+            for (RefreshToken refreshToken : refreshTokenList) {
+                if (!refreshToken.getIsRevoked()) {
                     refreshToken.setIsRevoked(true);
                     refreshTokenRepository.save(refreshToken);
                 }
@@ -95,7 +95,6 @@ public class JWTHelpper {
         }
 
         Date expirationDate = new Date(System.currentTimeMillis() + expirationRefresh);
-
 
         String refreshToken = Jwts.builder()
                 .subject(roles)
@@ -111,7 +110,7 @@ public class JWTHelpper {
                         .build())
                 .token(refreshToken)
                 .expiryDate(LocalDateTime.now().plus(Duration.ofMillis(expirationRefresh)))
-                .createDate(LocalDateTime.now())
+                .createdDate(LocalDateTime.now())
                 .isRevoked(false)
                 .build();
 
@@ -119,10 +118,9 @@ public class JWTHelpper {
         return refreshToken;
     }
 
-
-    public String verifyRefreshToken(String token){
+    public String verifyRefreshToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-        try{
+        try {
             Jws<Claims> tokenValidate = Jwts.parser()
                     .verifyWith(key)
                     .build()
@@ -134,75 +132,69 @@ public class JWTHelpper {
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                     .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
 
-            if(refreshToken != null && !refreshToken.getIsRevoked()){
+            if (refreshToken != null && !refreshToken.getIsRevoked()) {
                 return claims.getIssuer();
             }
 
-            if(claims.get("type").equals("refresh_token")
+            if (claims.get("type").equals("refresh_token")
                     && !claims.getSubject().isEmpty()
-                    && !claims.getIssuer().isEmpty()){
+                    && !claims.getIssuer().isEmpty()) {
 
                 userRepository.findById(userId)
                         .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
 
-                if(!refreshToken.getUser().getId().equals(userId)){
+                if (!refreshToken.getUser().getId().equals(userId)) {
                     throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
                 }
             }
 
-        }
-        catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             String userId = e.getClaims().getIssuer();
             removeAllToken(userId);
             throw new ExpireTokenExceptionHandler("Hết hạn Token, Vui lòng đăng nhập lại");
-        }
-        catch (Exception e){
-            throw  new RefreshTokenExceptionHanlder("Token không hợp lệ!");
+        } catch (Exception e) {
+            throw new RefreshTokenExceptionHanlder("Token không hợp lệ!");
         }
         return null;
     }
 
-
-
-    public String verifyAccessToken(String token){
+    public String verifyAccessToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 
         try {
             Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             Claims claims = tokenValidate.getBody();
-            if(claims.get("type").equals("access_token")
+            if (claims.get("type").equals("access_token")
                     && !claims.getSubject().isEmpty()
-                    && !claims.getIssuer().isEmpty()){
+                    && !claims.getIssuer().isEmpty()) {
                 String userId = claims.getIssuer();
 
-//                    token phải có trên database và chưa bị thu hồi
+                // token phải có trên database và chưa bị thu hồi
                 AccessToken accessToken = accessTokenRepository.findByToken(token)
-                        .orElseThrow(()->  new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
-                if(accessToken.getIsRevoked()){
-                    throw new AccessTokenExceptionHandler("Access Token hết hạn!");
+                        .orElseThrow(() -> new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
+                if (accessToken.getIsRevoked()) {
+                    throw new AccessTokenExceptionHandler("Access Token đã bị thu hồi!");
                 }
 
                 User user = userRepository.findById(userId)
-                        .orElseThrow(()-> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
-                if (!accessToken.getUser().getId().equals(user.getId())){
-                    throw  new AccessTokenExceptionHandler("User token không trùng khớp");
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
+                if (!accessToken.getUser().getId().equals(user.getId())) {
+                    throw new AccessTokenExceptionHandler("User token không trùng khớp");
                 }
 
                 return claims.getSubject();
             }
-        }
-        catch (ExpiredJwtException e ){
-            throw new AccessTokenExceptionHandler("Access Token hết hạn!");
-        }
-        catch (JwtException  e) {
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (JwtException e) {
             e.printStackTrace();
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
         return null;
     }
 
-
-    public void removeAllToken(String userId){
+    public void removeAllToken(String userId) {
         tokenManagerService.revokeAllTokens(userId);
     }
+
 }
