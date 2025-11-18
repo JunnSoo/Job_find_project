@@ -33,9 +33,3 @@ springdoc:
   swagger-ui:
     tags-sorter: alpha
     operations-sorter: alpha
-
-email: # send grid
-  key: ${SENDGRID_API_KEY}
-  mail: ${SENDGRID_EMAIL}
-  link:
-    register: templates/register-email.html

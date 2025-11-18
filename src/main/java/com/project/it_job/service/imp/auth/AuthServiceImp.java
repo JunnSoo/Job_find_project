@@ -1,6 +1,7 @@
 package com.project.it_job.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.it_job.dto.InforEmailDTO;
 import com.project.it_job.model.UserBlock;
 import com.project.it_job.dto.auth.RegisterDTO;
 import com.project.it_job.dto.auth.TokenDTO;
@@ -15,10 +16,7 @@ import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.auth.LoginRequest;
 import com.project.it_job.request.auth.RegisterRequest;
 import com.project.it_job.service.auth.AuthService;
-import com.project.it_job.util.BlockUserHelpper;
-import com.project.it_job.util.JWTHelpper;
-import com.project.it_job.util.SendEmailHelpper;
-import com.project.it_job.util.TimeHelpper;
+import com.project.it_job.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -45,7 +43,8 @@ public class AuthServiceImp implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RegisterMapper registerMapper;
     private final RoleRepository roleRepository;
-    private final SendEmailHelpper sendEmailHelpper;
+    private final KafkaHelpper kafkaHelpper;
+
 
     @Override
     @Transactional
@@ -105,10 +104,13 @@ public class AuthServiceImp implements AuthService {
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
         String newAccessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(), user.getId());
+        String newRefreshToken = jwtHelpper.createRefershToken(user.getRole().getRoleName(), user.getId());
+
+
 
         return TokenDTO.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(newRefreshToken)
                 .build();
     }
 
@@ -127,8 +129,14 @@ public class AuthServiceImp implements AuthService {
         User user = registerMapper.saveRegister(registerRequest, defaultRole);
         User savedUser = userRepository.save(user);
         if (!savedUser.getId().isBlank() && !savedUser.getId().isEmpty() && savedUser.getId() != null) {
-            sendEmailHelpper.sendEmailRegister(savedUser);
+            kafkaHelpper.sendKafkaEmailRegister("register_email",
+                    InforEmailDTO.builder()
+                            .email(savedUser.getEmail())
+                            .firstName(savedUser.getFirstName())
+                            .dateCreated(timeHelpper.parseLocalDateTimeToSimpleTime(savedUser.getCreatedDate()))
+                            .build());
         }
+
         return registerMapper.toRegisterDTO(savedUser);
     }
 

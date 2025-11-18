@@ -57,7 +57,9 @@ public final class SecurityConstants {
 
         public static final String[] ADMIN_URLS = {
                         "/api/roles/**",
-                        "/api/user/**"
+                        "/api/user/**",
+                        "/api/blog/**",
+
         };
 
         public static final String[] USER_URLS = {
@@ -79,7 +81,6 @@ public final class SecurityConstants {
 
         public static final String[] USER_WRITE_URLS = {
                         "/api/job/**",
-                        "/api/blog/**",
                         "/api/category/**",
                         "/api/review/**",
                         "/api/company/**"
