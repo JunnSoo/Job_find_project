@@ -270,9 +270,9 @@ public class GlobalExceptionHandler {
         }
 
         // RefreshToken handle exception
-        @ExceptionHandler(RefreshTokenExceptionHandler.class)
+        @ExceptionHandler(RefreshTokenExceptionHanlder.class)
         public ResponseEntity<BaseResponse> handleRefreshTokenException(
-                RefreshTokenExceptionHandler ex, HttpServletRequest request) {
+                        RefreshTokenExceptionHanlder ex, HttpServletRequest request) {
                 log.error("RefreshTokenExceptionHanlder: {} | URI: {} | Method: {} | Message: {}",
                                 ex.getClass().getSimpleName(),
                                 request.getRequestURI(),
