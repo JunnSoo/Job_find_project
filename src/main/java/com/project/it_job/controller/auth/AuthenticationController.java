@@ -39,7 +39,6 @@ public class AuthenticationController {
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new RefreshTokenExceptionHanlder("Không tìm thấy Refresh Token!");
         }
-
         try {
             TokenDTO tokenDTO = authService.refreshToken(refreshToken);
             cookieHelper.addRefreshTokenCookie(response, tokenDTO.getRefreshToken());

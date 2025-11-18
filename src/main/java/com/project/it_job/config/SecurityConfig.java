@@ -65,15 +65,8 @@ public class SecurityConfig {
                         .hasAnyRole("USER","ADMIN")
 
                         // User endpoints - Cần authentication (bao gồm ADMIN)
-                        .requestMatchers(SecurityConstants.USER_URLS).hasAnyRole("USER","ADMIN")
+                        .requestMatchers(SecurityConstants.USER_URLS).hasAnyRole("USER","ADMIN"))
 
-                        // ADMIN có toàn quyền truy cập tất cả API endpoints còn lại
-                        // Rule này đảm bảo ADMIN có thể truy cập bất kỳ endpoint nào không được định
-                        // nghĩa ở trên
-                        .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-
-                        // Tất cả các request khác - ADMIN và các role khác đều có thể truy cập
-                        .anyRequest().hasAnyRole("USER","ADMIN"))
                 // Add authentication filter trước Spring Security filter
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // Cấu hình Exception Handling

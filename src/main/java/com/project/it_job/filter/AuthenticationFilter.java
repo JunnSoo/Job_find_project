@@ -95,6 +95,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             // Gọi service để refresh token
             TokenDTO newTokens = authService.refreshToken(refreshToken);
+            cookieHelper.addRefreshTokenCookie(response, newTokens.getRefreshToken());
 
             // Set AccessToken mới vào response header để frontend có thể đọc
             response.setHeader("X-New-Access-Token", newTokens.getAccessToken());
@@ -141,9 +142,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    // Tạo ra hàm này vì JJWT nó bắt lỗi ở filter luôn mà không vô được
-    // @RestControllerAdvise
-    // Nên phải custom ở ngoài này
+    // Tạo ra hàm này vì JJWT nó bắt lỗi ở filter luôn mà không vô được @RestControllerAdvise nên phải custom ở ngoài này
     private void handleJwtException(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json; charset=UTF-8");
