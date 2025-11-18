@@ -116,8 +116,10 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public RegisterDTO register(RegisterRequest registerRequest) {
-        userRepository.existsByEmail(registerRequest.getEmail())
-                .orElseThrow(() -> new EmailAlreadyExistsExceptionHandler("Email đã tồn tại!!"));
+        userRepository.findByEmail(registerRequest.getEmail())
+                .ifPresent(user -> {
+                    throw new EmailAlreadyExistsExceptionHandler("Email đã tồn tại!");
+                });
 
         Role defaultRole = roleRepository.findByRoleNameIgnoreCase("USER")
                 .orElseGet(() -> roleRepository.save(Role.builder()
