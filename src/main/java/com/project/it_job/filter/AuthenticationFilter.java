@@ -3,7 +3,7 @@ package com.project.it_job.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
-import com.project.it_job.exception.RefreshTokenExceptionHanlder;
+import com.project.it_job.exception.RefreshTokenExceptionHandler;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.CookieHelper;
@@ -119,7 +119,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             }
 
             return false;
-        } catch (RefreshTokenExceptionHanlder | AccessTokenExceptionHandler e) {
+        } catch (RefreshTokenExceptionHandler | AccessTokenExceptionHandler e) {
             // RefreshToken cũng hết hạn hoặc không hợp lệ
             cookieHelper.clearRefreshTokenCookie(response);
             return false;

@@ -6,7 +6,7 @@ import com.project.it_job.entity.auth.User;
 import com.project.it_job.exception.AccessTokenExceptionHandler;
 import com.project.it_job.exception.ExpireTokenExceptionHandler;
 import com.project.it_job.exception.NotFoundIdExceptionHandler;
-import com.project.it_job.exception.RefreshTokenExceptionHanlder;
+import com.project.it_job.exception.RefreshTokenExceptionHandler;
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
@@ -130,7 +130,7 @@ public class JWTHelpper {
             String userId = claims.getIssuer();
 
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                    .orElseThrow(() -> new RefreshTokenExceptionHanlder("Không tìm thấy token"));
+                    .orElseThrow(() -> new RefreshTokenExceptionHandler("Không tìm thấy token"));
 
             if (refreshToken != null && !refreshToken.getIsRevoked()) {
                 return claims.getIssuer();
@@ -144,7 +144,7 @@ public class JWTHelpper {
                         .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy UserId"));
 
                 if (!refreshToken.getUser().getId().equals(userId)) {
-                    throw new RefreshTokenExceptionHanlder("User token không trùng khớp");
+                    throw new RefreshTokenExceptionHandler("User token không trùng khớp");
                 }
             }
 
@@ -153,7 +153,7 @@ public class JWTHelpper {
             removeAllToken(userId);
             throw new ExpireTokenExceptionHandler("Hết hạn Token, Vui lòng đăng nhập lại");
         } catch (Exception e) {
-            throw new RefreshTokenExceptionHanlder("Token không hợp lệ!");
+            throw new RefreshTokenExceptionHandler("Token không hợp lệ!");
         }
         return null;
     }
