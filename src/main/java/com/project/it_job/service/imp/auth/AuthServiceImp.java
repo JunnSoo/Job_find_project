@@ -71,12 +71,12 @@ public class AuthServiceImp implements AuthService {
                 .orElseThrow(() -> {
                     // điếm số lần nhập sai
                     blockUserHelpper.updateCountErrorUser(loginRequest.getEmail());
-                    return new EmailNotFoundExceptionHandler("Không tìm thấy email!");
+                    return new WrongPasswordOrEmailExceptionHandler("Không tìm thấy email!");
                 });
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             blockUserHelpper.updateCountErrorUser(loginRequest.getEmail());
-            throw new WrongPasswordExceptionHandler("Tài khoản hoặc mật khẩu không hợp lệ!");
+            throw new WrongPasswordOrEmailExceptionHandler("Tài khoản hoặc mật khẩu không hợp lệ!");
         }
 
         boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());

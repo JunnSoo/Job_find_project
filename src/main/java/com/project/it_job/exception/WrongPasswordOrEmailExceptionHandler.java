@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class WrongPasswordExceptionHandler extends RuntimeException {
+public class WrongPasswordOrEmailExceptionHandler extends RuntimeException {
     private String message;
 }

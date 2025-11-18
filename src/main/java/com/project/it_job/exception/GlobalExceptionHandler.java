@@ -234,9 +234,9 @@ public class GlobalExceptionHandler {
         }
 
         // Wrong password
-        @ExceptionHandler(WrongPasswordExceptionHandler.class)
+        @ExceptionHandler(WrongPasswordOrEmailExceptionHandler.class)
         public ResponseEntity<BaseResponse> handleWrongPasswordException(
-                        WrongPasswordExceptionHandler ex, HttpServletRequest request) {
+                WrongPasswordOrEmailExceptionHandler ex, HttpServletRequest request) {
                 log.error("WrongPasswordExceptionHandler: {} | URI: {} | Method: {} | Message: {}",
                                 ex.getClass().getSimpleName(),
                                 request.getRequestURI(),
@@ -244,9 +244,7 @@ public class GlobalExceptionHandler {
                                 ex.getMessage(),
                                 ex);
 
-                String userMessage = ex.getMessage() != null && !ex.getMessage().isBlank()
-                                ? ex.getMessage()
-                                : "Tài khoản hoặc mật khẩu không chính xác!";
+                String userMessage = "Tài khoản hoặc mật khẩu không chính xác!";
                 return ResponseEntity
                                 .status(HttpStatus.UNAUTHORIZED)
                                 .body(BaseResponse.error(userMessage, HttpStatus.UNAUTHORIZED));
