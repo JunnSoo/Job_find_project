@@ -3,10 +3,7 @@ package com.project.it_job.util;
 import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.AccessTokenExceptionHandler;
-import com.project.it_job.exception.ExpireTokenExceptionHandler;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
-import com.project.it_job.exception.RefreshTokenExceptionHandler;
+import com.project.it_job.exception.*;
 import com.project.it_job.repository.auth.AccessTokenRepository;
 import com.project.it_job.repository.auth.RefreshTokenRepository;
 import com.project.it_job.repository.auth.UserRepository;
@@ -197,4 +194,13 @@ public class JWTHelpper {
         tokenManagerService.revokeAllTokens(userId);
     }
 
+    public boolean jwtCheckingLoginByUserId(String userId) {
+        boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(userId);
+        boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(userId);
+
+        if (isActiveAccessToken || isActiveRefreshToken) {
+            throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
+        }
+        return false;
+    }
 }

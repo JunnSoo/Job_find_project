@@ -7,11 +7,15 @@ import com.project.it_job.request.auth.RegisterRequest;
 import com.project.it_job.response.BaseResponse;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.CookieHelper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 
 @RestController
@@ -20,6 +24,24 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthService authService;
     private final CookieHelper cookieHelper;
+    @Value("${ggurl.login-url}")
+    private String loginUrl;
+
+    @GetMapping("/google")
+    public void loginGoogle(HttpServletResponse response,HttpServletRequest request) throws IOException {
+        response.sendRedirect(loginUrl);
+    }
+
+    @GetMapping("/google/success")
+    public ResponseEntity<?>  loginGoogleSuccess(HttpServletResponse response,HttpServletRequest request) throws IOException {
+        String accessToken = request.getParameter("accessToken");
+        String refreshToken = request.getParameter("refreshToken");
+        System.out.println(accessToken);
+        return ResponseEntity.ok(BaseResponse.success(TokenDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build(), "OK"));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {

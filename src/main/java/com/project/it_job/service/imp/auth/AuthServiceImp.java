@@ -79,12 +79,8 @@ public class AuthServiceImp implements AuthService {
             throw new WrongPasswordOrEmailExceptionHandler("Tài khoản hoặc mật khẩu không hợp lệ!");
         }
 
-        boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
-        boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
-
-        if (isActiveAccessToken || isActiveRefreshToken) {
-            throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
-        }
+        //        check đăng nhập ở nơi khác
+        jwtHelpper.jwtCheckingLoginByUserId(user.getId());
 
         String accessToken = jwtHelpper.createAccessToken(user.getRole().getRoleName(), user.getId());
         String refershToken = jwtHelpper.createRefershToken(user.getRole().getRoleName(), user.getId());

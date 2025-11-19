@@ -4,6 +4,7 @@ import com.project.it_job.constant.SecurityConstants;
 import com.project.it_job.exception.CustomAccessDeniedHandler;
 import com.project.it_job.exception.CustomAuthenticationEntryPointHandler;
 import com.project.it_job.filter.AuthenticationFilter;
+import com.project.it_job.util.GoogleSuccessHelpper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,8 +29,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Value("${client.url}")
+    @Value("${url.client}")
     private String localhost;
+
+    private final GoogleSuccessHelpper googleSuccessHelpper;
+
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
@@ -76,7 +80,12 @@ public class SecurityConfig {
                         // Xử lý khi đã đăng nhập nhưng không có quyền - Trả về 403
                         .accessDeniedHandler(customAccessDeniedHandler))
                 .httpBasic(AbstractHttpConfigurer::disable) // Tắt Basic Auth
-                .formLogin(AbstractHttpConfigurer::disable); // Tắt form login mặc định
+                .formLogin(AbstractHttpConfigurer::disable) // Tắt form login mặc định
+
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(googleSuccessHelpper)
+                );
+
 
         return http.build();
     }

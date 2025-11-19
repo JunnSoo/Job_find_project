@@ -11,6 +11,29 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: ${KAFKA_BOOSTRAP_SERVER}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_GOOGLE_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/login/oauth2/code/google" #đường dẫn này phải khớp với khai báo trong gg cloud nó là được dẫn gg gọi ngược lại BE
+            scope:
+              - email
+              - profile
+
+        provider:
+          google: # mình sẽ security bên google
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+ggurl:
+  redirect-url:  /login/oauth2/code/google
+  login-url: /oauth2/authorization/google
+
 
 jwt:
   secret: ${JWT_SECRET}
@@ -21,8 +44,9 @@ jwt:
 upload:
   image: ${UPLOAD_IMAGE}
 
-client:
-  url: ${CLIENT_URL}
+url:
+  client: ${URL_CLIENT}
+  server: ${URL_SERVER}
 
 redis:
   host: ${REDIS_HOST}
