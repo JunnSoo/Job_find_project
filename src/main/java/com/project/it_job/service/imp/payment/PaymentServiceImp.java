@@ -2,7 +2,7 @@ package com.project.it_job.service.imp.payment;
 
 import com.project.it_job.dto.payment.PaymentDTO;
 import com.project.it_job.entity.payment.Payment;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.payment.PaymentMapper;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.repository.payment.PaymentMethodRepository;
@@ -13,7 +13,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.payment.PaymentRequest;
 import com.project.it_job.service.payment.PaymentService;
 import com.project.it_job.specification.payment.PaymentSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +31,7 @@ public class PaymentServiceImp implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
-    private final PageCustomHelpper  pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final PaymentSpecification paymentSpecification;
     private final PaymentStatusRepository paymentStatusRepository;
     private final PaymentMethodRepository paymentMethodRepository;
@@ -45,7 +45,7 @@ public class PaymentServiceImp implements PaymentService {
 
     @Override
     public Page<PaymentDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         Specification<Payment> spec = paymentSpecification.searchByTitle(pageRequestValidate.getKeyword());
 

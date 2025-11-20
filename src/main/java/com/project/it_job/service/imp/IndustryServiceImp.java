@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.IndustryDTO;
 import com.project.it_job.entity.Industry;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.IndustryMapper;
 import com.project.it_job.repository.IndustryRepository;
 import com.project.it_job.request.IndustryRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.IndustryService;
 import com.project.it_job.specification.IndustrySpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class IndustryServiceImp implements IndustryService {
 
     private final IndustryRepository industryRepository;
     private final IndustryMapper industryMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final IndustrySpecification industrySpecification;
 
     @Override
@@ -41,7 +41,7 @@ public class IndustryServiceImp implements IndustryService {
     @Override
     @Transactional
     public Page<IndustryDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<Industry> spec = industrySpecification.searchByName(pageRequestValidate.getKeyword());

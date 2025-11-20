@@ -3,14 +3,14 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.ReportDTO;
 import com.project.it_job.entity.Report;
 import com.project.it_job.entity.ReportStatus;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReportMapper;
 import com.project.it_job.repository.ReportRepository;
 import com.project.it_job.repository.ReportStatusRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportRequest;
 import com.project.it_job.service.ReportService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +25,7 @@ import java.util.List;
 public class ReportServiceImp implements ReportService {
     private final ReportRepository reportRepository;
     private final ReportStatusRepository reportStatusRepository;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final ReportMapper reportMapper;
 
     @Override
@@ -75,7 +75,7 @@ public class ReportServiceImp implements ReportService {
     }
     @Override
     public Page<ReportDTO> getAllReportsPage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
         return reportRepository.findAll(pageable).map(reportMapper::toDTO);
     }

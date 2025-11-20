@@ -15,8 +15,11 @@ public final class SecurityConstants {
 
         public static final String[] API_PUBLIC_URLS = {
                         "/api/auth/login",
+                        "/api/auth/login-google",
                         "/api/auth/register",
                         "/api/auth/refresh",
+                        "/oauth2/**",
+                        "/login/oauth2/**",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
@@ -76,7 +79,8 @@ public final class SecurityConstants {
                         "/api/payment/**",
                         "/api/payment-method/**",
                         "/api/service-product/**",
-                        "/api/auth/logout"
+                        "/api/auth/logout",
+                        "/api/auth/profile"
         };
 
         public static final String[] USER_WRITE_URLS = {

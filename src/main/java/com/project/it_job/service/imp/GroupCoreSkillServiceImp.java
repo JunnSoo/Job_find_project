@@ -2,13 +2,13 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.GroupCoreSkillDTO;
 import com.project.it_job.entity.GroupCoreSkill;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.GroupCoreSkillMapper;
 import com.project.it_job.repository.GroupCoreSkillRepository;
 import com.project.it_job.request.GroupCoreSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.GroupCoreSkillService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ public class GroupCoreSkillServiceImp implements GroupCoreSkillService {
 
     private final GroupCoreSkillRepository repository;
     private final GroupCoreSkillMapper mapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<GroupCoreSkillDTO> getAllGroupCoreSkill() {
@@ -36,7 +36,7 @@ public class GroupCoreSkillServiceImp implements GroupCoreSkillService {
 
     @Override
     public Page<GroupCoreSkillDTO> getAllGroupCoreSkillPage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom validated = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return repository.findAll(pageable).map(mapper::toDto);
     }

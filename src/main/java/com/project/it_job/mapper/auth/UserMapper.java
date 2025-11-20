@@ -6,6 +6,7 @@ import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
 import com.project.it_job.request.auth.SaveUserRequest;
+import com.project.it_job.request.auth.UpdateProfileRequest;
 import com.project.it_job.request.auth.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -90,5 +91,42 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .avatar(user.getAvatar())
                 .build();
+    }
+
+    public void updateProfileMapper(User existingUser, UpdateProfileRequest request) {
+        if (request.getFirstName() != null) {
+            existingUser.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null) {
+            existingUser.setLastName(request.getLastName());
+        }
+        if (request.getAvatar() != null) {
+            existingUser.setAvatar(request.getAvatar());
+        }
+        if (request.getPhone() != null) {
+            existingUser.setPhone(request.getPhone());
+        }
+        if (request.getGender() != null) {
+            existingUser.setGender(request.getGender());
+        }
+        if (request.getEducation() != null) {
+            existingUser.setEducation(request.getEducation());
+        }
+        if (request.getAddress() != null) {
+            existingUser.setAddress(request.getAddress());
+        }
+        if (request.getWebsiteLink() != null) {
+            existingUser.setWebsiteLink(request.getWebsiteLink());
+        }
+        if (request.getBirthDate() != null) {
+            existingUser.setBirthDate(request.getBirthDate());
+        }
+        if (request.getIsFindJob() != null) {
+            existingUser.setFindJob(request.getIsFindJob());
+        }
+        if (request.getGroupSoftSkill() != null) {
+            existingUser.setGroupSoftSkill(request.getGroupSoftSkill());
+        }
+        existingUser.setUpdatedDate(LocalDateTime.now());
     }
 }

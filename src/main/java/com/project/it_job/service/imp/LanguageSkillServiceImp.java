@@ -5,7 +5,7 @@ import com.project.it_job.entity.Language;
 import com.project.it_job.entity.LanguageSkill;
 import com.project.it_job.entity.LevelLanguage;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.LanguageSkillMapper;
 import com.project.it_job.repository.LanguageRepository;
 import com.project.it_job.repository.LanguageSkillRepository;
@@ -14,7 +14,7 @@ import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.LanguageSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.LanguageSkillService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,7 @@ public class LanguageSkillServiceImp implements LanguageSkillService {
     private final LevelLanguageRepository levelLanguageRepository;
     private final UserRepository userRepository;
     private final LanguageSkillMapper languageSkillMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<LanguageSkillDTO> getAllLanguageSkill() {
@@ -45,7 +45,7 @@ public class LanguageSkillServiceImp implements LanguageSkillService {
 
     @Override
     public Page<LanguageSkillDTO> getAllLanguageSkillPage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom validated = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return languageSkillRepository.findAll(pageable).map(languageSkillMapper::toDto);
     }

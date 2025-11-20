@@ -3,14 +3,14 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.AwardDTO;
 import com.project.it_job.entity.Award;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.AwardMapper;
 import com.project.it_job.repository.AwardRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.AwardRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.AwardService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class AwardServiceImp implements AwardService {
     private final AwardRepository awardRepository;
     private final UserRepository userRepository;
     private final AwardMapper awardMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<AwardDTO> getAllAward() {
@@ -39,7 +39,7 @@ public class AwardServiceImp implements AwardService {
 
     @Override
     public Page<AwardDTO> getAllAwardPage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom validated = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return awardRepository.findAll(pageable).map(awardMapper::toDto);
     }

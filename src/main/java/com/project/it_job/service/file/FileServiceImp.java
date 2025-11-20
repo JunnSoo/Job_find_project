@@ -1,6 +1,6 @@
 package com.project.it_job.service.file;
 
-import com.project.it_job.exception.FileExceptionHandler;
+import com.project.it_job.exception.file.FileExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

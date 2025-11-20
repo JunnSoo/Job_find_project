@@ -2,12 +2,13 @@ package com.project.it_job.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.dto.auth.TokenDTO;
-import com.project.it_job.exception.AccessTokenExceptionHandler;
-import com.project.it_job.exception.RefreshTokenExceptionHandler;
+import com.project.it_job.exception.auth.AccessTokenExceptionHandler;
+import com.project.it_job.exception.auth.RefreshTokenExceptionHandler;
 import com.project.it_job.response.BaseResponse;
+import com.project.it_job.util.security.CustomUserDetails;
 import com.project.it_job.service.auth.AuthService;
-import com.project.it_job.util.CookieHelper;
-import com.project.it_job.util.JWTHelpper;
+import com.project.it_job.util.security.CookieHelper;
+import com.project.it_job.util.security.JWTHelper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,7 +32,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
-    private final JWTHelpper jwtHelpper;
+    private final JWTHelper jwtHelper;
     private final AuthService authService;
     private final CookieHelper cookieHelper;
 
@@ -46,16 +47,24 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             String role = "";
             try {
-                role = jwtHelpper.verifyAccessToken(token);
+                role = jwtHelper.verifyAccessToken(token);
 
                 // Chỉ set authentication nếu role không rỗng
                 if (role != null && !role.isEmpty()) {
+                    // Extract userId từ token (đã được verify ở trên)
+                    String userId = jwtHelper.getUserIdFromToken(token);
+
                     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
                     GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + role);
                     grantedAuthorities.add(grantedAuthority);
 
-                    // Thẻ thông hành
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("", "",
+                    // Tạo CustomUserDetails để lưu userId và authorities
+                    CustomUserDetails userDetails = new CustomUserDetails(userId, grantedAuthorities);
+
+                    // Lưu UserDetails vào principal (chuẩn Spring Security)
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, // principal = CustomUserDetails
+                            null, // credentials = null (không cần)
                             grantedAuthorities);
 
                     SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -101,16 +110,24 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             response.setHeader("X-New-Access-Token", newTokens.getAccessToken());
 
             // Verify AccessToken mới để lấy role
-            String role = jwtHelpper.verifyAccessToken(newTokens.getAccessToken());
+            String role = jwtHelper.verifyAccessToken(newTokens.getAccessToken());
 
             // Set authentication với AccessToken mới
             if (role != null && !role.isEmpty()) {
+                // Extract userId từ token mới
+                String userId = jwtHelper.getUserIdFromToken(newTokens.getAccessToken());
+
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + role);
                 grantedAuthorities.add(grantedAuthority);
 
-                // Thẻ thông hành
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("", "",
+                // Tạo CustomUserDetails để lưu userId và authorities
+                CustomUserDetails userDetails = new CustomUserDetails(userId, grantedAuthorities);
+
+                // Lưu UserDetails vào principal (chuẩn Spring Security)
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, // principal = CustomUserDetails
+                        null, // credentials = null
                         grantedAuthorities);
 
                 SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -142,7 +159,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    // Tạo ra hàm này vì JJWT nó bắt lỗi ở filter luôn mà không vô được @RestControllerAdvise nên phải custom ở ngoài này
+    // Tạo ra hàm này vì JJWT nó bắt lỗi ở filter luôn mà không vô được
+    // @RestControllerAdvise nên phải custom ở ngoài này
     private void handleJwtException(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json; charset=UTF-8");

@@ -2,13 +2,13 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.ExperienceDTO;
 import com.project.it_job.entity.Experience;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ExperienceMapper;
 import com.project.it_job.repository.ExperienceRepository;
 import com.project.it_job.request.ExperienceRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.ExperienceService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ public class ExperienceServiceImp implements ExperienceService {
 
     private final ExperienceRepository experienceRepository;
     private final ExperienceMapper experienceMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<ExperienceDTO> getAllExperience() {
@@ -36,7 +36,7 @@ public class ExperienceServiceImp implements ExperienceService {
 
     @Override
     public Page<ExperienceDTO> getAllExperiencePage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom validated = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return experienceRepository.findAll(pageable).map(experienceMapper::toDto);
     }

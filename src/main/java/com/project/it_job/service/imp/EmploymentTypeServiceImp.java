@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.EmploymentTypeDTO;
 import com.project.it_job.entity.EmploymentType;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.EmploymentTypeMapper;
 import com.project.it_job.repository.EmploymentTypeRepository;
 import com.project.it_job.request.EmploymentTypeRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.EmploymentTypeService;
 import com.project.it_job.specification.EmploymentTypeSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class EmploymentTypeServiceImp implements EmploymentTypeService {
 
     private final EmploymentTypeRepository employmentTypeRepository;
     private final EmploymentTypeMapper employmentTypeMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final EmploymentTypeSpecification employmentTypeSpecification;
 
     @Override
@@ -41,7 +41,7 @@ public class EmploymentTypeServiceImp implements EmploymentTypeService {
     @Override
     @Transactional
     public Page<EmploymentTypeDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<EmploymentType> spec = employmentTypeSpecification.searchByName(pageRequestValidate.getKeyword());

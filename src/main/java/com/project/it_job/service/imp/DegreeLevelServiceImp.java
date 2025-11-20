@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.DegreeLevelDTO;
 import com.project.it_job.entity.DegreeLevel;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.DegreeLevelMapper;
 import com.project.it_job.repository.DegreeLevelRepository;
 import com.project.it_job.request.DegreeLevelRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.DegreeLevelService;
 import com.project.it_job.specification.DegreeLevelSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class DegreeLevelServiceImp implements DegreeLevelService {
 
     private final DegreeLevelRepository degreeLevelRepository;
     private final DegreeLevelMapper degreeLevelMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final DegreeLevelSpecification degreeLevelSpecification;
 
     @Override
@@ -41,7 +41,7 @@ public class DegreeLevelServiceImp implements DegreeLevelService {
     @Override
     @Transactional
     public Page<DegreeLevelDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<DegreeLevel> spec = degreeLevelSpecification.searchByName(pageRequestValidate.getKeyword());

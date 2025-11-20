@@ -2,13 +2,13 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.LanguageDTO;
 import com.project.it_job.entity.Language;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.LanguageMapper;
 import com.project.it_job.repository.LanguageRepository;
 import com.project.it_job.request.LanguageRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.LanguageService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ public class LanguageServiceImp implements LanguageService {
 
     private final LanguageRepository languageRepository;
     private final LanguageMapper languageMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<LanguageDTO> getAllLanguage() {
@@ -36,7 +36,7 @@ public class LanguageServiceImp implements LanguageService {
 
     @Override
     public Page<LanguageDTO> getAllLanguagePage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
         return languageRepository.findAll(pageable).map(languageMapper::toDto);
     }

@@ -3,14 +3,14 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.CertificateDTO;
 import com.project.it_job.entity.Certificate;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.CertificateMapper;
 import com.project.it_job.repository.CertificateRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.CertificateRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.CertificateService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class CertificateServiceImp implements CertificateService {
     private final CertificateRepository certificateRepository;
     private final UserRepository userRepository;
     private final CertificateMapper certificateMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<CertificateDTO> getAllCertificate() {
@@ -39,7 +39,7 @@ public class CertificateServiceImp implements CertificateService {
 
     @Override
     public Page<CertificateDTO> getAllCertificatePage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom validated = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return certificateRepository.findAll(pageable).map(certificateMapper::toDto);
     }

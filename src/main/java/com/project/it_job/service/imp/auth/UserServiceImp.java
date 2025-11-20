@@ -4,10 +4,10 @@ import com.project.it_job.dto.auth.UserDTO;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.ConflictExceptionHandler;
-import com.project.it_job.exception.EmailAlreadyExistsExceptionHandler;
-import com.project.it_job.exception.EmailNotChangeExceptionHandler;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.auth.EmailAlreadyExistsExceptionHandler;
+import com.project.it_job.exception.auth.EmailNotChangeExceptionHandler;
+import com.project.it_job.exception.common.ConflictExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.auth.UserMapper;
 import com.project.it_job.repository.auth.CompanyRepository;
 import com.project.it_job.repository.auth.RoleRepository;
@@ -17,7 +17,7 @@ import com.project.it_job.request.auth.SaveUserRequest;
 import com.project.it_job.request.auth.UpdateUserRequest;
 import com.project.it_job.service.auth.UserService;
 import com.project.it_job.specification.auth.UserSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,7 @@ import java.util.List;
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final UserSpecification userSpecification;
     private final RoleRepository roleRepository;
     private final CompanyRepository companyRepository;
@@ -48,7 +48,7 @@ public class UserServiceImp implements UserService {
     @Override
     public Page<UserDTO> getAllUsersPage(PageRequestCustom pageRequestCustom) {
         // Validate pageCustom
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
 
         // Tạo page cho api
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());

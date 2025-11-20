@@ -3,7 +3,7 @@ package com.project.it_job.service.imp.auth;
 import com.project.it_job.dto.auth.CompanyDTO;
 import com.project.it_job.entity.CompanySize;
 import com.project.it_job.entity.auth.Company;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.auth.CompanyMapper;
 import com.project.it_job.repository.CompanySizeRepository;
 import com.project.it_job.repository.auth.CompanyRepository;
@@ -11,7 +11,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.auth.SaveUpdateCompanyRequest;
 import com.project.it_job.service.auth.CompanyService;
 import com.project.it_job.specification.auth.CompanySpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ import java.util.List;
 public class CompanyServiceImp implements CompanyService {
         private final CompanyRepository companyRepository;
         private final CompanyMapper companyMapper;
-        private final PageCustomHelpper pageCustomHelpper;
+        private final PageCustomHelper PageCustomHelper;
         private final CompanySpecification companySpecification;
         private final CompanySizeRepository companySizeRepository;
 
@@ -41,7 +41,7 @@ public class CompanyServiceImp implements CompanyService {
         @Override
         public Page<CompanyDTO> getAllCompanyPage(PageRequestCustom pageRequestCustom) {
                 // Validate pageCustom
-                PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+                PageRequestCustom pageRequestValidate = PageCustomHelper.validatePageCustom(pageRequestCustom);
                 // Tạo page cho api
                 Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,
                                 pageRequestValidate.getPageSize());

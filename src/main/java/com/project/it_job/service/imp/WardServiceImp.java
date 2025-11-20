@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.WardDTO;
 import com.project.it_job.entity.Ward;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.WardMapper;
 import com.project.it_job.repository.WardRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.WardRequest;
 import com.project.it_job.service.WardService;
 import com.project.it_job.specification.WardSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.List;
 public class WardServiceImp implements WardService {
     private final WardRepository wardRepository;
     private final WardMapper wardMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final WardSpecification wardSpecification;
 
     @Override
@@ -40,7 +40,7 @@ public class WardServiceImp implements WardService {
     @Override
     @Transactional
     public Page<WardDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<Ward> spec = wardSpecification.searchByName(pageRequestValidate.getKeyword());
