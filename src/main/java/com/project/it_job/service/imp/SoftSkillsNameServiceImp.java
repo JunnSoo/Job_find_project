@@ -3,7 +3,7 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.SoftSkillsNameDTO;
 import com.project.it_job.entity.SoftSkillsName;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.SoftSkillsNameMapper;
 import com.project.it_job.repository.SoftSkillsNameRepository;
 import com.project.it_job.repository.auth.UserRepository;
@@ -11,7 +11,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateSoftSkillNameRequest;
 import com.project.it_job.service.SoftSkillsNameService;
 import com.project.it_job.specification.SoftSkillsNameSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ import java.util.List;
 public class SoftSkillsNameServiceImp implements SoftSkillsNameService {
     private final SoftSkillsNameRepository softSkillsNameRepository;
     private final SoftSkillsNameMapper  softSkillsNameMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final SoftSkillsNameSpecification softSkillsNameSpecification;
 
     private final UserRepository userRepository;
@@ -41,7 +41,7 @@ public class SoftSkillsNameServiceImp implements SoftSkillsNameService {
     @Override
     public Page<SoftSkillsNameDTO> getAllSoftSkillsNamePage(PageRequestCustom pageRequestCustom) {
         //        validate pageCustom
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
 
 //        Tạo page cho api
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());

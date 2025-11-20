@@ -3,8 +3,8 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.CVUserDTO;
 import com.project.it_job.entity.CVUser;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
-import com.project.it_job.exception.UnauthorizedDeleteExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.security.UnauthorizedDeleteExceptionHandler;
 import com.project.it_job.mapper.CVUserMapper;
 import com.project.it_job.repository.CVUserRepository;
 import com.project.it_job.repository.auth.UserRepository;
@@ -13,7 +13,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.CVUserService;
 import com.project.it_job.service.file.FileService;
 import com.project.it_job.specification.CVUserSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +32,7 @@ public class CVUserServiceImp implements CVUserService {
     private final CVUserRepository cvUserRepository;
     private final UserRepository userRepository;
     private final CVUserMapper cvUserMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final CVUserSpecification cvUserSpecification;
     private final FileService fileService;
 
@@ -44,7 +44,7 @@ public class CVUserServiceImp implements CVUserService {
     @Override
     @Transactional
     public Page<CVUserDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         Specification<CVUser> spec = cvUserSpecification.searchByTitle(pageRequestValidate.getKeyword());
 

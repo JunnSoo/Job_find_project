@@ -2,15 +2,15 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.CompanySizeDTO;
 import com.project.it_job.entity.CompanySize;
-import com.project.it_job.exception.ConflictExceptionHandler;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.ConflictExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.CompanySizeMapper;
 import com.project.it_job.repository.CompanySizeRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateCompanySizeRequest;
 import com.project.it_job.service.CompanySizeService;
 import com.project.it_job.specification.CompanySizeSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.List;
 public class CompanySizeServiceImp implements CompanySizeService {
     private final CompanySizeRepository companySizeRepository;
     private final CompanySizeMapper companySizeMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final CompanySizeSpecification companySizeSpecification;
 
     @Override
@@ -37,7 +37,7 @@ public class CompanySizeServiceImp implements CompanySizeService {
     @Override
     public Page<CompanySizeDTO> getAllCompanyPage(PageRequestCustom pageRequestCustom) {
         //        validate pageCustom
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
 
 //        Tạo page cho api
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,pageRequestValidate.getPageSize());

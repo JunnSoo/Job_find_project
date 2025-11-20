@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.JobLevelDTO;
 import com.project.it_job.entity.JobLevel;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.JobLevelMapper;
 import com.project.it_job.repository.JobLevelRepository;
 import com.project.it_job.request.JobLevelRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.JobLevelService;
 import com.project.it_job.specification.JobLevelSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.List;
 public class JobLevelServiceImp implements JobLevelService {
     private final JobLevelRepository jobLevelRepository;
     private final JobLevelMapper jobLevelMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final JobLevelSpecification jobLevelSpecification;
 
     @Override
@@ -40,7 +40,7 @@ public class JobLevelServiceImp implements JobLevelService {
     @Override
     @Transactional
     public Page<JobLevelDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<JobLevel> spec = jobLevelSpecification.searchByName(pageRequestValidate.getKeyword());

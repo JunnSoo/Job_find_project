@@ -1,16 +1,16 @@
 package com.project.it_job.service.imp.auth;
 
 import com.project.it_job.dto.auth.RoleDTO;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.ConflictExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.entity.auth.Role;
-import com.project.it_job.exception.ConflictExceptionHandler;
 import com.project.it_job.mapper.auth.RoleMapper;
 import com.project.it_job.repository.auth.RoleRepository;
 import com.project.it_job.request.auth.RoleRequest;
 import com.project.it_job.service.auth.RoleService;
 import com.project.it_job.specification.auth.RoleSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +29,7 @@ public class RoleServiceImp implements RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final RoleSpecification roleSpecification;
 
     @Override
@@ -41,7 +41,7 @@ public class RoleServiceImp implements RoleService {
     @Transactional
     public Page<RoleDTO> getAllWithPage(PageRequestCustom req) {
 
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
         //Search
         Specification<Role> spec = roleSpecification.searchByName(pageRequestValidate.getKeyword());
 

@@ -2,15 +2,15 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.CategoryDTO;
 import com.project.it_job.entity.Category;
-import com.project.it_job.exception.ConflictExceptionHandler;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.ConflictExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.CategoryMapper;
 import com.project.it_job.repository.CategoryRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateCategoryRequest;
 import com.project.it_job.service.CategoryService;
 import com.project.it_job.specification.CategorySpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class CategoryServiceImp implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final CategorySpecification categorySpecification;
 
     @Override
@@ -40,7 +40,7 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public Page<CategoryDTO> getAllCategoriesPage(PageRequestCustom pageRequestCustom) {
         // Validate pageCustom
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
 
         // Tạo page cho api
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());

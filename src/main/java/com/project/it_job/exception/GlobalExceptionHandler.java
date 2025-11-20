@@ -1,7 +1,11 @@
 package com.project.it_job.exception;
 
+import com.project.it_job.exception.auth.*;
+import com.project.it_job.exception.common.*;
+import com.project.it_job.exception.file.FileExceptionHandler;
+import com.project.it_job.exception.security.UnauthorizedDeleteExceptionHandler;
 import com.project.it_job.response.BaseResponse;
-import com.project.it_job.util.CookieHelper;
+import com.project.it_job.util.security.CookieHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -236,7 +240,7 @@ public class GlobalExceptionHandler {
         // Wrong password
         @ExceptionHandler(WrongPasswordOrEmailExceptionHandler.class)
         public ResponseEntity<BaseResponse> handleWrongPasswordException(
-                WrongPasswordOrEmailExceptionHandler ex, HttpServletRequest request) {
+                        WrongPasswordOrEmailExceptionHandler ex, HttpServletRequest request) {
                 log.error("WrongPasswordExceptionHandler: {} | URI: {} | Method: {} | Message: {}",
                                 ex.getClass().getSimpleName(),
                                 request.getRequestURI(),
@@ -272,7 +276,7 @@ public class GlobalExceptionHandler {
         // RefreshToken handle exception
         @ExceptionHandler(RefreshTokenExceptionHandler.class)
         public ResponseEntity<BaseResponse> handleRefreshTokenException(
-                RefreshTokenExceptionHandler ex, HttpServletRequest request) {
+                        RefreshTokenExceptionHandler ex, HttpServletRequest request) {
                 log.error("RefreshTokenExceptionHanlder: {} | URI: {} | Method: {} | Message: {}",
                                 ex.getClass().getSimpleName(),
                                 request.getRequestURI(),
@@ -358,5 +362,24 @@ public class GlobalExceptionHandler {
                 return ResponseEntity
                                 .status(HttpStatus.FORBIDDEN)
                                 .body(BaseResponse.error(userMessage, HttpStatus.FORBIDDEN));
+        }
+
+        // OAuth2 Login Exception
+        @ExceptionHandler(GoogleLoginExceptionHandler.class)
+        public ResponseEntity<BaseResponse> handleOAuth2LoginException(
+                GoogleLoginExceptionHandler ex, HttpServletRequest request) {
+                log.error("OAuth2LoginException: {} | URI: {} | Method: {} | Message: {}",
+                                ex.getClass().getSimpleName(),
+                                request.getRequestURI(),
+                                request.getMethod(),
+                                ex.getMessage(),
+                                ex);
+
+                String userMessage = ex.getMessage() != null && !ex.getMessage().isBlank()
+                                ? ex.getMessage()
+                                : "Đăng nhập Google thất bại. Vui lòng thử lại.";
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
+                                .body(BaseResponse.error(userMessage, HttpStatus.UNAUTHORIZED));
         }
 }

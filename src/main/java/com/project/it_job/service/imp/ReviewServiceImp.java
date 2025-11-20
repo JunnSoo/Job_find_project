@@ -5,7 +5,7 @@ import com.project.it_job.dto.UserReviewDTO;
 import com.project.it_job.entity.Review;
 import com.project.it_job.entity.auth.Company;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReviewMapper;
 import com.project.it_job.repository.ReviewRepository;
 import com.project.it_job.repository.auth.CompanyRepository;
@@ -14,7 +14,8 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.SaveUpdateReviewRequest;
 import com.project.it_job.service.ReviewService;
 import com.project.it_job.specification.ReviewSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ import java.util.List;
 public class ReviewServiceImp implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final ReviewSpecification reviewSpecification;
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
@@ -45,7 +46,7 @@ public class ReviewServiceImp implements ReviewService {
     @Override
     public Page<ReviewDTO> getAllReviewsPage(PageRequestCustom pageRequestCustom) {
         // Validate pageCustom
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
 
         // Tạo page cho api
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());

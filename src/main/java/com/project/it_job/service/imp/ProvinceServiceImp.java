@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.ProvinceDTO;
 import com.project.it_job.entity.Province;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ProvinceMapper;
 import com.project.it_job.repository.ProvinceRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ProvinceRequest;
 import com.project.it_job.service.ProvinceService;
 import com.project.it_job.specification.ProvinceSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ProvinceServiceImp implements ProvinceService {
     private final ProvinceRepository provinceRepository;
     private final ProvinceMapper provinceMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final ProvinceSpecification provinceSpecification;
 
     @Override
@@ -40,7 +40,7 @@ public class ProvinceServiceImp implements ProvinceService {
     @Override
     @Transactional
     public Page<ProvinceDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<Province> spec = provinceSpecification.searchByName(pageRequestValidate.getKeyword());

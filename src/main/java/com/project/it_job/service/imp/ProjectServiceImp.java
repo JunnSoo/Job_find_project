@@ -3,14 +3,14 @@ package com.project.it_job.service.imp;
 import com.project.it_job.dto.ProjectDTO;
 import com.project.it_job.entity.Project;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ProjectMapper;
 import com.project.it_job.repository.ProjectRepository;
 import com.project.it_job.repository.auth.UserRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ProjectRequest;
 import com.project.it_job.service.ProjectService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ public class ProjectServiceImp implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ProjectMapper projectMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<ProjectDTO> getAllProject() {
@@ -38,7 +38,7 @@ public class ProjectServiceImp implements ProjectService {
 
     @Override
     public Page<ProjectDTO> getAllProjectPage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
 
         return projectRepository.findAll(pageable).map(projectMapper::toDto);

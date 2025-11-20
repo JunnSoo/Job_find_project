@@ -2,14 +2,14 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.ReportStatusDTO;
 import com.project.it_job.entity.ReportStatus;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.ReportStatusMapper;
 import com.project.it_job.repository.ReportStatusRepository;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.ReportStatusRequest;
 import com.project.it_job.service.ReportStatusService;
 import com.project.it_job.specification.ReportStatusSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ReportStatusServiceImp implements ReportStatusService {
     private final ReportStatusRepository reportStatusRepository;
     private final ReportStatusMapper reportStatusMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final ReportStatusSpecification reportStatusSpecification;
 
     @Override
@@ -40,7 +40,7 @@ public class ReportStatusServiceImp implements ReportStatusService {
     @Override
     @Transactional
     public Page<ReportStatusDTO> getAllStatusWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         //Search
         Specification<ReportStatus> spec = reportStatusSpecification.searchByName(pageRequestValidate.getKeyword());

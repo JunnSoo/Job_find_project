@@ -11,6 +11,24 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: ${KAFKA_BOOSTRAP_SERVER}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 253105273512-o9u9tqfjt7tqaq4cp3qln0pagoc9gjf6.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
 
 jwt:
   secret: ${JWT_SECRET}
@@ -23,6 +41,9 @@ upload:
 
 client:
   url: ${CLIENT_URL}
+
+cookie:
+  secure: ${COOKIE_SECURE:false}  # true cho production (HTTPS), false cho development (HTTP)
 
 redis:
   host: ${REDIS_HOST}

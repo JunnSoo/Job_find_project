@@ -2,7 +2,7 @@ package com.project.it_job.service.imp.payment;
 
 import com.project.it_job.dto.payment.ServiceProductDTO;
 import com.project.it_job.entity.payment.ServiceProduct;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.payment.ServiceProductMapper;
 import com.project.it_job.repository.JobRepository;
 import com.project.it_job.repository.auth.UserRepository;
@@ -11,7 +11,7 @@ import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.request.payment.ServiceProductRequest;
 import com.project.it_job.service.payment.ServiceProductService;
 import com.project.it_job.specification.payment.ServiceProductSpecification;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +30,7 @@ public class ServiceProductServiceImp implements ServiceProductService {
     private final ServiceProductRepository serviceProductRepository;
     private final ServiceProductMapper serviceProductMapper;
     private final ServiceProductSpecification serviceProductSpecification;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
 
@@ -42,7 +42,7 @@ public class ServiceProductServiceImp implements ServiceProductService {
     @Override
     @Transactional
     public Page<ServiceProductDTO> getAllWithPage(PageRequestCustom req) {
-        PageRequestCustom pageRequestValidate = pageCustomHelpper.validatePageCustom(req);
+        PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(req);
 
         Specification<ServiceProduct> spec = serviceProductSpecification.searchByName(pageRequestValidate.getKeyword());
 

@@ -2,13 +2,13 @@ package com.project.it_job.service.imp;
 
 import com.project.it_job.dto.AvailableSkillDTO;
 import com.project.it_job.entity.AvailableSkill;
-import com.project.it_job.exception.NotFoundIdExceptionHandler;
+import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.AvailableSkillMapper;
 import com.project.it_job.repository.AvailableSkillRepository;
 import com.project.it_job.request.AvailableSkillRequest;
 import com.project.it_job.request.PageRequestCustom;
 import com.project.it_job.service.AvailableSkillService;
-import com.project.it_job.util.PageCustomHelpper;
+import com.project.it_job.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +24,7 @@ public class AvailableSkillServiceImp implements AvailableSkillService {
 
     private final AvailableSkillRepository availableSkillRepository;
     private final AvailableSkillMapper availableSkillMapper;
-    private final PageCustomHelpper pageCustomHelpper;
+    private final PageCustomHelper pageCustomHelper;
 
     @Override
     public List<AvailableSkillDTO> getAllAvailableSkill() {
@@ -36,7 +36,7 @@ public class AvailableSkillServiceImp implements AvailableSkillService {
 
     @Override
     public Page<AvailableSkillDTO> getAllAvailableSkillPage(PageRequestCustom pageRequestCustom) {
-        PageRequestCustom validated = pageCustomHelpper.validatePageCustom(pageRequestCustom);
+        PageRequestCustom validated = pageCustomHelper.validatePageCustom(pageRequestCustom);
         Pageable pageable = PageRequest.of(validated.getPageNumber() - 1, validated.getPageSize());
         return availableSkillRepository.findAll(pageable).map(availableSkillMapper::toDto);
     }
