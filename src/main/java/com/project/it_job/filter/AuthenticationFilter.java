@@ -3,13 +3,14 @@ package com.project.it_job.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.exception.auth.AccessTokenExceptionHandler;
+import com.project.it_job.exception.auth.ExpireTokenExceptionHandler;
 import com.project.it_job.exception.auth.RefreshTokenExceptionHandler;
 import com.project.it_job.response.BaseResponse;
+import com.project.it_job.service.auth.TokenManagerService;
 import com.project.it_job.util.security.CustomUserDetails;
 import com.project.it_job.service.auth.AuthService;
 import com.project.it_job.util.security.CookieHelper;
 import com.project.it_job.util.security.JWTHelper;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -20,13 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -35,6 +34,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final JWTHelper jwtHelper;
     private final AuthService authService;
     private final CookieHelper cookieHelper;
+    private final TokenManagerService tokenManagerService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -45,108 +45,111 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         if (token != null && token.startsWith("Bearer ") && !path.equals("/api/auth/refresh")) {
             token = token.substring(7);
 
-            String role = "";
             try {
-                role = jwtHelper.verifyAccessToken(token);
 
-                // Chỉ set authentication nếu role không rỗng
+                String role = jwtHelper.verifyAccessToken(token);
+
                 if (role != null && !role.isEmpty()) {
-                    // Extract userId từ token (đã được verify ở trên)
-                    String userId = jwtHelper.getUserIdFromToken(token);
-
-                    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-                    GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + role);
-                    grantedAuthorities.add(grantedAuthority);
-
-                    // Tạo CustomUserDetails để lưu userId và authorities
-                    CustomUserDetails userDetails = new CustomUserDetails(userId, grantedAuthorities);
-
-                    // Lưu UserDetails vào principal (chuẩn Spring Security)
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, // principal = CustomUserDetails
-                            null, // credentials = null (không cần)
-                            grantedAuthorities);
-
-                    SecurityContext securityContext = SecurityContextHolder.getContext();
-                    securityContext.setAuthentication(authentication);
+                    setAuthentication(token, role);
                 }
-            } catch (ExpiredJwtException e) {
-                // ExpiredJwtException token hết hạn, tự động refresh
-                if (tryAutoRefreshToken(request, response)) {
-                    // Refresh thành công, tiếp tục request
-                    filterChain.doFilter(request, response);
-                } else {
-                    // Refresh thất bại, trả về lỗi
-                    cookieHelper.clearRefreshTokenCookie(response);
-                    handleJwtException(response, "Token đã hết hạn, vui lòng đăng nhập lại");
-                }
-                return;
+
             } catch (AccessTokenExceptionHandler e) {
-                // Các lỗi khác (revoked, không tìm thấy, không hợp lệ) → không refresh
-                handleJwtException(response, e.getMessage());
+                String errorMessage = e.getMessage();
+                boolean isTokenExpired = "ACCESS_TOKEN_EXPIRED".equals(errorMessage);
+
+                if (isTokenExpired) {
+                    String newAccessToken = tryAutoRefreshToken(request, response);
+                    if (newAccessToken != null && !newAccessToken.isEmpty()) {
+                        if (!response.isCommitted()) {
+                            response.setHeader("X-New-Access-Token", newAccessToken);
+                        }
+
+                        // Authentication đã được set trong SecurityContext, các filter/controller khác
+                        filterChain.doFilter(request, response);
+                        return;
+                    } else {
+                        System.out.println("[AuthenticationFilter] Auto refresh thất bại");
+                        // Refresh thất bại
+                        cookieHelper.clearRefreshTokenCookie(response);
+                        // Lấy userId từ token cũ để revoke
+                        try {
+                            String userId = jwtHelper.getUserIdFromToken(token);
+                            if (userId != null) {
+                                tokenManagerService.revokeAllTokens(userId);
+                            }
+                        } catch (Exception ex) {
+                            // Không thể lấy userId, bỏ qua
+                        }
+                        handleJwtException(response, "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại");
+                    }
+                } else {
+                    //không refresh
+                    handleJwtException(response, e.getMessage());
+                }
                 return;
             }
         }
         filterChain.doFilter(request, response);
-
     }
 
-    // Thử tự động refresh token khi AccessToken hết hạn
-
-    private boolean tryAutoRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+    private String tryAutoRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = "";
         try {
-            // Lấy RefreshToken từ cookie
-            String refreshToken = getRefreshTokenFromCookie(request);
+            // Lấy từ cookie
+            refreshToken = getRefreshTokenFromCookie(request);
+            if (refreshToken == null || refreshToken.isEmpty())
+                return null;
 
-            if (refreshToken == null || refreshToken.isEmpty()) {
-                return false;
-            }
-
-            // Gọi service để refresh token
+            // Gọi service refresh
             TokenDTO newTokens = authService.refreshToken(refreshToken);
+            // Update refresh token cookie
             cookieHelper.addRefreshTokenCookie(response, newTokens.getRefreshToken());
 
-            // Set AccessToken mới vào response header để frontend có thể đọc
-            response.setHeader("X-New-Access-Token", newTokens.getAccessToken());
-
-            // Verify AccessToken mới để lấy role
-            String role = jwtHelper.verifyAccessToken(newTokens.getAccessToken());
-
-            // Set authentication với AccessToken mới
+            // Lấy role từ token mới
+            String role = jwtHelper.getRoleFromToken(newTokens.getAccessToken());
             if (role != null && !role.isEmpty()) {
-                // Extract userId từ token mới
-                String userId = jwtHelper.getUserIdFromToken(newTokens.getAccessToken());
-
-                List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + role);
-                grantedAuthorities.add(grantedAuthority);
-
-                // Tạo CustomUserDetails để lưu userId và authorities
-                CustomUserDetails userDetails = new CustomUserDetails(userId, grantedAuthorities);
-
-                // Lưu UserDetails vào principal (chuẩn Spring Security)
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, // principal = CustomUserDetails
-                        null, // credentials = null
-                        grantedAuthorities);
-
-                SecurityContext securityContext = SecurityContextHolder.getContext();
-                securityContext.setAuthentication(authentication);
-                return true;
+                setAuthentication(newTokens.getAccessToken(), role);
+                return newTokens.getAccessToken();
             }
 
-            return false;
-        } catch (RefreshTokenExceptionHandler | AccessTokenExceptionHandler e) {
-            // RefreshToken cũng hết hạn hoặc không hợp lệ
+            return null;
+
+        } catch (ExpireTokenExceptionHandler e) {
             cookieHelper.clearRefreshTokenCookie(response);
-            return false;
+            if (refreshToken != null) {
+                try {
+                    String userId = jwtHelper.getUserIdFromToken(refreshToken);
+                    if (userId != null) {
+                        tokenManagerService.revokeAllTokens(userId);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+            return null;
+        } catch (RefreshTokenExceptionHandler | AccessTokenExceptionHandler e) {
+            // Refresh token invalid hoặc access token lỗi
+            cookieHelper.clearRefreshTokenCookie(response);
+            return null;
         } catch (Exception e) {
             // Lỗi khác
-            return false;
+            cookieHelper.clearRefreshTokenCookie(response);
+            return null;
         }
     }
 
-    // Lấy RefreshToken từ cookie
+    private void setAuthentication(String token, String role) {
+        String userId = jwtHelper.getUserIdFromToken(token);
+
+        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+        CustomUserDetails userDetails = new CustomUserDetails(userId, grantedAuthorities);
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                grantedAuthorities);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
     private String getRefreshTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
