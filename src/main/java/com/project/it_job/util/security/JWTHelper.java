@@ -172,12 +172,14 @@ public class JWTHelper {
                 // token phải có trên database và chưa bị thu hồi
                 AccessToken accessToken = accessTokenRepository.findByToken(token)
                         .orElseThrow(() -> new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
+
                 if (accessToken.getIsRevoked()) {
                     throw new AccessTokenExceptionHandler("Access Token đã bị thu hồi!");
                 }
 
                 User user = userRepository.findById(userId)
                         .orElseThrow(() -> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
+
                 if (!accessToken.getUser().getId().equals(user.getId())) {
                     throw new AccessTokenExceptionHandler("User token không trùng khớp");
                 }
@@ -185,9 +187,8 @@ public class JWTHelper {
                 return claims.getSubject();
             }
         } catch (ExpiredJwtException e) {
-            throw e;
+            throw new AccessTokenExceptionHandler("Token đã hết hạn!!");
         } catch (JwtException e) {
-            e.printStackTrace();
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
         return null;
@@ -195,21 +196,6 @@ public class JWTHelper {
 
     public void removeAllToken(String userId) {
         tokenManagerService.revokeAllTokens(userId);
-    }
-
-    /**
-     * Lấy userId từ access token (không verify token, chỉ decode)
-     * Dùng để lấy userId từ token trong request header
-     */
-    public String getUserIdFromToken(String token) {
-        try {
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-            Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            Claims claims = tokenValidate.getBody();
-            return claims.getIssuer(); // userId được lưu trong issuer
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }
