@@ -191,7 +191,6 @@ public class AuthServiceImp implements AuthService {
 
             user = userRepository.save(user);
 
-
             if (user.getId() != null && !user.getId().isBlank() && !user.getId().isEmpty()) {
                 kafkaHelper.sendKafkaEmailRegister("register_email",
                         InforEmailDTO.builder()
@@ -202,15 +201,15 @@ public class AuthServiceImp implements AuthService {
             }
         } else {
             // Nếu user đã tồn tại, cập nhật thông tin từ Google (nếu cần)
-            if(request.getFirstName() == null || request.getFirstName().isEmpty()){
+            if (request.getFirstName() == null || request.getFirstName().isEmpty()) {
                 user.setFirstName(request.getFirstName());
             }
 
-            if(request.getLastName() == null || request.getLastName().isEmpty()){
+            if (request.getLastName() == null || request.getLastName().isEmpty()) {
                 user.setLastName(request.getLastName());
             }
 
-            if (request.getPicture() == null|| request.getPicture().isEmpty()) {
+            if (request.getPicture() == null || request.getPicture().isEmpty()) {
                 user.setAvatar(request.getPicture());
             }
 
