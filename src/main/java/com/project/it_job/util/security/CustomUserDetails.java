@@ -1,12 +1,21 @@
 package com.project.it_job.util.security;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public record CustomUserDetails(String userId,
-                                Collection<? extends GrantedAuthority> authorities) implements UserDetails {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CustomUserDetails implements UserDetails {
+    private String userId;
+    private Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -15,12 +24,12 @@ public record CustomUserDetails(String userId,
 
     @Override
     public String getPassword() {
-        return null;
+        return userId;
     }
 
     @Override
     public String getUsername() {
-        return userId;
+        return null;
     }
 
     @Override

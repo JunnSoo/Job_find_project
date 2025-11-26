@@ -2,8 +2,10 @@ package com.project.it_job.filter;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.it_job.dto.auth.JwtUserDTO;
 import com.project.it_job.exception.auth.AccessTokenExceptionHandler;
 import com.project.it_job.response.BaseResponse;
+import com.project.it_job.util.security.CustomUserDetails;
 import com.project.it_job.util.security.JWTHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,6 +30,7 @@ import java.util.List;
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final JWTHelper jwtHelpper;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
@@ -36,23 +39,28 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         if (token != null && token.startsWith("Bearer ") && !path.equals("/auth/refresh")) {
             token = token.substring(7);
 
-            String role = "";
             try {
-                role = jwtHelpper.verifyAccessToken(token);
+                JwtUserDTO jwtUser = jwtHelpper.verifyAccessToken(token);
+
+                List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + jwtUser.getRole());
+                grantedAuthorities.add(grantedAuthority);
+
+
+                CustomUserDetails customUserDetails = CustomUserDetails.builder()
+                        .userId(jwtUser.getUserId())
+                        .authorities(grantedAuthorities)
+                        .build();
+
+//                thẻ thông hành
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(customUserDetails, "", customUserDetails.getAuthorities());
+
+                SecurityContext securityContext = SecurityContextHolder.getContext();
+                securityContext.setAuthentication(authentication);
             } catch (AccessTokenExceptionHandler e) {
                 handleJwtException(response ,e.getMessage());
             }
-
-            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + role);
-            grantedAuthorities.add(grantedAuthority);
-
-//                thẻ thông hành
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken("", "", grantedAuthorities);
-
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(authentication);
         }
         filterChain.doFilter(request,response);
 

@@ -15,7 +15,7 @@ public interface AuthService {
 
     RegisterDTO register(RegisterRequest registerRequest);
 
-    void logout(String email);
+    void logout(String refreshToken);
 
     TokenDTO googleLogin(GoogleUserRequest request);
 
