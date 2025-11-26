@@ -1,5 +1,6 @@
 package com.project.it_job.util.security;
 
+import com.project.it_job.dto.auth.JwtUserDTO;
 import com.project.it_job.entity.auth.AccessToken;
 import com.project.it_job.entity.auth.RefreshToken;
 import com.project.it_job.entity.auth.User;
@@ -124,7 +125,7 @@ public class JWTHelper {
             Jws<Claims> tokenValidate = Jwts.parser()
                     .verifyWith(key)
                     .build()
-                    .parseClaimsJws(token);
+                    .parseSignedClaims(token);
 
             Claims claims = tokenValidate.getBody();
             String userId = claims.getIssuer();
@@ -147,7 +148,7 @@ public class JWTHelper {
                     throw new RefreshTokenExceptionHandler("User token không trùng khớp");
                 }
             }
-
+            return userId;
         } catch (ExpiredJwtException e) {
             String userId = e.getClaims().getIssuer();
             removeAllToken(userId);
@@ -155,44 +156,52 @@ public class JWTHelper {
         } catch (Exception e) {
             throw new RefreshTokenExceptionHandler("Token không hợp lệ!");
         }
-        return null;
     }
 
-    public String verifyAccessToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-
+    public JwtUserDTO verifyAccessToken(String token) {
         try {
+            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
             Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+
             Claims claims = tokenValidate.getBody();
-            if (claims.get("type").equals("access_token")
-                    && !claims.getSubject().isEmpty()
-                    && !claims.getIssuer().isEmpty()) {
-                String userId = claims.getIssuer();
 
-                // token phải có trên database và chưa bị thu hồi
-                AccessToken accessToken = accessTokenRepository.findByToken(token)
-                        .orElseThrow(() -> new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
-
-                if (accessToken.getIsRevoked()) {
-                    throw new AccessTokenExceptionHandler("Access Token đã bị thu hồi!");
-                }
-
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
-
-                if (!accessToken.getUser().getId().equals(user.getId())) {
-                    throw new AccessTokenExceptionHandler("User token không trùng khớp");
-                }
-
-                return claims.getSubject();
+            if (!claims.get("type").equals("access_token")
+                    && claims.getSubject().isEmpty()
+                    && claims.getIssuer().isEmpty()) {
+                throw new AccessTokenExceptionHandler("Token không phải access token!");
             }
+
+            String userId = claims.getIssuer();
+            String role = claims.getSubject();
+
+            // token phải có trên database và chưa bị thu hồi
+            AccessToken accessToken = accessTokenRepository.findByToken(token)
+                    .orElseThrow(() -> new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
+
+            if (accessToken.getIsRevoked()) {
+                throw new AccessTokenExceptionHandler("Access Token đã bị thu hồi!");
+            }
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundIdExceptionHandler("User không tìm thấy userID"));
+
+            if (!accessToken.getUser().getId().equals(user.getId())) {
+                throw new AccessTokenExceptionHandler("User token không trùng khớp");
+            }
+
+            return JwtUserDTO.builder()
+                    .userId(userId)
+                    .role(role)
+                    .build();
+
         } catch (ExpiredJwtException e) {
             throw new AccessTokenExceptionHandler("Token đã hết hạn!!");
         } catch (JwtException e) {
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
-        return null;
     }
+
 
     public void removeAllToken(String userId) {
         tokenManagerService.revokeAllTokens(userId);

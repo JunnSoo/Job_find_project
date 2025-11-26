@@ -1,6 +1,7 @@
 package com.project.it_job.controller.auth;
 
 import com.project.it_job.dto.auth.TokenDTO;
+import com.project.it_job.exception.auth.ExpireTokenExceptionHandler;
 import com.project.it_job.exception.auth.RefreshTokenExceptionHandler;
 import com.project.it_job.request.auth.LoginRequest;
 import com.project.it_job.request.auth.RegisterRequest;
@@ -55,10 +56,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestParam String id, HttpServletResponse response) {
-        authService.logout(id);
-        cookieHelper.clearRefreshTokenCookie(response);
-        return ResponseEntity.ok(BaseResponse.success(null, "OK"));
+    public ResponseEntity<?> logout(@CookieValue(name = "refresh_token",required = false) String refreshToken, HttpServletResponse response) {
+        try {
+            authService.logout(refreshToken);
+            cookieHelper.clearRefreshTokenCookie(response);
+            return ResponseEntity.ok(BaseResponse.success(null, "OK"));
+        } catch (RefreshTokenExceptionHandler | ExpireTokenExceptionHandler e) {
+            cookieHelper.clearRefreshTokenCookie(response);
+            throw new RefreshTokenExceptionHandler("Đăng xuất thất bại!");
+        }
     }
 
     @GetMapping("/login-google")
@@ -70,7 +76,7 @@ public class AuthenticationController {
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.ok(BaseResponse.success(authService.getProfile(userDetails.userId()), "OK"));
+        return ResponseEntity.ok(BaseResponse.success(authService.getProfile(userDetails.getUserId()), "OK"));
     }
 
     // Cập nhật thông tin profile của user hiện tại
@@ -79,6 +85,6 @@ public class AuthenticationController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody UpdateProfileRequest request) {
         return ResponseEntity
-                .ok(BaseResponse.success(authService.updateProfile(userDetails.userId(), request), "Cập nhật profile thành công"));
+                .ok(BaseResponse.success(authService.updateProfile(userDetails.getUserId(), request), "Cập nhật profile thành công"));
     }
 }

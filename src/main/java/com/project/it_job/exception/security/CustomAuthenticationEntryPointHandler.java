@@ -13,11 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/**
- * Custom Authentication Entry Point
- * Xử lý lỗi khi user chưa đăng nhập (không có token hoặc token không hợp lệ)
- * Trả về response JSON với status 403 thay vì response trống
- */
 @Slf4j
 @Component
 public class CustomAuthenticationEntryPointHandler implements AuthenticationEntryPoint {

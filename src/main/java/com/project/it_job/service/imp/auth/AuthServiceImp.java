@@ -2,17 +2,13 @@ package com.project.it_job.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.it_job.dto.InforEmailDTO;
+import com.project.it_job.exception.auth.*;
 import com.project.it_job.model.UserBlock;
 import com.project.it_job.dto.auth.RegisterDTO;
 import com.project.it_job.dto.auth.TokenDTO;
 import com.project.it_job.dto.auth.UserDTO;
 import com.project.it_job.entity.auth.Role;
 import com.project.it_job.entity.auth.User;
-import com.project.it_job.exception.auth.AccessTokenExceptionHandler;
-import com.project.it_job.exception.auth.AlreadyLoggedInExceptionHandler;
-import com.project.it_job.exception.auth.BlockLoginUserExceptionHandler;
-import com.project.it_job.exception.auth.EmailAlreadyExistsExceptionHandler;
-import com.project.it_job.exception.auth.WrongPasswordOrEmailExceptionHandler;
 import com.project.it_job.exception.common.NotFoundIdExceptionHandler;
 import com.project.it_job.mapper.auth.RegisterMapper;
 import com.project.it_job.mapper.auth.UserMapper;
@@ -154,9 +150,15 @@ public class AuthServiceImp implements AuthService {
 
     @Transactional
     @Override
-    public void logout(String userId) {
+    public void logout(String refreshToken) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new RefreshTokenExceptionHandler("Không tìm thấy Refresh Token!");
+        }
+
+        String userId = jwtHelper.verifyRefreshToken(refreshToken);
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundIdExceptionHandler("không tìm thấy id"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
         accessTokenRepository.revokeAllAccessTokens(user.getId());
         refreshTokenRepository.revokeAllRefreshTokens(user.getId());

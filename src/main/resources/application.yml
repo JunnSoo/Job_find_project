@@ -42,9 +42,6 @@ upload:
 client:
   url: ${CLIENT_URL}
 
-cookie:
-  secure: ${COOKIE_SECURE:false}  # true cho production (HTTPS), false cho development (HTTP)
-
 redis:
   host: ${REDIS_HOST}
   password: ${REDIS_PASSWORD}
