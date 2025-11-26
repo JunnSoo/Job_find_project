@@ -193,6 +193,13 @@ public class JWTHelper {
 
             if (accessToken.getExpiryDate().isBefore(LocalDateTime.now())) {
                 throw new AccessTokenExceptionHandler("Token đã hết hạn");
+
+            // token phải có trên database và chưa bị thu hồi
+            AccessToken accessToken = accessTokenRepository.findByToken(token)
+                    .orElseThrow(() -> new AccessTokenExceptionHandler("Không tìm thấy token trong database!"));
+
+            if (accessToken.getIsRevoked()) {
+                throw new AccessTokenExceptionHandler("Access Token đã bị thu hồi!");
             }
 
             User user = userRepository.findById(userId)
@@ -213,6 +220,7 @@ public class JWTHelper {
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
     }
+
 
     public void removeAllToken(String userId) {
         tokenManagerService.revokeAllTokens(userId);
