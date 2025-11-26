@@ -123,7 +123,6 @@ public class UserServiceImp implements UserService {
             mappedUser.setPassword(user.getPassword());
             return userMapper.userToUserDTO(userRepository.save(mappedUser));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ConflictExceptionHandler("Lỗi cập nhật user!");
         }
     }
