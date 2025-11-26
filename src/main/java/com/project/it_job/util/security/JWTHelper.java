@@ -44,6 +44,7 @@ public class JWTHelper {
 
     private final UserRepository userRepository;
 
+
     public String createAccessToken(String roles, String userId) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         // Kiểm tra users này có những access token nào
@@ -121,9 +122,10 @@ public class JWTHelper {
 
     public String verifyRefreshToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
         try {
             Jws<Claims> tokenValidate = Jwts.parser()
-                    .verifyWith(key)
+                    .setSigningKey(key)
                     .build()
                     .parseSignedClaims(token);
 
@@ -133,8 +135,12 @@ public class JWTHelper {
             RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                     .orElseThrow(() -> new RefreshTokenExceptionHandler("Không tìm thấy token"));
 
-            if (refreshToken != null && !refreshToken.getIsRevoked()) {
-                return claims.getIssuer();
+            if (refreshToken.getIsRevoked()) {
+                throw new RefreshTokenExceptionHandler("Refresh Token đã bị thu hồi!");
+            }
+
+            if (refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+                throw new ExpireTokenExceptionHandler("Refresh token đã hết hạn");
             }
 
             if (claims.get("type").equals("refresh_token")
@@ -159,16 +165,18 @@ public class JWTHelper {
     }
 
     public JwtUserDTO verifyAccessToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         try {
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-
-            Jws<Claims> tokenValidate = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+            Jws<Claims> tokenValidate = Jwts.parser()
+                    .setSigningKey(key)
+                    .build()
+                    .parseSignedClaims(token);
 
             Claims claims = tokenValidate.getBody();
 
-            if (!claims.get("type").equals("access_token")
-                    && claims.getSubject().isEmpty()
-                    && claims.getIssuer().isEmpty()) {
+            if (!"access_token".equals(claims.get("type"))
+                    || claims.getSubject() == null
+                    || claims.getIssuer() == null) {
                 throw new AccessTokenExceptionHandler("Token không phải access token!");
             }
 
@@ -181,6 +189,10 @@ public class JWTHelper {
 
             if (accessToken.getIsRevoked()) {
                 throw new AccessTokenExceptionHandler("Access Token đã bị thu hồi!");
+            }
+
+            if (accessToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+                throw new AccessTokenExceptionHandler("Token đã hết hạn");
             }
 
             User user = userRepository.findById(userId)
@@ -201,7 +213,6 @@ public class JWTHelper {
             throw new AccessTokenExceptionHandler("Token truyền vào không được hỗ trợ");
         }
     }
-
 
     public void removeAllToken(String userId) {
         tokenManagerService.revokeAllTokens(userId);
