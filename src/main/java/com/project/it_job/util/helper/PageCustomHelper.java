@@ -13,7 +13,7 @@ public class PageCustomHelper {
     public PageRequestCustom validatePageCustom(PageRequestCustom pageRequestCustom) throws ParamExceptionHandler {
         // Check xem pageSize và pageNumber có phải int không
         int pageSize = integerHelper.parseIntOrThrow(pageRequestCustom.getPageSize(), "pageSize");
-        int pageNumber = integerHelper.parseIntOrThrow(pageRequestCustom.getPageSize(), "pageNumber");
+        int pageNumber = integerHelper.parseIntOrThrow(pageRequestCustom.getPageNumber(), "pageNumber");
 
         // Trường hợp keyword = null
         if (pageRequestCustom.getKeyword() == null) {
