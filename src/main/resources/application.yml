@@ -1,6 +1,6 @@
 spring:
   application:
-    name: it_job
+    name: codinviec
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
