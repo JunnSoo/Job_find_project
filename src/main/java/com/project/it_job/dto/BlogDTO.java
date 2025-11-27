@@ -16,6 +16,7 @@ public class BlogDTO {
     private String title;
     private String picture;
     private String shortDescription;
+    private boolean isHighLight;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

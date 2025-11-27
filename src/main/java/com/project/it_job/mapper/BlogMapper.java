@@ -17,6 +17,7 @@ public class BlogMapper {
                 .title(blog.getTitle())
                 .picture(blog.getPicture())
                 .shortDescription(blog.getShortDescription())
+                .isHighLight(blog.isHighLight())
                 .createdDate(blog.getCreatedDate())
                 .updatedDate(blog.getUpdatedDate())
                 .build();
@@ -50,6 +51,7 @@ public class BlogMapper {
                 .picture(saveUpdateBlogRequest.getPicture())
                 .shortDescription(saveUpdateBlogRequest.getShortDescription())
                 .description(saveUpdateBlogRequest.getDescription())
+                .isHighLight(saveUpdateBlogRequest.getIsHighLight())
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())
                 .build();
