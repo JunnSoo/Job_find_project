@@ -1,416 +1,268 @@
 USE it_job_db;
 
 -- Role
-INSERT INTO role (id, role_name, description) VALUES
-                                                  ('550e8400-e29b-41d4-a716-446655440001', 'ADMIN', 'Quản trị viên hệ thống'),
-                                                  ('550e8400-e29b-41d4-a716-446655440002', 'HR', 'Nhà tuyển dụng'),
-                                                  ('550e8400-e29b-41d4-a716-446655440003', 'USER', 'Người dùng');
+INSERT INTO role (id, role_name, description)
+VALUES ('550e8400-e29b-41d4-a716-446655440001', 'ADMIN', 'Quản trị viên hệ thống'),
+       ('550e8400-e29b-41d4-a716-446655440002', 'HR', 'Nhà tuyển dụng'),
+       ('550e8400-e29b-41d4-a716-446655440003', 'USER', 'Người dùng');
 
 -- Company Size
-INSERT INTO company_size (min_employees, max_employees) VALUES
-                                                            (1, 10),
-                                                            (11, 50),
-                                                            (51, 200),
-                                                            (201, 500),
-                                                            (501, 1000),
-                                                            (1001, 5000),
-                                                            (5001, 10000),
-                                                            (10001, 999999);
+INSERT INTO company_size (min_employees, max_employees)
+VALUES (1, 10),
+       (11, 50),
+       (51, 200),
+       (201, 500),
+       (501, 1000),
+       (1001, 5000),
+       (5001, 10000),
+       (10001, 999999);
 
 -- Industry
-INSERT INTO industry (name) VALUES
-                                ('Công nghệ thông tin'),
-                                ('Phần mềm'),
-                                ('Thương mại điện tử'),
-                                ('Tài chính - Ngân hàng'),
-                                ('Viễn thông'),
-                                ('Game'),
-                                ('Blockchain'),
-                                ('AI/Machine Learning'),
-                                ('Cloud Computing'),
-                                ('Cybersecurity'),
-                                ('Mobile App Development'),
-                                ('Web Development'),
-                                ('Data Science'),
-                                ('DevOps'),
-                                ('UI/UX Design');
+INSERT INTO industry (name)
+VALUES ('Công nghệ thông tin'),
+       ('Phần mềm'),
+       ('Thương mại điện tử'),
+       ('Tài chính - Ngân hàng'),
+       ('Viễn thông'),
+       ('Game'),
+       ('Blockchain'),
+       ('AI/Machine Learning'),
+       ('Cloud Computing'),
+       ('Cybersecurity'),
+       ('Mobile App Development'),
+       ('Web Development'),
+       ('Data Science'),
+       ('DevOps'),
+       ('UI/UX Design');
 
 -- Job Level
-INSERT INTO job_level (name) VALUES
-                                 ('Intern'),
-                                 ('Fresher'),
-                                 ('Junior'),
-                                 ('Middle'),
-                                 ('Senior'),
-                                 ('Lead'),
-                                 ('Manager'),
-                                 ('Director'),
-                                 ('VP'),
-                                 ('C-Level');
+INSERT INTO job_level (name)
+VALUES ('Intern'),
+       ('Fresher'),
+       ('Junior'),
+       ('Middle'),
+       ('Senior'),
+       ('Lead'),
+       ('Manager'),
+       ('Director'),
+       ('VP'),
+       ('C-Level');
 
 -- Degree Level
-INSERT INTO degree_level (name) VALUES
-                                    ('Không yêu cầu'),
-                                    ('Trung cấp'),
-                                    ('Cao đẳng'),
-                                    ('Đại học'),
-                                    ('Thạc sĩ'),
-                                    ('Tiến sĩ');
+INSERT INTO degree_level (name)
+VALUES ('Không yêu cầu'),
+       ('Trung cấp'),
+       ('Cao đẳng'),
+       ('Đại học'),
+       ('Thạc sĩ'),
+       ('Tiến sĩ');
 
 -- Employment Type
-INSERT INTO employment_type (name) VALUES
-                                       ('Full-time'),
-                                       ('Part-time'),
-                                       ('Contract'),
-                                       ('Freelance'),
-                                       ('Internship'),
-                                       ('Remote'),
-                                       ('Hybrid');
+INSERT INTO employment_type (name)
+VALUES ('Full-time'),
+       ('Part-time'),
+       ('Contract'),
+       ('Freelance'),
+       ('Internship'),
+       ('Remote'),
+       ('Hybrid');
 
 -- Experience
-INSERT INTO experience (name) VALUES
-                                  ('Chưa có kinh nghiệm'),
-                                  ('Dưới 1 năm'),
-                                  ('1-2 năm'),
-                                  ('2-3 năm'),
-                                  ('3-5 năm'),
-                                  ('5-7 năm'),
-                                  ('7-10 năm'),
-                                  ('Trên 10 năm');
+INSERT INTO experience (name)
+VALUES ('Chưa có kinh nghiệm'),
+       ('Dưới 1 năm'),
+       ('1-2 năm'),
+       ('2-3 năm'),
+       ('3-5 năm'),
+       ('5-7 năm'),
+       ('7-10 năm'),
+       ('Trên 10 năm');
 
 -- Language
-INSERT INTO language (name) VALUES
-                                ('Tiếng Việt'),
-                                ('Tiếng Anh'),
-                                ('Tiếng Nhật'),
-                                ('Tiếng Hàn'),
-                                ('Tiếng Trung'),
-                                ('Tiếng Pháp'),
-                                ('Tiếng Đức'),
-                                ('Tiếng Tây Ban Nha');
+INSERT INTO language (name)
+VALUES ('Tiếng Việt'),
+       ('Tiếng Anh'),
+       ('Tiếng Nhật'),
+       ('Tiếng Hàn'),
+       ('Tiếng Trung'),
+       ('Tiếng Pháp'),
+       ('Tiếng Đức'),
+       ('Tiếng Tây Ban Nha');
 
 -- Level Language
-INSERT INTO level_language (name) VALUES
-                                      ('Cơ bản'),
-                                      ('Trung bình'),
-                                      ('Khá'),
-                                      ('Tốt'),
-                                      ('Thành thạo'),
-                                      ('Bản ngữ');
+INSERT INTO level_language (name)
+VALUES ('Cơ bản'),
+       ('Trung bình'),
+       ('Khá'),
+       ('Tốt'),
+       ('Thành thạo'),
+       ('Bản ngữ');
 
 -- Available Skills
-INSERT INTO available_skills (name) VALUES
-                                        ('Java'),
-                                        ('Python'),
-                                        ('JavaScript'),
-                                        ('TypeScript'),
-                                        ('C++'),
-                                        ('C#'),
-                                        ('PHP'),
-                                        ('Ruby'),
-                                        ('Go'),
-                                        ('Rust'),
-                                        ('Swift'),
-                                        ('Kotlin'),
-                                        ('React'),
-                                        ('Angular'),
-                                        ('Vue.js'),
-                                        ('Node.js'),
-                                        ('Spring Boot'),
-                                        ('Django'),
-                                        ('Laravel'),
-                                        ('Flutter'),
-                                        ('React Native'),
-                                        ('MySQL'),
-                                        ('PostgreSQL'),
-                                        ('MongoDB'),
-                                        ('Redis'),
-                                        ('Docker'),
-                                        ('Kubernetes'),
-                                        ('AWS'),
-                                        ('Azure'),
-                                        ('Git'),
-                                        ('Linux'),
-                                        ('Agile'),
-                                        ('Scrum');
+INSERT INTO available_skills (name)
+VALUES ('Java'),
+       ('Python'),
+       ('JavaScript'),
+       ('TypeScript'),
+       ('C++'),
+       ('C#'),
+       ('PHP'),
+       ('Ruby'),
+       ('Go'),
+       ('Rust'),
+       ('Swift'),
+       ('Kotlin'),
+       ('React'),
+       ('Angular'),
+       ('Vue.js'),
+       ('Node.js'),
+       ('Spring Boot'),
+       ('Django'),
+       ('Laravel'),
+       ('Flutter'),
+       ('React Native'),
+       ('MySQL'),
+       ('PostgreSQL'),
+       ('MongoDB'),
+       ('Redis'),
+       ('Docker'),
+       ('Kubernetes'),
+       ('AWS'),
+       ('Azure'),
+       ('Git'),
+       ('Linux'),
+       ('Agile'),
+       ('Scrum');
 
 -- Group Core Skill
-INSERT INTO group_core_skill (name) VALUES
-                                        ('Backend Development'),
-                                        ('Frontend Development'),
-                                        ('Full-stack Development'),
-                                        ('Mobile Development'),
-                                        ('DevOps'),
-                                        ('Data Science'),
-                                        ('Machine Learning'),
-                                        ('Cloud Architecture'),
-                                        ('Security'),
-                                        ('UI/UX Design'),
-                                        ('QA/Testing'),
-                                        ('Project Management');
+INSERT INTO group_core_skill (name)
+VALUES ('Backend Development'),
+       ('Frontend Development'),
+       ('Full-stack Development'),
+       ('Mobile Development'),
+       ('DevOps'),
+       ('Data Science'),
+       ('Machine Learning'),
+       ('Cloud Architecture'),
+       ('Security'),
+       ('UI/UX Design'),
+       ('QA/Testing'),
+       ('Project Management');
 
 -- Category
-INSERT INTO category (name, parent_id) VALUES
-                                           ('Công nghệ thông tin', NULL),
-                                           ('Phần mềm', 1),
-                                           ('Web Development', 1),
-                                           ('Mobile Development', 1),
-                                           ('Data Science', 1),
-                                           ('AI/ML', 1),
-                                           ('DevOps', 1),
-                                           ('Cybersecurity', 1),
-                                           ('Tài chính', NULL),
-                                           ('Ngân hàng', 9),
-                                           ('Bảo hiểm', 9);
+INSERT INTO category (name, parent_id)
+VALUES ('Công nghệ thông tin', NULL),
+       ('Phần mềm', 1),
+       ('Web Development', 1),
+       ('Mobile Development', 1),
+       ('Data Science', 1),
+       ('AI/ML', 1),
+       ('DevOps', 1),
+       ('Cybersecurity', 1),
+       ('Tài chính', NULL),
+       ('Ngân hàng', 9),
+       ('Bảo hiểm', 9);
 
 -- Payment Method
-INSERT INTO payment_method (name) VALUES
-                                      ('Chuyển khoản ngân hàng'),
-                                      ('Ví điện tử'),
-                                      ('Thẻ tín dụng'),
-                                      ('Thẻ ghi nợ'),
-                                      ('Tiền mặt'),
-                                      ('PayPal'),
-                                      ('Momo'),
-                                      ('ZaloPay'),
-                                      ('VNPay');
+INSERT INTO payment_method (name)
+VALUES ('Chuyển khoản ngân hàng'),
+       ('Ví điện tử'),
+       ('Thẻ tín dụng'),
+       ('Thẻ ghi nợ'),
+       ('Tiền mặt'),
+       ('PayPal'),
+       ('Momo'),
+       ('ZaloPay'),
+       ('VNPay');
 
 -- Payment Status
-INSERT INTO payment_status (name) VALUES
-                                      ('Pending'),
-                                      ('Processing'),
-                                      ('Completed'),
-                                      ('Failed'),
-                                      ('Cancelled'),
-                                      ('Refunded');
+INSERT INTO payment_status (name)
+VALUES ('Pending'),
+       ('Processing'),
+       ('Completed'),
+       ('Failed'),
+       ('Cancelled'),
+       ('Refunded');
 
 -- Report Status
-INSERT INTO report_status (name) VALUES
-                                     ('Pending'),
-                                     ('Under Review'),
-                                     ('Resolved'),
-                                     ('Rejected'),
-                                     ('Closed');
+INSERT INTO report_status (name)
+VALUES ('Pending'),
+       ('Under Review'),
+       ('Resolved'),
+       ('Rejected'),
+       ('Closed');
 
--- ============================================
--- MAIN ENTITIES
--- ============================================
-
--- Company
-INSERT INTO company (id, name, description, address, website, company_size_id, logo) VALUES
-                                                                                         ('650e8400-e29b-41d4-a716-446655440001', 'FPT Software', 'Công ty phần mềm hàng đầu Việt Nam', 'Hà Nội, Việt Nam', 'https://www.fpt-software.com', 6, 'https://example.com/logo/fpt.png'),
-                                                                                         ('650e8400-e29b-41d4-a716-446655440002', 'Viettel Solutions', 'Giải pháp công nghệ thông tin', 'Hà Nội, Việt Nam', 'https://www.viettel-solutions.com', 6, 'https://example.com/logo/viettel.png'),
-                                                                                         ('650e8400-e29b-41d4-a716-446655440003', 'TMA Solutions', 'Công ty phần mềm quốc tế', 'Hồ Chí Minh, Việt Nam', 'https://www.tmasolutions.com', 5, 'https://example.com/logo/tma.png'),
-                                                                                         ('650e8400-e29b-41d4-a716-446655440004', 'CMC Corporation', 'Tập đoàn công nghệ thông tin', 'Hà Nội, Việt Nam', 'https://www.cmc.com.vn', 6, 'https://example.com/logo/cmc.png'),
-                                                                                         ('650e8400-e29b-41d4-a716-446655440005', 'VNG Corporation', 'Công ty công nghệ và giải trí', 'Hồ Chí Minh, Việt Nam', 'https://www.vng.com.vn', 5, 'https://example.com/logo/vng.png'),
-                                                                                         ('650e8400-e29b-41d4-a716-446655440006', 'Tech Startup XYZ', 'Startup công nghệ trẻ', 'Đà Nẵng, Việt Nam', 'https://www.techstartup.xyz', 2, 'https://example.com/logo/startup.png');
-
--- User
--- Lưu ý: Password mặc định cho tất cả user là "123456"
-INSERT INTO user (id, email, password, first_name, last_name, role_id, avatar, phone, gender, education, address, website_link, birth_date, is_find_job, company_id, group_soft_skill) VALUES
--- Admin
-('750e8400-e29b-41d4-a716-446655440001', 'admin@gmail.com', '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Admin', 'System', '550e8400-e29b-41d4-a716-446655440001', NULL, '0123456789', 'Male', 'Đại học', 'Hà Nội', 'https://admin.itjob.com', '1990-01-01', 0, NULL, 'Leadership, Communication'),
--- HR Users
-('750e8400-e29b-41d4-a716-446655440002', 'hr@gmail.com', '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Nguyễn', 'Văn A', '550e8400-e29b-41d4-a716-446655440002', NULL, '0987654321', 'Female', 'Đại học', 'Hà Nội', NULL, '1985-05-15', 0, '650e8400-e29b-41d4-a716-446655440001', 'Recruitment, Communication'),
-('750e8400-e29b-41d4-a716-446655440003', 'user@gmail.com', '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Trần', 'Thị B', '550e8400-e29b-41d4-a716-446655440002', NULL, '0912345678', 'Female', 'Đại học', 'Hà Nội', NULL, '1988-08-20', 0, '650e8400-e29b-41d4-a716-446655440002', 'User Management');
-
-
--- Job
-INSERT INTO job (job_position, company_id, detail_address, description_job, requirement, benefits, province_id, industry_id, job_level_id, degree_level_id, employment_type_id, experience_id) VALUES
-                                                                                                                                                                                                   ('Java Developer', '650e8400-e29b-41d4-a716-446655440001', 'Tòa nhà FPT, Hà Nội', 'Tìm kiếm Java Developer có kinh nghiệm phát triển ứng dụng web và mobile', 'Kinh nghiệm 2-3 năm với Java, Spring Boot, MySQL', 'Lương cạnh tranh, bảo hiểm đầy đủ, đào tạo', 1, 2, 4, 4, 1, 4),
-                                                                                                                                                                                                   ('React Frontend Developer', '650e8400-e29b-41d4-a716-446655440002', 'Tòa nhà Viettel, Hà Nội', 'Tuyển Frontend Developer chuyên về React và TypeScript', 'Thành thạo React, Redux, TypeScript, có portfolio', 'Lương 15-25 triệu, làm việc linh hoạt', 1, 2, 3, 4, 1, 3),
-                                                                                                                                                                                                   ('Full-stack Developer', '650e8400-e29b-41d4-a716-446655440003', 'Quận 1, Hồ Chí Minh', 'Tuyển Full-stack Developer cho dự án startup', 'Node.js, React, MongoDB, có kinh nghiệm startup', 'Equity, remote work, flexible hours', 2, 2, 4, 4, 6, 4),
-                                                                                                                                                                                                   ('DevOps Engineer', '650e8400-e29b-41d4-a716-446655440004', 'Cầu Giấy, Hà Nội', 'Tuyển DevOps Engineer quản lý infrastructure', 'Docker, Kubernetes, AWS, CI/CD', 'Lương cao, môi trường chuyên nghiệp', 1, 1, 5, 4, 1, 5),
-                                                                                                                                                                                                   ('Data Scientist', '650e8400-e29b-41d4-a716-446655440005', 'Quận 7, Hồ Chí Minh', 'Tuyển Data Scientist cho dự án AI', 'Python, Machine Learning, TensorFlow, PhD preferred', 'Lương rất cao, research opportunities', 2, 8, 5, 5, 1, 6),
-                                                                                                                                                                                                   ('Mobile Developer (Flutter)', '650e8400-e29b-41d4-a716-446655440006', 'Đà Nẵng', 'Tuyển Mobile Developer phát triển app Flutter', 'Flutter, Dart, có app trên store', 'Startup environment, equity', 3, 11, 3, 4, 1, 3);
-
--- ============================================
--- USER PROFILE TABLES
--- ============================================
-
--- Project
-INSERT INTO project (user_id, name, start_date, end_date, project_url, company) VALUES
-                                                                                    ('750e8400-e29b-41d4-a716-446655440004', 'E-commerce Website', '2023-01-01', '2023-06-30', 'https://github.com/candidate1/ecommerce', 'Personal Project'),
-                                                                                    ('750e8400-e29b-41d4-a716-446655440004', 'Task Management App', '2023-07-01', '2023-12-31', 'https://github.com/candidate1/taskapp', 'Freelance'),
-                                                                                    ('750e8400-e29b-41d4-a716-446655440005', 'Social Media Dashboard', '2023-03-01', '2023-09-30', 'https://github.com/candidate2/dashboard', 'University Project'),
-                                                                                    ('750e8400-e29b-41d4-a716-446655440006', 'AI Chatbot', '2023-05-01', '2023-11-30', 'https://github.com/candidate3/chatbot', 'Research Project');
-
--- Certificate
-INSERT INTO certificate (user_id, certificate_name, organization, date, link, description) VALUES
-                                                                                               ('750e8400-e29b-41d4-a716-446655440004', 'AWS Certified Solutions Architect', 'Amazon Web Services', '2023-08-15', 'https://aws.amazon.com/certification', 'Chứng chỉ kiến trúc giải pháp AWS'),
-                                                                                               ('750e8400-e29b-41d4-a716-446655440004', 'Oracle Certified Java Programmer', 'Oracle', '2023-05-20', 'https://www.oracle.com/certification', 'OCP Java SE 11'),
-                                                                                               ('750e8400-e29b-41d4-a716-446655440005', 'Google Cloud Professional', 'Google Cloud', '2023-09-10', 'https://cloud.google.com/certification', 'Cloud Architect certification'),
-                                                                                               ('750e8400-e29b-41d4-a716-446655440006', 'TensorFlow Developer Certificate', 'Google', '2023-07-25', 'https://www.tensorflow.org/certificate', 'Machine Learning với TensorFlow');
-
--- Award
-INSERT INTO award (user_id, award_name, organization, date, description) VALUES
-                                                                             ('750e8400-e29b-41d4-a716-446655440004', 'Best Student Project', 'Đại học Bách Khoa', '2023-06-15', 'Dự án tốt nhất năm 2023'),
-                                                                             ('750e8400-e29b-41d4-a716-446655440005', 'Hackathon Winner', 'TechFest Vietnam', '2023-10-20', 'Giải nhất cuộc thi Hackathon'),
-                                                                             ('750e8400-e29b-41d4-a716-446655440006', 'Research Excellence Award', 'Đại học Khoa học Tự nhiên', '2023-12-10', 'Giải thưởng nghiên cứu xuất sắc');
-
--- Language Skill
-INSERT INTO language_skill (language_id, level_language_id, user_id) VALUES
-                                                                         (1, 6, '750e8400-e29b-41d4-a716-446655440004'), -- Tiếng Việt - Bản ngữ
-                                                                         (2, 5, '750e8400-e29b-41d4-a716-446655440004'), -- Tiếng Anh - Thành thạo
-                                                                         (1, 6, '750e8400-e29b-41d4-a716-446655440005'),
-                                                                         (2, 4, '750e8400-e29b-41d4-a716-446655440005'),
-                                                                         (3, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Tiếng Nhật - Khá
-                                                                         (1, 6, '750e8400-e29b-41d4-a716-446655440006'),
-                                                                         (2, 5, '750e8400-e29b-41d4-a716-446655440006');
-
--- Available Skill Experience
-INSERT INTO available_skill_experience (id_group_core, available_skill_id, experience_id, user_id) VALUES
-                                                                                                       (1, 1, 4, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - Java - 3-5 năm
-                                                                                                       (1, 17, 4, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - Spring Boot - 3-5 năm
-                                                                                                       (1, 22, 3, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - MySQL - 2-3 năm
-                                                                                                       (2, 13, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - React - 2-3 năm
-                                                                                                       (2, 14, 2, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - Angular - 1-2 năm
-                                                                                                       (2, 3, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - JavaScript - 2-3 năm
-                                                                                                       (6, 2, 5, '750e8400-e29b-41d4-a716-446655440006'), -- Data Science - Python - 5-7 năm
-                                                                                                       (7, 2, 4, '750e8400-e29b-41d4-a716-446655440006'); -- ML - Python - 3-5 năm
-
--- Soft Skills Name
-INSERT INTO soft_skills_name (name, user_id) VALUES
-                                                 ('Teamwork', '750e8400-e29b-41d4-a716-446655440004'),
-                                                 ('Problem-solving', '750e8400-e29b-41d4-a716-446655440004'),
-                                                 ('Communication', '750e8400-e29b-41d4-a716-446655440005'),
-                                                 ('Adaptability', '750e8400-e29b-41d4-a716-446655440005'),
-                                                 ('Leadership', '750e8400-e29b-41d4-a716-446655440006'),
-                                                 ('Critical thinking', '750e8400-e29b-41d4-a716-446655440006');
-
--- CV User
-INSERT INTO cv_user (candidate_id, version, file_url, title, is_active) VALUES
-                                                                            ('750e8400-e29b-41d4-a716-446655440004', 1, 'https://example.com/cv/candidate1_v1.pdf', 'CV Java Developer', 1),
-                                                                            ('750e8400-e29b-41d4-a716-446655440004', 2, 'https://example.com/cv/candidate1_v2.pdf', 'CV Java Developer Updated', 0),
-                                                                            ('750e8400-e29b-41d4-a716-446655440005', 1, 'https://example.com/cv/candidate2_v1.pdf', 'CV Frontend Developer', 1),
-                                                                            ('750e8400-e29b-41d4-a716-446655440006', 1, 'https://example.com/cv/candidate3_v1.pdf', 'CV Data Scientist', 1);
-
--- ============================================
--- CONTENT TABLES
--- ============================================
-
--- Blog
-INSERT INTO blog (title, picture, short_description, description,is_high_light, updated_person) VALUES
-                                                                                                    ('10 Kỹ năng cần thiết cho Developer năm 2024', '', 'Tổng hợp các kỹ năng quan trọng nhất', 'Nội dung chi tiết về các kỹ năng...',0, '750e8400-e29b-41d4-a716-446655440001'),
-                                                                                                    ('Hướng dẫn viết CV IT hiệu quả', '', 'Cách viết CV thu hút nhà tuyển dụng', 'Chi tiết cách viết CV...', 0,'750e8400-e29b-41d4-a716-446655440001'),
-                                                                                                    ('Xu hướng công nghệ 2024', '', 'Các xu hướng công nghệ nổi bật', 'Phân tích các xu hướng...', 0,'750e8400-e29b-41d4-a716-446655440001');
-
--- Review
-INSERT INTO review (title, description, company_id, rated, user_id) VALUES
-                                                                        ('Môi trường làm việc tốt', 'Công ty có môi trường làm việc chuyên nghiệp, đồng nghiệp thân thiện', '650e8400-e29b-41d4-a716-446655440001', 5, '750e8400-e29b-41d4-a716-446655440004'),
-                                                                        ('Lương và phúc lợi tốt', 'Lương cạnh tranh, có nhiều phúc lợi cho nhân viên', '650e8400-e29b-41d4-a716-446655440002', 4, '750e8400-e29b-41d4-a716-446655440005'),
-                                                                        ('Cơ hội phát triển', 'Có nhiều cơ hội học hỏi và phát triển kỹ năng', '650e8400-e29b-41d4-a716-446655440003', 5, '750e8400-e29b-41d4-a716-446655440006');
-
--- Report
-INSERT INTO report (title, description, image_url, status_id, created_report, reported_user, reported_job) VALUES
-                                                                                                               ('Báo cáo vi phạm nội dung', 'Job posting có nội dung không phù hợp', 'https://example.com/report/1.jpg', 1, '750e8400-e29b-41d4-a716-446655440004', NULL, 1),
-                                                                                                               ('Báo cáo tài khoản giả', 'Tài khoản có dấu hiệu giả mạo', NULL, 2, '750e8400-e29b-41d4-a716-446655440005', '750e8400-e29b-41d4-a716-446655440007', NULL),
-                                                                                                               ('Báo cáo spam', 'Job posting spam', NULL, 3, '750e8400-e29b-41d4-a716-446655440006', NULL, 2);
-
--- ============================================
--- WISHLIST TABLES
--- ============================================
-
--- Wishlist Job
-INSERT INTO wishlist_job (job_id, user_id) VALUES
-                                               (1, '750e8400-e29b-41d4-a716-446655440004'),
-                                               (2, '750e8400-e29b-41d4-a716-446655440005'),
-                                               (3, '750e8400-e29b-41d4-a716-446655440004'),
-                                               (4, '750e8400-e29b-41d4-a716-446655440006');
-
--- Wishlist Candidate
-INSERT INTO wishlist_candidate (hr_id, candidate_id) VALUES
-                                                         ('750e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440004'),
-                                                         ('750e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440005'),
-                                                         ('750e8400-e29b-41d4-a716-446655440003', '750e8400-e29b-41d4-a716-446655440006');
-
--- ============================================
--- PAYMENT TABLES
--- ============================================
-
--- Service Product
-INSERT INTO service_product (name, description, price, images, user_id, job_id) VALUES
-                                                                                    ('Premium Job Posting', 'Đăng tin tuyển dụng nổi bật trong 30 ngày', 500000, 'https://example.com/service/premium.jpg', '750e8400-e29b-41d4-a716-446655440002', 1),
-                                                                                    ('Featured Job', 'Tin tuyển dụng được ưu tiên hiển thị', 300000, 'https://example.com/service/featured.jpg', '750e8400-e29b-41d4-a716-446655440002', 2),
-                                                                                    ('CV Boost', 'Tăng khả năng hiển thị CV cho ứng viên', 200000, 'https://example.com/service/cvboost.jpg', '750e8400-e29b-41d4-a716-446655440004', NULL),
-                                                                                    ('Company Profile Premium', 'Nâng cấp hồ sơ công ty', 1000000, 'https://example.com/service/company.jpg', '750e8400-e29b-41d4-a716-446655440003', NULL);
-
--- Payment
-INSERT INTO payment (title, description, payment_method_id, status, service_product_id, user_id) VALUES
-                                                                                                     ('Thanh toán Premium Job Posting', 'Thanh toán cho dịch vụ đăng tin nổi bật', 1, 3, 1, '750e8400-e29b-41d4-a716-446655440002'),
-                                                                                                     ('Thanh toán Featured Job', 'Thanh toán cho dịch vụ tin ưu tiên', 3, 3, 2, '750e8400-e29b-41d4-a716-446655440002'),
-                                                                                                     ('Thanh toán CV Boost', 'Thanh toán nâng cấp CV', 7, 2, 3, '750e8400-e29b-41d4-a716-446655440004'),
-                                                                                                     ('Thanh toán Company Profile', 'Thanh toán nâng cấp hồ sơ công ty', 1, 1, 4, '750e8400-e29b-41d4-a716-446655440003');
 
 
 -- Province (63 tỉnh thành Việt Nam)
-INSERT INTO province (name) VALUES
-                                ('Hà Nội'),
-                                ('Hồ Chí Minh'),
-                                ('Đà Nẵng'),
-                                ('Hải Phòng'),
-                                ('Cần Thơ'),
-                                ('An Giang'),
-                                ('Bà Rịa - Vũng Tàu'),
-                                ('Bắc Giang'),
-                                ('Bắc Kạn'),
-                                ('Bạc Liêu'),
-                                ('Bắc Ninh'),
-                                ('Bến Tre'),
-                                ('Bình Định'),
-                                ('Bình Dương'),
-                                ('Bình Phước'),
-                                ('Bình Thuận'),
-                                ('Cà Mau'),
-                                ('Cao Bằng'),
-                                ('Đắk Lắk'),
-                                ('Đắk Nông'),
-                                ('Điện Biên'),
-                                ('Đồng Nai'),
-                                ('Đồng Tháp'),
-                                ('Gia Lai'),
-                                ('Hà Giang'),
-                                ('Hà Nam'),
-                                ('Hà Tĩnh'),
-                                ('Hải Dương'),
-                                ('Hậu Giang'),
-                                ('Hòa Bình'),
-                                ('Hưng Yên'),
-                                ('Khánh Hòa'),
-                                ('Kiên Giang'),
-                                ('Kon Tum'),
-                                ('Lai Châu'),
-                                ('Lâm Đồng'),
-                                ('Lạng Sơn'),
-                                ('Lào Cai'),
-                                ('Long An'),
-                                ('Nam Định'),
-                                ('Nghệ An'),
-                                ('Ninh Bình'),
-                                ('Ninh Thuận'),
-                                ('Phú Thọ'),
-                                ('Phú Yên'),
-                                ('Quảng Bình'),
-                                ('Quảng Nam'),
-                                ('Quảng Ngãi'),
-                                ('Quảng Ninh'),
-                                ('Quảng Trị'),
-                                ('Sóc Trăng'),
-                                ('Sơn La'),
-                                ('Tây Ninh'),
-                                ('Thái Bình'),
-                                ('Thái Nguyên'),
-                                ('Thanh Hóa'),
-                                ('Thừa Thiên Huế'),
-                                ('Tiền Giang'),
-                                ('Trà Vinh'),
-                                ('Tuyên Quang'),
-                                ('Vĩnh Long'),
-                                ('Vĩnh Phúc'),
-                                ('Yên Bái');
+INSERT INTO province (name)
+VALUES ('Hà Nội'),
+       ('Hồ Chí Minh'),
+       ('Đà Nẵng'),
+       ('Hải Phòng'),
+       ('Cần Thơ'),
+       ('An Giang'),
+       ('Bà Rịa - Vũng Tàu'),
+       ('Bắc Giang'),
+       ('Bắc Kạn'),
+       ('Bạc Liêu'),
+       ('Bắc Ninh'),
+       ('Bến Tre'),
+       ('Bình Định'),
+       ('Bình Dương'),
+       ('Bình Phước'),
+       ('Bình Thuận'),
+       ('Cà Mau'),
+       ('Cao Bằng'),
+       ('Đắk Lắk'),
+       ('Đắk Nông'),
+       ('Điện Biên'),
+       ('Đồng Nai'),
+       ('Đồng Tháp'),
+       ('Gia Lai'),
+       ('Hà Giang'),
+       ('Hà Nam'),
+       ('Hà Tĩnh'),
+       ('Hải Dương'),
+       ('Hậu Giang'),
+       ('Hòa Bình'),
+       ('Hưng Yên'),
+       ('Khánh Hòa'),
+       ('Kiên Giang'),
+       ('Kon Tum'),
+       ('Lai Châu'),
+       ('Lâm Đồng'),
+       ('Lạng Sơn'),
+       ('Lào Cai'),
+       ('Long An'),
+       ('Nam Định'),
+       ('Nghệ An'),
+       ('Ninh Bình'),
+       ('Ninh Thuận'),
+       ('Phú Thọ'),
+       ('Phú Yên'),
+       ('Quảng Bình'),
+       ('Quảng Nam'),
+       ('Quảng Ngãi'),
+       ('Quảng Ninh'),
+       ('Quảng Trị'),
+       ('Sóc Trăng'),
+       ('Sơn La'),
+       ('Tây Ninh'),
+       ('Thái Bình'),
+       ('Thái Nguyên'),
+       ('Thanh Hóa'),
+       ('Thừa Thiên Huế'),
+       ('Tiền Giang'),
+       ('Trà Vinh'),
+       ('Tuyên Quang'),
+       ('Vĩnh Long'),
+       ('Vĩnh Phúc'),
+       ('Yên Bái');
 
 -- Ward (Quận/Huyện/Phường/Xã của 63 tỉnh thành Việt Nam)
-INSERT INTO ward (name, province_id) VALUES
+INSERT INTO ward (name, province_id)
+VALUES
 -- Hà Nội (1) - 30 quận/huyện
 ('Quận Ba Đình', 1),
 ('Quận Hoàn Kiếm', 1),
@@ -1184,3 +1036,212 @@ INSERT INTO ward (name, province_id) VALUES
 ('Huyện Trạm Tấu', 63),
 ('Huyện Văn Chấn', 63),
 ('Huyện Yên Bình', 63);
+-- ============================================
+-- MAIN ENTITIES
+-- ============================================
+
+-- Company
+INSERT INTO company (id, name, description, address, website, company_size_id, logo)
+VALUES ('650e8400-e29b-41d4-a716-446655440001', 'FPT Software', 'Công ty phần mềm hàng đầu Việt Nam',
+        'Hà Nội, Việt Nam', 'https://www.fpt-software.com', 6, 'https://example.com/logo/fpt.png'),
+       ('650e8400-e29b-41d4-a716-446655440002', 'Viettel Solutions', 'Giải pháp công nghệ thông tin',
+        'Hà Nội, Việt Nam', 'https://www.viettel-solutions.com', 6, 'https://example.com/logo/viettel.png'),
+       ('650e8400-e29b-41d4-a716-446655440003', 'TMA Solutions', 'Công ty phần mềm quốc tế', 'Hồ Chí Minh, Việt Nam',
+        'https://www.tmasolutions.com', 5, 'https://example.com/logo/tma.png'),
+       ('650e8400-e29b-41d4-a716-446655440004', 'CMC Corporation', 'Tập đoàn công nghệ thông tin', 'Hà Nội, Việt Nam',
+        'https://www.cmc.com.vn', 6, 'https://example.com/logo/cmc.png'),
+       ('650e8400-e29b-41d4-a716-446655440005', 'VNG Corporation', 'Công ty công nghệ và giải trí',
+        'Hồ Chí Minh, Việt Nam', 'https://www.vng.com.vn', 5, 'https://example.com/logo/vng.png'),
+       ('650e8400-e29b-41d4-a716-446655440006', 'Tech Startup XYZ', 'Startup công nghệ trẻ', 'Đà Nẵng, Việt Nam',
+        'https://www.techstartup.xyz', 2, 'https://example.com/logo/startup.png');
+
+-- User
+-- Lưu ý: Password mặc định cho tất cả user là "123456"
+INSERT INTO user (id, email, password, first_name, last_name, role_id, avatar, phone, gender, education, address,
+                  website_link, birth_date, is_find_job, company_id, group_soft_skill)
+VALUES
+-- Admin
+('750e8400-e29b-41d4-a716-446655440001', 'admin@gmail.com',
+ '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Admin', 'System',
+ '550e8400-e29b-41d4-a716-446655440001', NULL, '0123456789', 'Male', 'Đại học', 'Hà Nội', 'https://admin.itjob.com',
+ '1990-01-01', 0, NULL, 'Leadership, Communication'),
+-- HR Users
+('750e8400-e29b-41d4-a716-446655440002', 'hr@gmail.com', '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu',
+ 'Nguyễn', 'Văn A', '550e8400-e29b-41d4-a716-446655440002', NULL, '0987654321', 'Female', 'Đại học', 'Hà Nội', NULL,
+ '1985-05-15', 0, '650e8400-e29b-41d4-a716-446655440001', 'Recruitment, Communication'),
+('750e8400-e29b-41d4-a716-446655440003', 'user@gmail.com',
+ '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Trần', 'Thị B',
+ '550e8400-e29b-41d4-a716-446655440002', NULL, '0912345678', 'Female', 'Đại học', 'Hà Nội', NULL, '1988-08-20', 0,
+ '650e8400-e29b-41d4-a716-446655440002', 'User Management');
+
+
+
+-- Job
+INSERT INTO job (job_position, company_id, detail_address, description_job, requirement, benefits, province_id,
+                 industry_id, job_level_id, degree_level_id, employment_type_id, experience_id)
+VALUES ('Java Developer', '650e8400-e29b-41d4-a716-446655440001', 'Tòa nhà FPT, Hà Nội',
+        'Tìm kiếm Java Developer có kinh nghiệm phát triển ứng dụng web và mobile',
+        'Kinh nghiệm 2-3 năm với Java, Spring Boot, MySQL', 'Lương cạnh tranh, bảo hiểm đầy đủ, đào tạo', 1, 2, 4, 4, 1,
+        4),
+       ('React Frontend Developer', '650e8400-e29b-41d4-a716-446655440002', 'Tòa nhà Viettel, Hà Nội',
+        'Tuyển Frontend Developer chuyên về React và TypeScript', 'Thành thạo React, Redux, TypeScript, có portfolio',
+        'Lương 15-25 triệu, làm việc linh hoạt', 1, 2, 3, 4, 1, 3),
+       ('Full-stack Developer', '650e8400-e29b-41d4-a716-446655440003', 'Quận 1, Hồ Chí Minh',
+        'Tuyển Full-stack Developer cho dự án startup', 'Node.js, React, MongoDB, có kinh nghiệm startup',
+        'Equity, remote work, flexible hours', 2, 2, 4, 4, 6, 4),
+       ('DevOps Engineer', '650e8400-e29b-41d4-a716-446655440004', 'Cầu Giấy, Hà Nội',
+        'Tuyển DevOps Engineer quản lý infrastructure', 'Docker, Kubernetes, AWS, CI/CD',
+        'Lương cao, môi trường chuyên nghiệp', 1, 1, 5, 4, 1, 5),
+       ('Data Scientist', '650e8400-e29b-41d4-a716-446655440005', 'Quận 7, Hồ Chí Minh',
+        'Tuyển Data Scientist cho dự án AI', 'Python, Machine Learning, TensorFlow, PhD preferred',
+        'Lương rất cao, research opportunities', 2, 8, 5, 5, 1, 6),
+       ('Mobile Developer (Flutter)', '650e8400-e29b-41d4-a716-446655440006', 'Đà Nẵng',
+        'Tuyển Mobile Developer phát triển app Flutter', 'Flutter, Dart, có app trên store',
+        'Startup environment, equity', 3, 11, 3, 4, 1, 3);
+
+-- ============================================
+-- USER PROFILE TABLES
+-- ============================================
+
+-- Project
+INSERT INTO project (user_id, name, start_date, end_date, project_url, company)
+VALUES ('750e8400-e29b-41d4-a716-446655440004', 'E-commerce Website', '2023-01-01', '2023-06-30',
+        'https://github.com/candidate1/ecommerce', 'Personal Project'),
+       ('750e8400-e29b-41d4-a716-446655440004', 'Task Management App', '2023-07-01', '2023-12-31',
+        'https://github.com/candidate1/taskapp', 'Freelance'),
+       ('750e8400-e29b-41d4-a716-446655440005', 'Social Media Dashboard', '2023-03-01', '2023-09-30',
+        'https://github.com/candidate2/dashboard', 'University Project'),
+       ('750e8400-e29b-41d4-a716-446655440006', 'AI Chatbot', '2023-05-01', '2023-11-30',
+        'https://github.com/candidate3/chatbot', 'Research Project');
+
+-- Certificate
+INSERT INTO certificate (user_id, certificate_name, organization, date, link, description)
+VALUES ('750e8400-e29b-41d4-a716-446655440004', 'AWS Certified Solutions Architect', 'Amazon Web Services',
+        '2023-08-15', 'https://aws.amazon.com/certification', 'Chứng chỉ kiến trúc giải pháp AWS'),
+       ('750e8400-e29b-41d4-a716-446655440004', 'Oracle Certified Java Programmer', 'Oracle', '2023-05-20',
+        'https://www.oracle.com/certification', 'OCP Java SE 11'),
+       ('750e8400-e29b-41d4-a716-446655440005', 'Google Cloud Professional', 'Google Cloud', '2023-09-10',
+        'https://cloud.google.com/certification', 'Cloud Architect certification'),
+       ('750e8400-e29b-41d4-a716-446655440006', 'TensorFlow Developer Certificate', 'Google', '2023-07-25',
+        'https://www.tensorflow.org/certificate', 'Machine Learning với TensorFlow');
+
+-- Award
+INSERT INTO award (user_id, award_name, organization, date, description)
+VALUES ('750e8400-e29b-41d4-a716-446655440004', 'Best Student Project', 'Đại học Bách Khoa', '2023-06-15',
+        'Dự án tốt nhất năm 2023'),
+       ('750e8400-e29b-41d4-a716-446655440005', 'Hackathon Winner', 'TechFest Vietnam', '2023-10-20',
+        'Giải nhất cuộc thi Hackathon'),
+       ('750e8400-e29b-41d4-a716-446655440006', 'Research Excellence Award', 'Đại học Khoa học Tự nhiên', '2023-12-10',
+        'Giải thưởng nghiên cứu xuất sắc');
+
+-- Language Skill
+INSERT INTO language_skill (language_id, level_language_id, user_id)
+VALUES (1, 6, '750e8400-e29b-41d4-a716-446655440004'), -- Tiếng Việt - Bản ngữ
+       (2, 5, '750e8400-e29b-41d4-a716-446655440004'), -- Tiếng Anh - Thành thạo
+       (1, 6, '750e8400-e29b-41d4-a716-446655440005'),
+       (2, 4, '750e8400-e29b-41d4-a716-446655440005'),
+       (3, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Tiếng Nhật - Khá
+       (1, 6, '750e8400-e29b-41d4-a716-446655440006'),
+       (2, 5, '750e8400-e29b-41d4-a716-446655440006');
+
+-- Available Skill Experience
+INSERT INTO available_skill_experience (id_group_core, available_skill_id, experience_id, user_id)
+VALUES (1, 1, 4, '750e8400-e29b-41d4-a716-446655440004'),  -- Backend - Java - 3-5 năm
+       (1, 17, 4, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - Spring Boot - 3-5 năm
+       (1, 22, 3, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - MySQL - 2-3 năm
+       (2, 13, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - React - 2-3 năm
+       (2, 14, 2, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - Angular - 1-2 năm
+       (2, 3, 3, '750e8400-e29b-41d4-a716-446655440005'),  -- Frontend - JavaScript - 2-3 năm
+       (6, 2, 5, '750e8400-e29b-41d4-a716-446655440006'),  -- Data Science - Python - 5-7 năm
+       (7, 2, 4, '750e8400-e29b-41d4-a716-446655440006');
+-- ML - Python - 3-5 năm
+
+-- Soft Skills Name
+INSERT INTO soft_skills_name (name, user_id)
+VALUES ('Teamwork', '750e8400-e29b-41d4-a716-446655440004'),
+       ('Problem-solving', '750e8400-e29b-41d4-a716-446655440004'),
+       ('Communication', '750e8400-e29b-41d4-a716-446655440005'),
+       ('Adaptability', '750e8400-e29b-41d4-a716-446655440005'),
+       ('Leadership', '750e8400-e29b-41d4-a716-446655440006'),
+       ('Critical thinking', '750e8400-e29b-41d4-a716-446655440006');
+
+-- CV User
+INSERT INTO cv_user (candidate_id, version, file_url, title, is_active)
+VALUES ('750e8400-e29b-41d4-a716-446655440004', 1, 'https://example.com/cv/candidate1_v1.pdf', 'CV Java Developer', 1),
+       ('750e8400-e29b-41d4-a716-446655440004', 2, 'https://example.com/cv/candidate1_v2.pdf',
+        'CV Java Developer Updated', 0),
+       ('750e8400-e29b-41d4-a716-446655440005', 1, 'https://example.com/cv/candidate2_v1.pdf', 'CV Frontend Developer',
+        1),
+       ('750e8400-e29b-41d4-a716-446655440006', 1, 'https://example.com/cv/candidate3_v1.pdf', 'CV Data Scientist', 1);
+
+-- ============================================
+-- CONTENT TABLES
+-- ============================================
+
+-- Blog
+INSERT INTO blog (title, picture, short_description, description, is_high_light, updated_person)
+VALUES ('10 Kỹ năng cần thiết cho Developer năm 2024', '', 'Tổng hợp các kỹ năng quan trọng nhất',
+        'Nội dung chi tiết về các kỹ năng...', 0, '750e8400-e29b-41d4-a716-446655440001'),
+       ('Hướng dẫn viết CV IT hiệu quả', '', 'Cách viết CV thu hút nhà tuyển dụng', 'Chi tiết cách viết CV...', 0,
+        '750e8400-e29b-41d4-a716-446655440001'),
+       ('Xu hướng công nghệ 2024', '', 'Các xu hướng công nghệ nổi bật', 'Phân tích các xu hướng...', 0,
+        '750e8400-e29b-41d4-a716-446655440001');
+
+-- Review
+INSERT INTO review (title, description, company_id, rated, user_id)
+VALUES ('Môi trường làm việc tốt', 'Công ty có môi trường làm việc chuyên nghiệp, đồng nghiệp thân thiện',
+        '650e8400-e29b-41d4-a716-446655440001', 5, '750e8400-e29b-41d4-a716-446655440004'),
+       ('Lương và phúc lợi tốt', 'Lương cạnh tranh, có nhiều phúc lợi cho nhân viên',
+        '650e8400-e29b-41d4-a716-446655440002', 4, '750e8400-e29b-41d4-a716-446655440005'),
+       ('Cơ hội phát triển', 'Có nhiều cơ hội học hỏi và phát triển kỹ năng', '650e8400-e29b-41d4-a716-446655440003', 5,
+        '750e8400-e29b-41d4-a716-446655440006');
+
+-- Report
+INSERT INTO report (title, description, image_url, status_id, created_report, reported_user, reported_job)
+VALUES ('Báo cáo vi phạm nội dung', 'Job posting có nội dung không phù hợp', 'https://example.com/report/1.jpg', 1,
+        '750e8400-e29b-41d4-a716-446655440004', NULL, 1),
+       ('Báo cáo tài khoản giả', 'Tài khoản có dấu hiệu giả mạo', NULL, 2, '750e8400-e29b-41d4-a716-446655440005',
+        '750e8400-e29b-41d4-a716-446655440007', NULL),
+       ('Báo cáo spam', 'Job posting spam', NULL, 3, '750e8400-e29b-41d4-a716-446655440006', NULL, 2);
+
+-- ============================================
+-- WISHLIST TABLES
+-- ============================================
+
+-- Wishlist Job
+INSERT INTO wishlist_job (job_id, user_id)
+VALUES (1, '750e8400-e29b-41d4-a716-446655440004'),
+       (2, '750e8400-e29b-41d4-a716-446655440005'),
+       (3, '750e8400-e29b-41d4-a716-446655440004'),
+       (4, '750e8400-e29b-41d4-a716-446655440006');
+
+-- Wishlist Candidate
+INSERT INTO wishlist_candidate (hr_id, candidate_id)
+VALUES ('750e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440004'),
+       ('750e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440005'),
+       ('750e8400-e29b-41d4-a716-446655440003', '750e8400-e29b-41d4-a716-446655440006');
+
+-- ============================================
+-- PAYMENT TABLES
+-- ============================================
+
+-- Service Product
+INSERT INTO service_product (name, description, price, images, user_id, job_id)
+VALUES ('Premium Job Posting', 'Đăng tin tuyển dụng nổi bật trong 30 ngày', 500000,
+        'https://example.com/service/premium.jpg', '750e8400-e29b-41d4-a716-446655440002', 1),
+       ('Featured Job', 'Tin tuyển dụng được ưu tiên hiển thị', 300000, 'https://example.com/service/featured.jpg',
+        '750e8400-e29b-41d4-a716-446655440002', 2),
+       ('CV Boost', 'Tăng khả năng hiển thị CV cho ứng viên', 200000, 'https://example.com/service/cvboost.jpg',
+        '750e8400-e29b-41d4-a716-446655440004', NULL),
+       ('Company Profile Premium', 'Nâng cấp hồ sơ công ty', 1000000, 'https://example.com/service/company.jpg',
+        '750e8400-e29b-41d4-a716-446655440003', NULL);
+
+-- Payment
+INSERT INTO payment (title, description, payment_method_id, status, service_product_id, user_id)
+VALUES ('Thanh toán Premium Job Posting', 'Thanh toán cho dịch vụ đăng tin nổi bật', 1, 3, 1,
+        '750e8400-e29b-41d4-a716-446655440002'),
+       ('Thanh toán Featured Job', 'Thanh toán cho dịch vụ tin ưu tiên', 3, 3, 2,
+        '750e8400-e29b-41d4-a716-446655440002'),
+       ('Thanh toán CV Boost', 'Thanh toán nâng cấp CV', 7, 2, 3, '750e8400-e29b-41d4-a716-446655440004'),
+       ('Thanh toán Company Profile', 'Thanh toán nâng cấp hồ sơ công ty', 1, 1, 4,
+        '750e8400-e29b-41d4-a716-446655440003');
