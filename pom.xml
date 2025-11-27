@@ -12,9 +12,9 @@
     </parent>
 
     <groupId>com.project</groupId>
-    <artifactId>it_job</artifactId>
+    <artifactId>codinviec</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>it_job</name>
+    <name>codinviec</name>
     <description>IT Job Management System</description>
 
     <properties>

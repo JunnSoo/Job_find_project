@@ -1,0 +1,23 @@
+package com.project.codinviec.specification.auth;
+
+import com.project.codinviec.entity.auth.User;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class UserSpecification {
+    public Specification<User> searchByName(String keyword) {
+        if (keyword == null || keyword.isEmpty()) return null;
+        String pattern = "%" + keyword.toLowerCase() + "%";
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.like(cb.lower(cb.toString(root.get("firstName"))), pattern));
+            predicates.add(cb.like(cb.lower(cb.toString(root.get("lastName"))), pattern));
+            return cb.or(predicates.toArray(new Predicate[0]));
+        };
+    }
+}
