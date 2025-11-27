@@ -1,0 +1,14 @@
+package com.project.codinviec.specification;
+
+import com.project.codinviec.entity.CVUser;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CVUserSpecification {
+    public Specification<CVUser> searchByTitle(String keyword) {
+        if (keyword == null || keyword.isEmpty()) return null;
+        String pattern = "%" + keyword.toLowerCase() + "%";
+        return (root, query, cb) -> cb.like(cb.lower(root.get("title")), pattern);
+    }
+}
