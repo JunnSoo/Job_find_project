@@ -1,3 +1,5 @@
+
+
 # FROM eclipse-temurin:21-jre-alpine
 # WORKDIR /codinviec
 # COPY target/codinviec-0.0.1-SNAPSHOT.jar codinviec.jar
@@ -23,7 +25,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Copy JAR vừa build từ stage trước
-COPY --from=build /app/target/codinviec-SNAPSHOT.jar codinviec.jar
+COPY --from=build /app/target/codinviec-0.0.1-SNAPSHOT.jar codinviec.jar
 
 # Chạy Spring Boot
 ENTRYPOINT ["java", "-jar", "codinviec.jar"]
