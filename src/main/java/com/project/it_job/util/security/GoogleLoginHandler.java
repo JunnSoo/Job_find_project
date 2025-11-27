@@ -49,7 +49,7 @@ public class GoogleLoginHandler extends SimpleUrlAuthenticationSuccessHandler {
         // Validate email (required)
         if (email == null || email.isEmpty()) {
             log.error("Email is missing from Google user attributes");
-            String redirectUrl = String.format("%s/signin?error=no_email", clientUrl);
+            String redirectUrl = String.format("%s/login?error=no_email", clientUrl);
             getRedirectStrategy().sendRedirect(request, response, redirectUrl);
             return;
         }
@@ -69,7 +69,7 @@ public class GoogleLoginHandler extends SimpleUrlAuthenticationSuccessHandler {
             // Validate token
             if (tokenDTO == null || tokenDTO.getAccessToken() == null || tokenDTO.getAccessToken().isEmpty()) {
                 log.error("TokenDTO is null or access token is empty");
-                String redirectUrl = String.format("%s/signin?error=no_token", clientUrl);
+                String redirectUrl = String.format("%s/login?error=no_token", clientUrl);
                 getRedirectStrategy().sendRedirect(request, response, redirectUrl);
                 return;
             }
@@ -81,7 +81,7 @@ public class GoogleLoginHandler extends SimpleUrlAuthenticationSuccessHandler {
             String encodedToken = URLEncoder.encode(tokenDTO.getAccessToken(), StandardCharsets.UTF_8);
 
             // Redirect về home page (root) với access token trong query parameter
-            String redirectUrl = String.format("%s/?token=%s", clientUrl, encodedToken);
+            String redirectUrl = String.format("%s/login?token=%s", clientUrl, encodedToken);
 
             log.info("Redirecting to home page with token");
             getRedirectStrategy().sendRedirect(request, response, redirectUrl);
@@ -89,7 +89,7 @@ public class GoogleLoginHandler extends SimpleUrlAuthenticationSuccessHandler {
         } catch (AlreadyLoggedInExceptionHandler e) {
             // Tài khoản đã đăng nhập ở nơi khác
             log.warn("AlreadyLoggedInException: {}", e.getMessage());
-            String redirectUrl = String.format("%s/signin?error=logged_in", clientUrl);
+            String redirectUrl = String.format("%s/login?error=logged_in", clientUrl);
             getRedirectStrategy().sendRedirect(request, response, redirectUrl);
         } catch (Exception e) {
             log.error("Error processing Google login: {}", e.getMessage(), e);
@@ -103,7 +103,7 @@ public class GoogleLoginHandler extends SimpleUrlAuthenticationSuccessHandler {
                     errorCode = "token_err";
                 }
             }
-            String redirectUrl = String.format("%s/signin?error=%s", clientUrl, errorCode);
+            String redirectUrl = String.format("%s/login?error=%s", clientUrl, errorCode);
             getRedirectStrategy().sendRedirect(request, response, redirectUrl);
         }
     }
