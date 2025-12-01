@@ -31,7 +31,6 @@ public class SecurityConfig {
         private String localhost;
 
         private final CustomAccessDeniedHandler customAccessDeniedHandler;
-        private final CustomAuthenticationEntryPointHandler customAuthenticationEntryPointHandler;
         private final GoogleLoginHandler googleLoginHandler;
 
     @Bean
@@ -80,8 +79,6 @@ public class SecurityConfig {
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // Cấu hình Exception Handling
                 .exceptionHandling(ex -> ex
-                        // Xử lý khi chưa đăng nhập (không có token) - Trả về 403
-                        .authenticationEntryPoint(customAuthenticationEntryPointHandler)
                         // Xử lý khi đã đăng nhập nhưng không có quyền - Trả về 403
                         .accessDeniedHandler(customAccessDeniedHandler))
                 .httpBasic(AbstractHttpConfigurer::disable) // Tắt Basic Auth
