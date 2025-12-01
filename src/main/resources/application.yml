@@ -30,7 +30,7 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
 server:
-  port: ${SERVER_PORT}
+  port: ${PORT:${SERVER_PORT:8080}}
 
 kafka:
   username: ${KAFKA_CLIENT_ID}
