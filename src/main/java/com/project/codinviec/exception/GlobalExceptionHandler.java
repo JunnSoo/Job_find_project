@@ -254,7 +254,27 @@ public class GlobalExceptionHandler {
                                 .body(BaseResponse.error(userMessage, HttpStatus.UNAUTHORIZED));
         }
 
-        // Block user
+    // LoginFail handle exception
+    @ExceptionHandler(LoginFaildExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handleLoginFailException(
+            LoginFaildExceptionHandler ex, HttpServletRequest request) {
+        log.error("LoginFailExceptionHandler: {} | URI: {} | Method: {} | Message: {}",
+                ex.getClass().getSimpleName(),
+                request.getRequestURI(),
+                request.getMethod(),
+                ex.getMessage(),
+                ex);
+
+        String userMessage = ex.getMessage() != null && !ex.getMessage().isBlank()
+                ? ex.getMessage()
+                : "Đăng nhập thất bại!";
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.error(userMessage, HttpStatus.BAD_REQUEST));
+    }
+
+
+    // Block user
         @ExceptionHandler(BlockLoginUserExceptionHandler.class)
         public ResponseEntity<BaseResponse> handleBlockUserException(
                         BlockLoginUserExceptionHandler ex, HttpServletRequest request) {

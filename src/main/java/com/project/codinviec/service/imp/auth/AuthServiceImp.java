@@ -72,7 +72,7 @@ public class AuthServiceImp implements AuthService {
                 }
             }
         } catch (Exception e) {
-            throw new BlockLoginUserExceptionHandler(stringTime);
+            throw new LoginFaildExceptionHandler();
         }
 
         User user = userRepository.findByEmail(loginRequest.getEmail())
