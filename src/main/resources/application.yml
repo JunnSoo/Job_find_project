@@ -32,6 +32,11 @@ spring:
 server:
   port: ${SERVER_PORT}
 
+kafka:
+  username: ${KAFKA_CLIENT_ID}
+  password: ${KAFKA_CLIENT_SECRET}
+
+
 jwt:
   secret: ${JWT_SECRET}
   expiration:
