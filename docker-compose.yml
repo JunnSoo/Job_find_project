@@ -1,8 +1,99 @@
+version: "3.9"
+
+networks:
+  codinviec-backend:
+    driver: bridge
+
+volumes:
+  codinviec-redis-data:
+  codinviec-kafka-data:
+  codinviec-mysql-data:
+
 services:
-  findjob:
-    container_name: findjob
-    image: findjob:v1
+  mysql:
+    image: mysql:8.0
+    container_name: codinviec-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Codinviec123@
+      MYSQL_DATABASE: codinviec_db
     ports:
-      - "8080:8080"
+      - "3306:3306"
+    volumes:
+      - codinviec-mysql-data:/var/lib/mysql
+    networks:
+      - codinviec-backend
+    restart: unless-stopped
+
+  redis:
+    image: redis/redis-stack:7.2.0-v20
+    container_name: codinviec-redis
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    command: ["redis-server", "--requirepass", "Codinviec123@"]
     env_file:
       - .env
+    volumes:
+      - codinviec-redis-data:/data
+    networks:
+      - codinviec-backend
+    restart: unless-stopped
+
+  kafka:
+    image: confluentinc/cp-kafka:7.9.1
+    container_name: codinviec-kafka
+    hostname: codinviec-kafka
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+      - "9093:9093"
+    environment:
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@codinviec-kafka:9093"
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://codinviec-kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
+    volumes:
+      - codinviec-kafka-data:/var/lib/kafka/data
+    networks:
+      - codinviec-backend
+    restart: unless-stopped
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: codinviec-kafka-ui
+    ports:
+      - "8085:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: codinviec-kafka:9092
+    networks:
+      - codinviec-backend
+    restart: unless-stopped
+
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: codinviec-app
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - /home/ubuntu/uploads/images:/uploads/images
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+    networks:
+      - codinviec-backend
+    restart: unless-stopped
