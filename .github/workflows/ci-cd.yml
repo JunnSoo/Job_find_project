@@ -1,0 +1,43 @@
+name: CI/CD Spring Boot to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up JDK 17
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      # Build Spring Boot jar
+      - name: Build Spring Boot
+        run: ./mvnw clean package -DskipTests
+
+      # SSH & deploy
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            git reset --hard
+            git clean -fd
+            git pull origin main
+            ./mvnw clean package -DskipTests
+            docker-compose build springboot-app
+            docker-compose up -d springboot-app
