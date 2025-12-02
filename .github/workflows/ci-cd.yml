@@ -29,7 +29,18 @@ jobs:
       - name: Build Spring Boot
         run: ./mvnw clean package -DskipTests
 
-      # 5️⃣ SSH & deploy to VPS
+      # 5️⃣ Write SSH key from secret to temp file
+      - name: Write SSH key to temp file
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY }}" > /tmp/github_action_key
+          chmod 600 /tmp/github_action_key
+
+      # 6️⃣ Test SSH connection
+      - name: Test SSH connection
+        run: |
+          ssh -i /tmp/github_action_key -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo 'SSH connection OK'"
+
+      # 7️⃣ Deploy to VPS
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -37,7 +48,6 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          strict: false
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             git reset --hard
@@ -46,5 +56,4 @@ jobs:
             ./mvnw clean package -DskipTests
             docker-compose build springboot-app
             docker-compose up -d springboot-app
-
             echo "✅ Deploy completed!"
