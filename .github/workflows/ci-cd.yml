@@ -1,0 +1,54 @@
+name: CI/CD Spring Boot 21 to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Java 21
+      - name: Setup Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: temurin
+
+      # 3️⃣ Build Spring Boot jar
+      - name: Build Spring Boot
+        run: ./mvnw clean package -DskipTests
+
+      # 4️⃣ SSH & deploy to VPS
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Di chuyển đến thư mục deploy
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            # Reset repo và pull code mới
+            git reset --hard
+            git clean -fd
+            git pull origin main
+
+            # Build jar mới
+            ./mvnw clean package -DskipTests
+
+            # Build Docker image cho Spring Boot
+            docker-compose build springboot-app
+
+            # Chạy container (up -d chỉ khởi động hoặc recreate nếu thay đổi)
+            docker-compose up -d springboot-app
+
+            echo "✅ Deploy completed!"
