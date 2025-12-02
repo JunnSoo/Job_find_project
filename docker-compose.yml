@@ -5,30 +5,33 @@ networks:
     driver: bridge
 
 volumes:
+  codinviec-mysql-data:
   codinviec-redis-data:
   codinviec-kafka-data:
-  codinviec-mysql-data:
+  portainer_data:
 
 services:
+  # --- MySQL ---
   mysql:
     image: mysql:8.0
     container_name: codinviec-mysql
     environment:
       MYSQL_ROOT_PASSWORD: Codinviec123@
       MYSQL_DATABASE: codinviec_db
-    ports:
-      - "3306:3306"
+    ports: 
+      - "3306"
     volumes:
       - codinviec-mysql-data:/var/lib/mysql
     networks:
       - codinviec-backend
     restart: unless-stopped
 
+  # --- Redis ---
   redis:
     image: redis/redis-stack:7.2.0-v20
     container_name: codinviec-redis
     ports:
-      - "6379:6379"
+      - "6379"      
       - "8001:8001"
     command: ["redis-server", "--requirepass", "Codinviec123@"]
     env_file:
@@ -39,14 +42,15 @@ services:
       - codinviec-backend
     restart: unless-stopped
 
+  # --- Kafka ---
   kafka:
     image: confluentinc/cp-kafka:7.9.1
     container_name: codinviec-kafka
     hostname: codinviec-kafka
-    ports:
-      - "9092:9092"
-      - "9094:9094"
-      - "9093:9093"
+    ports: 
+      - "9092"
+      - "9093"
+      - "9094"
     environment:
       KAFKA_KRAFT_MODE: "true"
       KAFKA_PROCESS_ROLES: broker,controller
@@ -60,13 +64,14 @@ services:
       KAFKA_LOG_DIRS: /var/lib/kafka/data
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
+      KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
     volumes:
       - codinviec-kafka-data:/var/lib/kafka/data
     networks:
       - codinviec-backend
     restart: unless-stopped
 
+  # --- Kafka UI ---
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: codinviec-kafka-ui
@@ -79,6 +84,7 @@ services:
       - codinviec-backend
     restart: unless-stopped
 
+  # --- Spring Boot App ---
   springboot-app:
     build:
       context: .
@@ -87,13 +93,27 @@ services:
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - "8080:8080" 
     volumes:
       - /home/ubuntu/uploads/images:/uploads/images
     depends_on:
       - mysql
       - redis
       - kafka
+    networks:
+      - codinviec-backend
+    restart: unless-stopped
+
+  # --- Portainer ---
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9000:9000"  # expose UI
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
     networks:
       - codinviec-backend
     restart: unless-stopped
