@@ -47,7 +47,7 @@ upload:
   image: ${UPLOAD_IMAGE}
 
 client:
-  url: ${CLIENT_URL}
+  url=${CLIENT_URL:http://localhost:3000}
 
 redis:
   host: ${REDIS_HOST}
