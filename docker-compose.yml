@@ -12,7 +12,7 @@ volumes:
 
 services:
   mysql:
-    image: codinviec:latest
+    image: mysql:8.0
     container_name: codinviec-db
     environment:
       MYSQL_ROOT_PASSWORD: Codinviec123@
