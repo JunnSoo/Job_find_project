@@ -43,6 +43,7 @@ public class GoogleLoginHandler extends SimpleUrlAuthenticationSuccessHandler {
         String lastName = (String) attributes.get("family_name");
         String picture = (String) attributes.get("picture");
 
+        System.out.println("----------------------------------------------------------" + clientUrl);
         log.info("Google login successful - Email: {}, Name: {} {}", email, firstName, lastName);
         log.debug("Google user attributes: {}", attributes);
 
