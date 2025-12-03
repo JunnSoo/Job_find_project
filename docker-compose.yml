@@ -1,113 +1,48 @@
-version: "3.9"
+name: Deploy Spring Boot Only
 
-networks:
-  codinviec-backend:
-    driver: bridge
+on:
+  push:
+    branches: [ "main" ]
 
-volumes:
-  codinviec-mysql-data:
-  codinviec-redis-data:
-  codinviec-kafka-data:
-  portainer_data:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: codinviec-db
-    environment:
-      MYSQL_ROOT_PASSWORD: Codinviec123@
-      MYSQL_DATABASE: codinviec_db
-    ports:
-      - "3306:3306"  # mapping port 3306 trong container ra 3307 trên VPS
-    volumes:
-      - codinviec-mysql-data:/var/lib/mysql
-    networks:
-      - codinviec-backend
-    restart: unless-stopped
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
 
-  redis:
-    image: redis/redis-stack:7.2.0-v20
-    container_name: codinviec-redis
-    ports:
-      - "6379:6379"
-      - "8001:8001"
-    command: ["redis-server", "--requirepass", "Codinviec123@"]
-    volumes:
-      - codinviec-redis-data:/data
-    networks:
-      - codinviec-backend
-    restart: unless-stopped
+      # 2️⃣ Build JAR locally
+      - name: Build Spring Boot JAR
+        run: mvn clean package -DskipTests
 
-  kafka:
-    image: confluentinc/cp-kafka:7.9.1
-    hostname: kafka
-    container_name: kafka
-    ports:
-      - "9092:9092"
-      - "9093:9093"
-      - "9094:9094"
-    environment:
-      KAFKA_KRAFT_MODE: "true"
-      KAFKA_PROCESS_ROLES: controller,broker
-      KAFKA_NODE_ID: 1
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG_RETENTION_HOURS: 168
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      CLUSTER_ID: "Mk3OEYBSD34fcwNTJENDM2Qk"
-      KAFKA_MESSAGE_MAX_BYTES: 10485760
-      KAFKA_REPLICA_FETCH_MAX_BYTES: 10485760
-      KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
-    volumes:
-      - codinviec-kafka-data:/var/lib/kafka/data
-    networks:
-      - codinviec-backend
-    restart: unless-stopped
+      # 3️⃣ Upload only the JAR to VPS
+      - name: Upload JAR to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "target/*.jar"
+          target: "${{ secrets.DEPLOY_PATH }}/target/"
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui-corporate
-    ports:
-      - "8085:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-    networks:
-      - codinviec-backend
-    restart: unless-stopped
+      # 4️⃣ SSH vào VPS để rebuild & redeploy Spring Boot Docker service
+      - name: Deploy Spring Boot Docker Service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
 
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    ports:
-      - "9000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    restart: unless-stopped
+            echo "🐳 Rebuilding Spring Boot Docker image..."
+            docker compose build springboot-app
 
-  springboot-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: codinviec-app
-    env_file:
-      - .env
-    ports:
-      - "8080:8080"
-    volumes:
-      - /home/ubuntu/uploads/images:/uploads/images
-    depends_on:
-      - mysql
-      - redis
-      - kafka
-    networks:
-      - codinviec-backend
-    restart: unless-stopped
+            echo "🚀 Redeploying Spring Boot service only..."
+            docker compose up -d springboot-app
+
+            echo "🎉 Deployment Completed Successfully!"
