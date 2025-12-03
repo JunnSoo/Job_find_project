@@ -1,4 +1,4 @@
-USE it_job_db;
+USE codinviec_db;
 
 -- Role
 INSERT INTO role (id, role_name, description)
@@ -1065,14 +1065,14 @@ VALUES
  '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Admin', 'System',
  '550e8400-e29b-41d4-a716-446655440001', NULL, '0123456789', 'Male', 'Đại học', 'Hà Nội', 'https://admin.itjob.com',
  '1990-01-01', 0, NULL, 'Leadership, Communication'),
--- HR Users
+-- HR Users (thuộc công ty FPT và Viettel)
 ('750e8400-e29b-41d4-a716-446655440002', 'hr@gmail.com', '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu',
- 'Nguyễn', 'Văn A', '550e8400-e29b-41d4-a716-446655440002', NULL, '0987654321', 'Female', 'Đại học', 'Hà Nội', NULL,
+ 'Nguyễn', 'Văn A', '550e8400-e29b-41d4-a716-446655440002', NULL, '0987654321', 'Male', 'Đại học', 'Hà Nội', NULL,
  '1985-05-15', 0, '650e8400-e29b-41d4-a716-446655440001', 'Recruitment, Communication'),
-('750e8400-e29b-41d4-a716-446655440003', 'user@gmail.com',
+('750e8400-e29b-41d4-a716-446655440003', 'hr2@gmail.com',
  '$2a$12$OKXQyj2v95r2eP5JVWa.kOEyS.OdeDhC.mn4qS990Ix6/Wntd.KIu', 'Trần', 'Thị B',
  '550e8400-e29b-41d4-a716-446655440002', NULL, '0912345678', 'Female', 'Đại học', 'Hà Nội', NULL, '1988-08-20', 0,
- '650e8400-e29b-41d4-a716-446655440002', 'User Management');
+ '650e8400-e29b-41d4-a716-446655440002', 'HR Management');
 
 
 
@@ -1100,79 +1100,17 @@ VALUES ('Java Developer', '650e8400-e29b-41d4-a716-446655440001', 'Tòa nhà FPT
         'Startup environment, equity', 3, 11, 3, 4, 1, 3);
 
 -- ============================================
--- USER PROFILE TABLES
+-- USER PROFILE TABLES (Dữ liệu mẫu cho Admin và HR)
 -- ============================================
 
--- Project
-INSERT INTO project (user_id, name, start_date, end_date, project_url, company)
-VALUES ('750e8400-e29b-41d4-a716-446655440004', 'E-commerce Website', '2023-01-01', '2023-06-30',
-        'https://github.com/candidate1/ecommerce', 'Personal Project'),
-       ('750e8400-e29b-41d4-a716-446655440004', 'Task Management App', '2023-07-01', '2023-12-31',
-        'https://github.com/candidate1/taskapp', 'Freelance'),
-       ('750e8400-e29b-41d4-a716-446655440005', 'Social Media Dashboard', '2023-03-01', '2023-09-30',
-        'https://github.com/candidate2/dashboard', 'University Project'),
-       ('750e8400-e29b-41d4-a716-446655440006', 'AI Chatbot', '2023-05-01', '2023-11-30',
-        'https://github.com/candidate3/chatbot', 'Research Project');
-
--- Certificate
-INSERT INTO certificate (user_id, certificate_name, organization, date, link, description)
-VALUES ('750e8400-e29b-41d4-a716-446655440004', 'AWS Certified Solutions Architect', 'Amazon Web Services',
-        '2023-08-15', 'https://aws.amazon.com/certification', 'Chứng chỉ kiến trúc giải pháp AWS'),
-       ('750e8400-e29b-41d4-a716-446655440004', 'Oracle Certified Java Programmer', 'Oracle', '2023-05-20',
-        'https://www.oracle.com/certification', 'OCP Java SE 11'),
-       ('750e8400-e29b-41d4-a716-446655440005', 'Google Cloud Professional', 'Google Cloud', '2023-09-10',
-        'https://cloud.google.com/certification', 'Cloud Architect certification'),
-       ('750e8400-e29b-41d4-a716-446655440006', 'TensorFlow Developer Certificate', 'Google', '2023-07-25',
-        'https://www.tensorflow.org/certificate', 'Machine Learning với TensorFlow');
-
--- Award
-INSERT INTO award (user_id, award_name, organization, date, description)
-VALUES ('750e8400-e29b-41d4-a716-446655440004', 'Best Student Project', 'Đại học Bách Khoa', '2023-06-15',
-        'Dự án tốt nhất năm 2023'),
-       ('750e8400-e29b-41d4-a716-446655440005', 'Hackathon Winner', 'TechFest Vietnam', '2023-10-20',
-        'Giải nhất cuộc thi Hackathon'),
-       ('750e8400-e29b-41d4-a716-446655440006', 'Research Excellence Award', 'Đại học Khoa học Tự nhiên', '2023-12-10',
-        'Giải thưởng nghiên cứu xuất sắc');
-
--- Language Skill
+-- Language Skill cho Admin và HR
 INSERT INTO language_skill (language_id, level_language_id, user_id)
-VALUES (1, 6, '750e8400-e29b-41d4-a716-446655440004'), -- Tiếng Việt - Bản ngữ
-       (2, 5, '750e8400-e29b-41d4-a716-446655440004'), -- Tiếng Anh - Thành thạo
-       (1, 6, '750e8400-e29b-41d4-a716-446655440005'),
-       (2, 4, '750e8400-e29b-41d4-a716-446655440005'),
-       (3, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Tiếng Nhật - Khá
-       (1, 6, '750e8400-e29b-41d4-a716-446655440006'),
-       (2, 5, '750e8400-e29b-41d4-a716-446655440006');
-
--- Available Skill Experience
-INSERT INTO available_skill_experience (id_group_core, available_skill_id, experience_id, user_id)
-VALUES (1, 1, 4, '750e8400-e29b-41d4-a716-446655440004'),  -- Backend - Java - 3-5 năm
-       (1, 17, 4, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - Spring Boot - 3-5 năm
-       (1, 22, 3, '750e8400-e29b-41d4-a716-446655440004'), -- Backend - MySQL - 2-3 năm
-       (2, 13, 3, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - React - 2-3 năm
-       (2, 14, 2, '750e8400-e29b-41d4-a716-446655440005'), -- Frontend - Angular - 1-2 năm
-       (2, 3, 3, '750e8400-e29b-41d4-a716-446655440005'),  -- Frontend - JavaScript - 2-3 năm
-       (6, 2, 5, '750e8400-e29b-41d4-a716-446655440006'),  -- Data Science - Python - 5-7 năm
-       (7, 2, 4, '750e8400-e29b-41d4-a716-446655440006');
--- ML - Python - 3-5 năm
-
--- Soft Skills Name
-INSERT INTO soft_skills_name (name, user_id)
-VALUES ('Teamwork', '750e8400-e29b-41d4-a716-446655440004'),
-       ('Problem-solving', '750e8400-e29b-41d4-a716-446655440004'),
-       ('Communication', '750e8400-e29b-41d4-a716-446655440005'),
-       ('Adaptability', '750e8400-e29b-41d4-a716-446655440005'),
-       ('Leadership', '750e8400-e29b-41d4-a716-446655440006'),
-       ('Critical thinking', '750e8400-e29b-41d4-a716-446655440006');
-
--- CV User
-INSERT INTO cv_user (candidate_id, version, file_url, title, is_active)
-VALUES ('750e8400-e29b-41d4-a716-446655440004', 1, 'https://example.com/cv/candidate1_v1.pdf', 'CV Java Developer', 1),
-       ('750e8400-e29b-41d4-a716-446655440004', 2, 'https://example.com/cv/candidate1_v2.pdf',
-        'CV Java Developer Updated', 0),
-       ('750e8400-e29b-41d4-a716-446655440005', 1, 'https://example.com/cv/candidate2_v1.pdf', 'CV Frontend Developer',
-        1),
-       ('750e8400-e29b-41d4-a716-446655440006', 1, 'https://example.com/cv/candidate3_v1.pdf', 'CV Data Scientist', 1);
+VALUES (1, 6, '750e8400-e29b-41d4-a716-446655440001'), -- Admin: Tiếng Việt - Bản ngữ
+       (2, 5, '750e8400-e29b-41d4-a716-446655440001'), -- Admin: Tiếng Anh - Thành thạo
+       (1, 6, '750e8400-e29b-41d4-a716-446655440002'), -- HR1: Tiếng Việt - Bản ngữ
+       (2, 4, '750e8400-e29b-41d4-a716-446655440002'), -- HR1: Tiếng Anh - Tốt
+       (1, 6, '750e8400-e29b-41d4-a716-446655440003'), -- HR2: Tiếng Việt - Bản ngữ
+       (2, 3, '750e8400-e29b-41d4-a716-446655440003'); -- HR2: Tiếng Anh - Khá
 
 -- ============================================
 -- CONTENT TABLES
@@ -1187,61 +1125,37 @@ VALUES ('10 Kỹ năng cần thiết cho Developer năm 2024', '', 'Tổng hợp
        ('Xu hướng công nghệ 2024', '', 'Các xu hướng công nghệ nổi bật', 'Phân tích các xu hướng...', 0,
         '750e8400-e29b-41d4-a716-446655440001');
 
--- Review
+-- Review (HR đánh giá công ty khác)
 INSERT INTO review (title, description, company_id, rated, user_id)
 VALUES ('Môi trường làm việc tốt', 'Công ty có môi trường làm việc chuyên nghiệp, đồng nghiệp thân thiện',
-        '650e8400-e29b-41d4-a716-446655440001', 5, '750e8400-e29b-41d4-a716-446655440004'),
+        '650e8400-e29b-41d4-a716-446655440003', 5, '750e8400-e29b-41d4-a716-446655440002'),
        ('Lương và phúc lợi tốt', 'Lương cạnh tranh, có nhiều phúc lợi cho nhân viên',
-        '650e8400-e29b-41d4-a716-446655440002', 4, '750e8400-e29b-41d4-a716-446655440005'),
-       ('Cơ hội phát triển', 'Có nhiều cơ hội học hỏi và phát triển kỹ năng', '650e8400-e29b-41d4-a716-446655440003', 5,
-        '750e8400-e29b-41d4-a716-446655440006');
+        '650e8400-e29b-41d4-a716-446655440004', 4, '750e8400-e29b-41d4-a716-446655440003');
 
--- Report
+-- Report (Admin báo cáo job vi phạm)
 INSERT INTO report (title, description, image_url, status_id, created_report, reported_user, reported_job)
 VALUES ('Báo cáo vi phạm nội dung', 'Job posting có nội dung không phù hợp', 'https://example.com/report/1.jpg', 1,
-        '750e8400-e29b-41d4-a716-446655440004', NULL, 1),
-       ('Báo cáo tài khoản giả', 'Tài khoản có dấu hiệu giả mạo', NULL, 2, '750e8400-e29b-41d4-a716-446655440005',
-        '750e8400-e29b-41d4-a716-446655440007', NULL),
-       ('Báo cáo spam', 'Job posting spam', NULL, 3, '750e8400-e29b-41d4-a716-446655440006', NULL, 2);
-
--- ============================================
--- WISHLIST TABLES
--- ============================================
-
--- Wishlist Job
-INSERT INTO wishlist_job (job_id, user_id)
-VALUES (1, '750e8400-e29b-41d4-a716-446655440004'),
-       (2, '750e8400-e29b-41d4-a716-446655440005'),
-       (3, '750e8400-e29b-41d4-a716-446655440004'),
-       (4, '750e8400-e29b-41d4-a716-446655440006');
-
--- Wishlist Candidate
-INSERT INTO wishlist_candidate (hr_id, candidate_id)
-VALUES ('750e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440004'),
-       ('750e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440005'),
-       ('750e8400-e29b-41d4-a716-446655440003', '750e8400-e29b-41d4-a716-446655440006');
+        '750e8400-e29b-41d4-a716-446655440001', NULL, 1),
+       ('Báo cáo spam', 'Job posting spam', NULL, 2, '750e8400-e29b-41d4-a716-446655440001', NULL, 2);
 
 -- ============================================
 -- PAYMENT TABLES
 -- ============================================
 
--- Service Product
+-- Service Product (HR mua dịch vụ đăng tin)
 INSERT INTO service_product (name, description, price, images, user_id, job_id)
 VALUES ('Premium Job Posting', 'Đăng tin tuyển dụng nổi bật trong 30 ngày', 500000,
         'https://example.com/service/premium.jpg', '750e8400-e29b-41d4-a716-446655440002', 1),
        ('Featured Job', 'Tin tuyển dụng được ưu tiên hiển thị', 300000, 'https://example.com/service/featured.jpg',
         '750e8400-e29b-41d4-a716-446655440002', 2),
-       ('CV Boost', 'Tăng khả năng hiển thị CV cho ứng viên', 200000, 'https://example.com/service/cvboost.jpg',
-        '750e8400-e29b-41d4-a716-446655440004', NULL),
        ('Company Profile Premium', 'Nâng cấp hồ sơ công ty', 1000000, 'https://example.com/service/company.jpg',
         '750e8400-e29b-41d4-a716-446655440003', NULL);
 
--- Payment
+-- Payment (HR thanh toán dịch vụ)
 INSERT INTO payment (title, description, payment_method_id, status, service_product_id, user_id)
 VALUES ('Thanh toán Premium Job Posting', 'Thanh toán cho dịch vụ đăng tin nổi bật', 1, 3, 1,
         '750e8400-e29b-41d4-a716-446655440002'),
        ('Thanh toán Featured Job', 'Thanh toán cho dịch vụ tin ưu tiên', 3, 3, 2,
         '750e8400-e29b-41d4-a716-446655440002'),
-       ('Thanh toán CV Boost', 'Thanh toán nâng cấp CV', 7, 2, 3, '750e8400-e29b-41d4-a716-446655440004'),
-       ('Thanh toán Company Profile', 'Thanh toán nâng cấp hồ sơ công ty', 1, 1, 4,
+       ('Thanh toán Company Profile', 'Thanh toán nâng cấp hồ sơ công ty', 1, 1, 3,
         '750e8400-e29b-41d4-a716-446655440003');

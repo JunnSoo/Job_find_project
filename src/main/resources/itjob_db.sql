@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS it_job_db;
+CREATE DATABASE IF NOT EXISTS codinviec_db;
 
-USE it_job_db;
+USE codinviec_db;
 
 CREATE TABLE IF NOT EXISTS role
 (
@@ -380,7 +380,7 @@ CREATE INDEX idx_payment_user ON payment (user_id);
 -- ============================================
 -- FOREIGN KEY CONSTRAINTS
 -- ============================================
-
+use codinviec_db;
 -- Ward foreign keys
 ALTER TABLE ward
     ADD CONSTRAINT fk_ward_province
