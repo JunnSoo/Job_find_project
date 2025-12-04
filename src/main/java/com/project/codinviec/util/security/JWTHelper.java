@@ -138,6 +138,7 @@ public class JWTHelper {
             }
 
             if (refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+                removeAllToken(userId);
                 throw new ExpireTokenExceptionHandler("Refresh token đã hết hạn");
             }
 
