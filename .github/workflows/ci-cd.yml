@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
-      # 2️⃣ Upload source lên VPS
+      # 2️⃣ Upload code to VPS
       - name: Upload Project to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -24,7 +24,7 @@ jobs:
           source: "."
           target: ${{ secrets.DEPLOY_PATH }}
 
-      # 3️⃣ SSH vào VPS để build + deploy
+      # 3️⃣ Build & Deploy ONLY Spring Boot service
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -35,18 +35,13 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
 
-            echo "🔥 Cleaning old target & docker cache..."
-            rm -rf target
-            docker compose down
-            docker builder prune -a -f
-
             echo "📦 Building new JAR..."
             mvn clean package -DskipTests
 
-            echo "🐳 Building fresh Docker images..."
-            docker compose build --no-cache
+            echo "🐳 Rebuilding ONLY springboot-app service..."
+            docker compose build springboot-app
 
-            echo "🚀 Starting services..."
-            docker compose up -d
+            echo "🔄 Restarting ONLY springboot-app container..."
+            docker compose up -d springboot-app
 
-            echo "🎉 Deployment Completed Successfully!"
+            echo "🎉 Backend Deployment Completed Successfully!"
