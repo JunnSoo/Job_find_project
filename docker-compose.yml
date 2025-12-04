@@ -27,9 +27,10 @@ services:
     image: redis/redis-stack:7.2.0-v20
     container_name: codinviec-redis
     ports:
-      - "6379:6379"   
-      - "8001:8001"   
-    command: ["redis-stack-server", "--requirepass", "Codinviec123@"]
+      - "6379:6379"  
+      - "8001:8001"  
+    environment:
+      REDIS_ARGS: "--requirepass Codinviec123@"
     volumes:
       - codinviec-redis-data:/data
     networks:
