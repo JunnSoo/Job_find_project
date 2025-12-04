@@ -31,6 +31,8 @@ services:
       - "8001:8001"  
     environment:
       REDIS_ARGS: "--requirepass Codinviec123@"
+      REDISSTACK_ENABLE_INSIGHT: "yes"
+      REDISSTACK_UI_BIND_ADDRESS: "0.0.0.0"
     volumes:
       - codinviec-redis-data:/data
     networks:
