@@ -2,6 +2,7 @@ package com.project.codinviec.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.codinviec.dto.InforEmailDTO;
+import com.project.codinviec.dto.auth.ProfileDTO;
 import com.project.codinviec.exception.auth.*;
 import com.project.codinviec.model.UserBlock;
 import com.project.codinviec.dto.auth.RegisterDTO;
@@ -242,7 +243,7 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-    public UserDTO getProfile(String userId) {
+    public ProfileDTO getProfile(String userId) {
         // Validate userId
         if (userId == null || userId.isEmpty()) {
             throw new AccessTokenExceptionHandler("UserId không hợp lệ");
@@ -252,7 +253,7 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
 
-        return userMapper.userToUserDTO(user);
+        return userMapper.userToProfileDTO(user);
     }
 
     @Override

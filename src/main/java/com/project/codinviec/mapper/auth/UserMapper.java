@@ -1,5 +1,6 @@
 package com.project.codinviec.mapper.auth;
 
+import com.project.codinviec.dto.auth.ProfileDTO;
 import com.project.codinviec.dto.auth.UserDTO;
 import com.project.codinviec.dto.auth.UserReviewDTO;
 import com.project.codinviec.entity.auth.Company;
@@ -36,6 +37,32 @@ public class UserMapper {
                 .groupSoftSkill(user.getGroupSoftSkill())
                 .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
                 .roleId(user.getRole()  != null ? user.getRole().getId() : null)
+                .createdDate(user.getCreatedDate())
+                .updatedDate(user.getUpdatedDate())
+                .build();
+    }
+
+    public ProfileDTO userToProfileDTO(User user) {
+        return ProfileDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .avatar(user.getAvatar())
+                .phone(user.getPhone())
+                .gender(user.getGender())
+                .education(user.getEducation())
+                .address(user.getAddress())
+                .websiteLink(user.getWebsiteLink())
+                .birthDate(user.getBirthDate())
+                .isFindJob(user.isFindJob())
+                .groupSoftSkill(user.getGroupSoftSkill())
+                .company(
+                        user.getCompany() == null || user.getCompany().getId() == null
+                                ? "Chưa Vào Công Ty"
+                                : user.getCompany().getName()
+                )
+                .role(user.getRole().getRoleName())
                 .createdDate(user.getCreatedDate())
                 .updatedDate(user.getUpdatedDate())
                 .build();
