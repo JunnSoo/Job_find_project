@@ -15,6 +15,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Codinviec123@
       MYSQL_DATABASE: codinviec_db
+      TZ: "Asia/Ho_Chi_Minh"
     ports:
       - "3306:3306"
     volumes:
@@ -26,29 +27,26 @@ services:
   redis:
     image: redis/redis-stack:7.2.0-v20
     container_name: codinviec-redis
-    ports:
-      - "6379:6379"  
-      - "8001:8001"  
     environment:
       REDIS_ARGS: "--requirepass Codinviec123@"
       REDISSTACK_ENABLE_INSIGHT: "yes"
       REDISSTACK_UI_BIND_ADDRESS: "0.0.0.0"
+      TZ: "Asia/Ho_Chi_Minh"
+    ports:
+      - "6379:6379"
+      - "8001:8001"
     volumes:
       - codinviec-redis-data:/data
     networks:
       - codinviec-backend
     restart: unless-stopped
 
-
   kafka:
     image: confluentinc/cp-kafka:7.9.1
     hostname: kafka
     container_name: kafka
-    ports:
-      - "9092:9092"
-      - "9093:9093"
-      - "9094:9094"
     environment:
+      TZ: "Asia/Ho_Chi_Minh"
       KAFKA_KRAFT_MODE: "true"
       KAFKA_PROCESS_ROLES: controller,broker
       KAFKA_NODE_ID: 1
@@ -63,10 +61,14 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LOG_RETENTION_HOURS: 168
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      CLUSTER_ID: "Mk3OEYBSD34fcwNTJENDM2Qk"
+      CLUSTER_ID: "Mk3OEYBSD34fcwNTJENDM6Qk"
       KAFKA_MESSAGE_MAX_BYTES: 10485760
       KAFKA_REPLICA_FETCH_MAX_BYTES: 10485760
       KAFKA_HEAP_OPTS: "-Xmx2G -Xms2G"
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+      - "9094:9094"
     volumes:
       - codinviec-kafka-data:/var/lib/kafka/data
     networks:
@@ -76,11 +78,12 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui-corporate
-    ports:
-      - "8085:8080"
     environment:
+      TZ: "Asia/Ho_Chi_Minh"
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    ports:
+      - "8085:8080"
     networks:
       - codinviec-backend
     restart: unless-stopped
@@ -88,6 +91,8 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     ports:
       - "9000:9000"
     volumes:
@@ -102,6 +107,8 @@ services:
     container_name: codinviec-app
     env_file:
       - .env
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     ports:
       - "8080:8080"
     volumes:
