@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis/redis-stack-server:7.2.0-v10
+    image: redis/redis-stack-server:7.4.0
     container_name: codinviec-redis
     command: ["redis-server", "--requirepass", "Codinviec123@"]
     ports:
@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
 
   redis-insight:
-    image: redis/redisinsight:1.17
+    image: redis/redisinsight:latest
     container_name: redis-insight
     ports:
       - "8001:8001"
