@@ -60,18 +60,22 @@ public class AuthServiceImp implements AuthService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // kiểm tra block
-        String stringTime = "";
+
         try {
             if (redisTemplateDb00.hasKey(loginRequest.getEmail())) {
                 String json = redisTemplateDb00.opsForValue().get(loginRequest.getEmail());
                 UserBlock userBlock = objectMapper.readValue(json, UserBlock.class);
                 if (userBlock.isBlocked()) {
-                    stringTime = timeHelper
+                    String stringTime = timeHelper
                             .parseLocalDateTimeToSimpleTime(LocalDateTime.parse(userBlock.getExpireTime()));
                     throw new BlockLoginUserExceptionHandler(stringTime);
                 }
             }
-        } catch (Exception e) {
+
+        } catch (BlockLoginUserExceptionHandler e){
+            throw e;
+        }
+        catch (Exception ex) {
             throw new LoginFaildExceptionHandler();
         }
 
