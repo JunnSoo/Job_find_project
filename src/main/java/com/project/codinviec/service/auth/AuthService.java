@@ -1,5 +1,6 @@
 package com.project.codinviec.service.auth;
 
+import com.project.codinviec.dto.auth.ProfileDTO;
 import com.project.codinviec.dto.auth.RegisterDTO;
 import com.project.codinviec.dto.auth.TokenDTO;
 import com.project.codinviec.dto.auth.UserDTO;
@@ -19,7 +20,7 @@ public interface AuthService {
 
     TokenDTO googleLogin(GoogleUserRequest request);
 
-    UserDTO getProfile(String userId);
+    ProfileDTO getProfile(String userId);
 
     UserDTO updateProfile(String userId, UpdateProfileRequest request);
 }
