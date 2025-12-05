@@ -38,10 +38,13 @@ jobs:
             echo "📦 Building new JAR..."
             mvn clean package -DskipTests
 
-            echo "🐳 Rebuilding ONLY springboot-app service..."
-            docker compose build springboot-app
+             echo "🐳 Rebuilding Docker images..."
+            docker compose build
 
-            echo "🔄 Restarting ONLY springboot-app container..."
-            docker compose up -d springboot-app
+            echo "🔄 Starting ALL services..."
+            docker compose up -d
+
+            echo "🧹 Removing unused images..."
+            docker image prune -f
 
             echo "🎉 Backend Deployment Completed Successfully!"
