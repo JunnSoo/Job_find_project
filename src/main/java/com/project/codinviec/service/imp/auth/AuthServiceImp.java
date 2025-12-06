@@ -220,7 +220,7 @@ public class AuthServiceImp implements AuthService {
         AccessTokenDTO accessTokenDTO = tokenManagerService.getAccessToken(user.getId());
         RefreshTokenDTO refreshTokenDTO = tokenManagerService.getRefreshToken(user.getId());
 
-        if (!accessTokenDTO.getUserId().isEmpty() || !refreshTokenDTO.getUserId().isEmpty()) {
+        if (accessTokenDTO != null || refreshTokenDTO != null) {
             throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
         }
 
