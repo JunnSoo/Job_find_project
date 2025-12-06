@@ -2,10 +2,10 @@ spring:
   application:
     name: codinviec
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/codinviec_db}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:Codinviec123@}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
   jpa:
     hibernate:
       ddl-auto: none
@@ -15,14 +15,14 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
   kafka:
-    bootstrap-servers: ${KAFKA_BOOSTRAP_SERVER}
+    bootstrap-servers: ${KAFKA_BOOSTRAP_SERVER:localhost9094}
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: ${SPRING_SECURITY_GOOGLE_CLIENT_ID}
-            client-secret: ${SPRING_SECURITY_GOOGLE_CLIENT_SECRET}
+            client-id: ${SPRING_SECURITY_GOOGLE_CLIENT_ID:253105273512-o9u9tqfjt7tqaq4cp3qln0pagoc9gjf6.apps.googleusercontent.com}
+            client-secret: ${SPRING_SECURITY_GOOGLE_CLIENT_SECRET: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}
             scope:
               - openid
               - profile
@@ -37,27 +37,22 @@ spring:
 server:
   port: ${PORT:${SERVER_PORT:8080}}
 
-kafka:
-  username: ${KAFKA_CLIENT_ID}
-  password: ${KAFKA_CLIENT_SECRET}
-
-
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:pgib14v/ChCexRgVz8vtPSds9VUOeyXm3KGekziH5Ys=}
   expiration:
-    access: ${JWT_ACCESS_EXPIRED}
-    refresh: ${JWT_REFRESH_EXPIRED}
+    access: ${JWT_ACCESS_EXPIRED:900000} #15m
+    refresh: ${JWT_REFRESH_EXPIRED:604800000000} #7d
 
 upload:
-  image: ${UPLOAD_IMAGE}
+  image: ${UPLOAD_IMAGE:D:\}
 
 client:
   url: ${CLIENT_URL:http://localhost:3000}
 
 redis:
-  host: ${REDIS_HOST}
-  password: ${REDIS_PASSWORD}
-  port: ${REDIS_PORT}
+  host: ${REDIS_HOST:localhost}
+  password: ${REDIS_PASSWORD:Codinviec123@}
+  port: ${REDIS_PORT:6379}
 
 springdoc:
   swagger-ui:

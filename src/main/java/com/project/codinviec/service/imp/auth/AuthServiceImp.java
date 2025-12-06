@@ -2,30 +2,25 @@ package com.project.codinviec.service.imp.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.codinviec.dto.InforEmailDTO;
-import com.project.codinviec.dto.auth.ProfileDTO;
-import com.project.codinviec.exception.auth.*;
-import com.project.codinviec.model.UserBlock;
-import com.project.codinviec.dto.auth.RegisterDTO;
-import com.project.codinviec.dto.auth.TokenDTO;
-import com.project.codinviec.dto.auth.UserDTO;
+import com.project.codinviec.dto.auth.*;
 import com.project.codinviec.entity.auth.Role;
 import com.project.codinviec.entity.auth.User;
+import com.project.codinviec.exception.auth.*;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.mapper.auth.RegisterMapper;
 import com.project.codinviec.mapper.auth.UserMapper;
-import com.project.codinviec.request.auth.GoogleUserRequest;
-import com.project.codinviec.repository.auth.AccessTokenRepository;
-import com.project.codinviec.repository.auth.RefreshTokenRepository;
+import com.project.codinviec.model.UserBlock;
 import com.project.codinviec.repository.auth.RoleRepository;
 import com.project.codinviec.repository.auth.UserRepository;
+import com.project.codinviec.request.auth.GoogleUserRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
 import com.project.codinviec.request.auth.UpdateProfileRequest;
 import com.project.codinviec.service.auth.AuthService;
+import com.project.codinviec.service.auth.TokenManagerService;
 import com.project.codinviec.util.helper.BlockUserHelper;
 import com.project.codinviec.util.helper.KafkaHelper;
 import com.project.codinviec.util.helper.TimeHelper;
-import com.project.codinviec.util.security.JWTHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,28 +35,25 @@ import java.time.LocalDateTime;
 public class AuthServiceImp implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AccessTokenRepository accessTokenRepository;
-    private final JWTHelper jwtHelper;
 
     private final BlockUserHelper blockUserHelper;
 
     @Qualifier("redisTemplateDb0")
     private final RedisTemplate<String, String> redisTemplateDb00;
+    private final ObjectMapper objectMapper;
 
     private final TimeHelper timeHelper;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final RegisterMapper registerMapper;
     private final RoleRepository roleRepository;
     private final KafkaHelper kafkaHelper;
     private final UserMapper userMapper;
 
+    private final TokenManagerService tokenManagerService;
+
     @Override
     @Transactional
     public TokenDTO login(LoginRequest loginRequest) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
         // kiểm tra block
-
         try {
             if (redisTemplateDb00.hasKey(loginRequest.getEmail())) {
                 String json = redisTemplateDb00.opsForValue().get(loginRequest.getEmail());
@@ -92,15 +84,15 @@ public class AuthServiceImp implements AuthService {
             throw new WrongPasswordOrEmailExceptionHandler("Tài khoản hoặc mật khẩu không hợp lệ!");
         }
 
-        boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
-        boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
+        AccessTokenDTO accessTokenDTO = tokenManagerService.getAccessToken(user.getId());
+        RefreshTokenDTO refreshTokenDTO = tokenManagerService.getRefreshToken(user.getId());
 
-        if (isActiveAccessToken || isActiveRefreshToken) {
+        if (accessTokenDTO != null || refreshTokenDTO != null) {
             throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
         }
 
-        String accessToken = jwtHelper.createAccessToken(user.getRole().getRoleName(), user.getId());
-        String refershToken = jwtHelper.createRefershToken(user.getRole().getRoleName(), user.getId());
+        String accessToken = tokenManagerService.createAccessToken(user.getRole().getRoleName(), user.getId());
+        String refershToken = tokenManagerService.createRefreshToken(user.getRole().getRoleName(), user.getId());
 
         return TokenDTO.builder()
                 .accessToken(accessToken)
@@ -111,13 +103,13 @@ public class AuthServiceImp implements AuthService {
     @Override
     @Transactional
     public TokenDTO refreshToken(String refreshToken) {
-        String userId = jwtHelper.verifyRefreshToken(refreshToken);
+        JwtUserDTO userJwt = tokenManagerService.verifyRefreshToken(refreshToken);
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userJwt.getUserId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
-        String newAccessToken = jwtHelper.createAccessToken(user.getRole().getRoleName(), user.getId());
-        String newRefreshToken = jwtHelper.createRefershToken(user.getRole().getRoleName(), user.getId());
+        String newAccessToken = tokenManagerService.createAccessToken(user.getRole().getRoleName(), user.getId());
+        String newRefreshToken = tokenManagerService.createRefreshToken(user.getRole().getRoleName(), user.getId());
 
         return TokenDTO.builder()
                 .accessToken(newAccessToken)
@@ -160,13 +152,13 @@ public class AuthServiceImp implements AuthService {
             throw new RefreshTokenExceptionHandler("Không tìm thấy Refresh Token!");
         }
 
-        String userId = jwtHelper.verifyRefreshToken(refreshToken);
+        JwtUserDTO userJwt = tokenManagerService.verifyRefreshToken(refreshToken);
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(userJwt.getUserId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
-        accessTokenRepository.revokeAllAccessTokens(user.getId());
-        refreshTokenRepository.revokeAllRefreshTokens(user.getId());
+        tokenManagerService.revokeAllTokens(user.getId());
+        tokenManagerService.revokeAllTokens(user.getId());
     }
 
     @Override
@@ -225,16 +217,15 @@ public class AuthServiceImp implements AuthService {
         }
 
         // Kiểm tra xem user có đang đăng nhập ở nơi khác không
-        boolean isActiveAccessToken = accessTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
-        boolean isActiveRefreshToken = refreshTokenRepository.existsByUser_IdAndIsRevokedFalse(user.getId());
+        AccessTokenDTO accessTokenDTO = tokenManagerService.getAccessToken(user.getId());
+        RefreshTokenDTO refreshTokenDTO = tokenManagerService.getRefreshToken(user.getId());
 
-        if (isActiveAccessToken || isActiveRefreshToken) {
+        if (!accessTokenDTO.getUserId().isEmpty() || !refreshTokenDTO.getUserId().isEmpty()) {
             throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
         }
 
-        // Tạo JWT tokens
-        String accessToken = jwtHelper.createAccessToken(user.getRole().getRoleName(), user.getId());
-        String refreshToken = jwtHelper.createRefershToken(user.getRole().getRoleName(), user.getId());
+        String accessToken = tokenManagerService.createAccessToken(user.getRole().getRoleName(), user.getId());
+        String refreshToken = tokenManagerService.createRefreshToken(user.getRole().getRoleName(), user.getId());
 
         return TokenDTO.builder()
                 .accessToken(accessToken)
