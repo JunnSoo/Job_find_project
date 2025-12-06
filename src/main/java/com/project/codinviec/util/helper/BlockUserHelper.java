@@ -16,10 +16,9 @@ public class BlockUserHelper {
 
     @Qualifier("redisTemplateDb0")
     private final RedisTemplate<String, String> redisTemplateDb00;
+    private final ObjectMapper objectMapper;
 
     public void updateCountErrorUser(String email) {
-        // dùng Object mapper để convert sang String
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             // Tìm key chính là email
             if (redisTemplateDb00.hasKey(email)) {

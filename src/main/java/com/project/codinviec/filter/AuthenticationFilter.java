@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.codinviec.dto.auth.JwtUserDTO;
 import com.project.codinviec.exception.auth.AccessTokenExceptionHandler;
 import com.project.codinviec.response.BaseResponse;
+import com.project.codinviec.service.auth.TokenManagerService;
 import com.project.codinviec.util.security.CustomUserDetails;
-import com.project.codinviec.util.security.JWTHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,8 +28,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
-    private final JWTHelper jwtHelpper;
-
+    private final TokenManagerService tokenManagerService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,7 +39,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             token = token.substring(7);
 
             try {
-                JwtUserDTO jwtUser = jwtHelpper.verifyAccessToken(token);
+                JwtUserDTO jwtUser = tokenManagerService.verifyAccessToken(token);
 
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + jwtUser.getRole());

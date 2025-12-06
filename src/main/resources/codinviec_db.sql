@@ -253,34 +253,6 @@ CREATE TABLE IF NOT EXISTS cv_user
 CREATE INDEX idx_cv_user_candidate ON cv_user (candidate_id);
 
 -- ============================================
--- AUTHENTICATION TABLES
--- ============================================
-
-CREATE TABLE IF NOT EXISTS access_token
-(
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    user_id      CHAR(36)                             NOT NULL,
-    token        TEXT                                 NOT NULL,
-    expiry_date  DATETIME                             NOT NULL,
-    is_revoked   TINYINT(1) DEFAULT 0                 NOT NULL,
-    created_date DATETIME   DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-CREATE INDEX idx_access_user ON access_token (user_id);
-
-CREATE TABLE IF NOT EXISTS refresh_token
-(
-    id           INT AUTO_INCREMENT PRIMARY KEY,
-    user_id      CHAR(36)                             NOT NULL,
-    token        TEXT                                 NOT NULL,
-    expiry_date  DATETIME                             NOT NULL,
-    is_revoked   TINYINT(1) DEFAULT 0                 NOT NULL,
-    created_date DATETIME   DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-CREATE INDEX idx_refresh_user ON refresh_token (user_id);
-
--- ============================================
 -- CONTENT TABLES
 -- ============================================
 
@@ -487,18 +459,6 @@ ALTER TABLE soft_skills_name
 ALTER TABLE cv_user
     ADD CONSTRAINT fk_cv_user_candidate
         FOREIGN KEY (candidate_id) REFERENCES user (id)
-            ON UPDATE CASCADE ON DELETE CASCADE;
-
--- Access Token foreign keys
-ALTER TABLE access_token
-    ADD CONSTRAINT fk_access_token_user
-        FOREIGN KEY (user_id) REFERENCES user (id)
-            ON UPDATE CASCADE ON DELETE CASCADE;
-
--- Refresh Token foreign keys
-ALTER TABLE refresh_token
-    ADD CONSTRAINT fk_refresh_token_user
-        FOREIGN KEY (user_id) REFERENCES user (id)
             ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- Review foreign keys
