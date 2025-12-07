@@ -4,10 +4,7 @@ import com.project.codinviec.response.BaseResponse;
 import com.project.codinviec.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/search")
@@ -16,8 +13,9 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/{keyword}")
-    public ResponseEntity<?> search(@PathVariable String keyword){
-        return ResponseEntity.ok(BaseResponse.success(searchService.getSearch(keyword), "OK"));
+    public ResponseEntity<?> search(@PathVariable String keyword,
+                                    @RequestParam(defaultValue = "0") int provinceId) {
+        return ResponseEntity.ok(BaseResponse.success(searchService.getSearch(keyword, provinceId), "OK"));
     }
 
 }

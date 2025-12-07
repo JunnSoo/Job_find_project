@@ -59,15 +59,14 @@ public class User {
 
     // ds wishlist của bản thân
     @OneToMany(mappedBy = "userHr", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WishlistCandidate> wishlistCandidates = new ArrayList<>();;
+    private List<WishlistCandidate> wishlistCandidates = new ArrayList<>();
 
     // bị wistlist
     @OneToMany(mappedBy = "userCandidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WishlistCandidate> wishedByHRs = new ArrayList<>();;
+    private List<WishlistCandidate> wishedByHRs = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccessToken> listAccessToken = new ArrayList<>();
+
 }
