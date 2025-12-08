@@ -1,6 +1,7 @@
 package com.project.codinviec.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -9,16 +10,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@ConfigurationProperties(prefix = "redis")
+@Data
 public class RedisConfig {
-    @Value("${redis.host}")
     private String host;
 
-    @Value("${redis.password}")
     private String password;
 
-    @Value("${redis.port}")
     private int port;
-
 
 //    db0 lưu thông tin block user
 //    db01 chưa biết

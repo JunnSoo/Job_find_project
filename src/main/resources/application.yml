@@ -59,6 +59,13 @@ springdoc:
     tags-sorter: alpha
     operations-sorter: alpha
 
+vnpay:
+  tmn-code: ${VNP_TMNCODE}
+  hash-secret: ${VNP_HASHSECRET}
+  pay-url: ${VNP_URL}
+  return-url: ${VNP_RETURN_URL}
+
+
 logging:
   level:
     root: INFO
