@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class JobRequest {
     @NotBlank(message = "Vị trí công việc không được để trống")
@@ -49,4 +51,5 @@ public class JobRequest {
     @Min(value = 1, message = "Experience ID phải lớn hơn 0")
     private int experienceId;
 
+    private LocalDateTime createdDate;
 }
