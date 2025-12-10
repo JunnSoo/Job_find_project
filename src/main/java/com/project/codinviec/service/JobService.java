@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface JobService {
     List<JobDTO> getAllJob();
-    Page<JobDTO> getALLjobPage(PageRequestCustom pageRequestCustom);
+    Page<JobDTO> getAllJobPage(PageRequestCustom pageRequestCustom);
     JobDTO getJobById(int id);
     JobDTO createJob(JobRequest request);
     JobDTO updateJob(int id, JobRequest request);

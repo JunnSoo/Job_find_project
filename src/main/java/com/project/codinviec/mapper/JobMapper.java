@@ -5,6 +5,8 @@ import com.project.codinviec.entity.Job;
 import com.project.codinviec.request.JobRequest;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class JobMapper {
     public JobDTO toDTO(Job entity) {
@@ -23,6 +25,8 @@ public class JobMapper {
                 .degreeLevelId(entity.getDegreeLevelId())
                 .employmentTypeId(entity.getEmploymentTypeId())
                 .experienceId(entity.getExperienceId())
+                .createdDate(entity.getCreatedDate())
+                .updatedDate(entity.getUpdatedDate())
                 .build();
     }
 
@@ -41,6 +45,8 @@ public class JobMapper {
                 .degreeLevelId(request.getDegreeLevelId())
                 .employmentTypeId(request.getEmploymentTypeId())
                 .experienceId(request.getExperienceId())
+                .createdDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .build();
     }
 
@@ -60,6 +66,8 @@ public class JobMapper {
                 .degreeLevelId(request.getDegreeLevelId())
                 .employmentTypeId(request.getEmploymentTypeId())
                 .experienceId(request.getExperienceId())
+                .createdDate(request.getCreatedDate())
+                .updatedDate(LocalDateTime.now())
                 .build();
     }
 }

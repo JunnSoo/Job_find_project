@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "job_position", length = 255, nullable = false)
+    @Column(name = "job_position", nullable = false)
     private String jobPosition;
 
     @Column(name = "company_id", length = 36, nullable = false)
@@ -54,6 +55,12 @@ public class Job {
 
     @Column(name = "experience_id")
     private int experienceId;
+
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
+
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
 
     @OneToMany(mappedBy = "job",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();

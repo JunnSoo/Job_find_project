@@ -21,7 +21,7 @@ public class JobController {
         if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0 && pageRequestCustom.getKeyword() == null) {
             return ResponseEntity.ok(BaseResponse.success(jobService.getAllJob(), "Lấy danh sách Job thành công"));
         }
-        return ResponseEntity.ok(BaseResponse.success(jobService.getALLjobPage(pageRequestCustom), "Lấy danh sách Job phân trang thành công"));
+        return ResponseEntity.ok(BaseResponse.success(jobService.getAllJobPage(pageRequestCustom), "Lấy danh sách Job phân trang thành công"));
     }
 
     @GetMapping("/{idJob}")
