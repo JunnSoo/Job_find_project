@@ -1,5 +1,6 @@
 package com.project.codinviec.dto;
 
+import com.project.codinviec.dto.auth.CompanyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class JobDTO {
     private int id;
     private String jobPosition;
-    private String companyId;
+    private CompanyDTO companies;
     private String detailAddress;
     private String descriptionJob;
     private String requirement;

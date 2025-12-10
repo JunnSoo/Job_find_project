@@ -2,9 +2,11 @@ package com.project.codinviec.service.imp;
 
 import com.project.codinviec.dto.JobDTO;
 import com.project.codinviec.entity.Job;
+import com.project.codinviec.entity.auth.Company;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.mapper.JobMapper;
 import com.project.codinviec.repository.JobRepository;
+import com.project.codinviec.repository.auth.CompanyRepository;
 import com.project.codinviec.request.JobRequest;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.service.JobService;
@@ -19,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,6 +29,7 @@ import java.util.List;
 public class JobServiceImp implements JobService {
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
+    private final CompanyRepository companyRepository;
     private final PageCustomHelper pageCustomHelper;
     private final JobSpecification jobSpecification;
 
@@ -86,7 +90,25 @@ public class JobServiceImp implements JobService {
     @Override
     @Transactional
     public JobDTO createJob(JobRequest request) {
-        Job job = jobMapper.saveJob(request);
+        Company company = companyRepository.findById(request.getCompanyId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id Company"));
+
+        Job job = Job.builder()
+                .jobPosition(request.getJobPosition())
+                .company(company)
+                .detailAddress(request.getDetailAddress())
+                .descriptionJob(request.getDescriptionJob())
+                .requirement(request.getRequirement())
+                .benefits(request.getBenefits())
+                .provinceId(request.getProvinceId())
+                .industryId(request.getIndustryId())
+                .jobLevelId(request.getJobLevelId())
+                .degreeLevelId(request.getDegreeLevelId())
+                .employmentTypeId(request.getEmploymentTypeId())
+                .experienceId(request.getExperienceId())
+                .createdDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
+                .build();
         return jobMapper.toDTO(jobRepository.save(job));
     }
 
@@ -95,7 +117,27 @@ public class JobServiceImp implements JobService {
     public JobDTO updateJob(int id, JobRequest request) {
         jobRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Job ID: " + id));
-        Job job = jobMapper.updateJob(id, request);
+
+        Company company = companyRepository.findById(request.getCompanyId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id Company"));
+
+        Job job = Job.builder()
+                .id(id)
+                .jobPosition(request.getJobPosition())
+                .company(company)
+                .detailAddress(request.getDetailAddress())
+                .descriptionJob(request.getDescriptionJob())
+                .requirement(request.getRequirement())
+                .benefits(request.getBenefits())
+                .provinceId(request.getProvinceId())
+                .industryId(request.getIndustryId())
+                .jobLevelId(request.getJobLevelId())
+                .degreeLevelId(request.getDegreeLevelId())
+                .employmentTypeId(request.getEmploymentTypeId())
+                .experienceId(request.getExperienceId())
+                .createdDate(request.getCreatedDate())
+                .updatedDate(LocalDateTime.now())
+                .build();
         return jobMapper.toDTO(jobRepository.save(job));
     }
 
