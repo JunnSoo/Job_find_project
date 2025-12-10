@@ -47,7 +47,7 @@ public class BlogServiceImp implements BlogService {
         Sort sort = switch (pageRequestValidate.getSortBy()) {
             case "createdDateAsc" -> Sort.by(Sort.Direction.ASC, "createdDate");
             case "createdDateDesc" -> Sort.by(Sort.Direction.DESC, "createdDate");
-            case "softHighlight" -> Sort.by(Sort.Direction.ASC, "isHighLight");
+            case "sortHighlight" -> Sort.by(Sort.Direction.DESC, "isHighLight");
             default -> Sort.by(Sort.Direction.DESC, "createdDate");
         };
         // Tạo page cho api
