@@ -1,5 +1,6 @@
 package com.project.codinviec.entity;
 
+import com.project.codinviec.entity.auth.Company;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +24,9 @@ public class Job {
     @Column(name = "job_position", nullable = false)
     private String jobPosition;
 
-    @Column(name = "company_id", length = 36, nullable = false)
-    private String companyId;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private  Company company;
 
     @Column(name = "detail_address", columnDefinition = "TEXT")
     private String detailAddress;

@@ -1,6 +1,7 @@
 package com.project.codinviec.entity.auth;
 
 import com.project.codinviec.entity.CompanySize;
+import com.project.codinviec.entity.Job;
 import com.project.codinviec.entity.Review;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,4 +35,7 @@ public class Company {
 
     @OneToMany(mappedBy = "company")
     private List<Review> listReview = new ArrayList<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Job> jobs = new ArrayList<>();
 }
