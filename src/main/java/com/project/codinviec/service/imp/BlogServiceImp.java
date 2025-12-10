@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +44,14 @@ public class BlogServiceImp implements BlogService {
         // Validate pageCustom
         PageRequestCustom pageRequestValidate = pageCustomHelper.validatePageCustom(pageRequestCustom);
 
+        Sort sort = switch (pageRequestValidate.getSortBy()) {
+            case "createdDateAsc" -> Sort.by(Sort.Direction.ASC, "createdDate");
+            case "createdDateDesc" -> Sort.by(Sort.Direction.DESC, "createdDate");
+            case "softHighlight" -> Sort.by(Sort.Direction.ASC, "highlight");
+            default -> Sort.by(Sort.Direction.ASC, "id");
+        };
         // Tạo page cho api
-        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize());
-
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(),sort);
         // Tạo search
         Specification<Blog> spec = Specification
                 .allOf(blogSpecification.searchByName(pageRequestValidate.getKeyword()));
