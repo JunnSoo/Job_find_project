@@ -48,7 +48,7 @@ public class BlogServiceImp implements BlogService {
             case "createdDateAsc" -> Sort.by(Sort.Direction.ASC, "createdDate");
             case "createdDateDesc" -> Sort.by(Sort.Direction.DESC, "createdDate");
             case "softHighlight" -> Sort.by(Sort.Direction.ASC, "isHighLight");
-            default -> Sort.by(Sort.Direction.ASC, "id");
+            default -> Sort.by(Sort.Direction.DESC, "createdDate");
         };
         // Tạo page cho api
         Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1, pageRequestValidate.getPageSize(),sort);
