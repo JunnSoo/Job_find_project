@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JobMapper {
     private final CompanyMapper companyMapper;
-
     public JobDTO toDTO(Job entity) {
         if (entity == null) return null;
         return JobDTO.builder()

@@ -24,7 +24,9 @@ public final class SecurityConstants {
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/file/**",
-                        "/api/payment/**"
+                        "/api/payment/**",
+                        "/api/status-special/**"
+
         };
 
         public static final String[] API_PUBLIC_GET_URLS = {

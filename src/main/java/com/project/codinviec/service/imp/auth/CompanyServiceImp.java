@@ -2,10 +2,14 @@ package com.project.codinviec.service.imp.auth;
 
 import com.project.codinviec.dto.auth.CompanyDTO;
 import com.project.codinviec.entity.CompanySize;
+import com.project.codinviec.entity.StatusSpecial;
+import com.project.codinviec.entity.StatusSpecialCompany;
 import com.project.codinviec.entity.auth.Company;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
+import com.project.codinviec.mapper.StatusSpecialMapper;
 import com.project.codinviec.mapper.auth.CompanyMapper;
 import com.project.codinviec.repository.CompanySizeRepository;
+import com.project.codinviec.repository.StatusSpecialCompanyRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.auth.SaveUpdateCompanyRequest;
@@ -31,11 +35,21 @@ public class CompanyServiceImp implements CompanyService {
         private final CompanySpecification companySpecification;
         private final CompanySizeRepository companySizeRepository;
 
+        private final StatusSpecialCompanyRepository statusSpecialCompanyRepository;
+        private final StatusSpecialMapper statusSpecialMapper;
+
         @Override
         public List<CompanyDTO> getAllCompany() {
-                return companyRepository.findAll().stream()
-                                .map(companyMapper::companyToCompanyDTO)
-                                .toList();
+            List<CompanyDTO> companyDTOS = companyRepository.findAll().stream()
+                    .map(companyMapper::companyToCompanyDTO)
+                    .toList();
+
+            for(CompanyDTO companyDTO : companyDTOS){
+                companyDTO.setStatusSpecials(statusSpecialMapper
+                        .StatusSpecialCompanyToStatusSpecialDTO(statusSpecialCompanyRepository
+                                .findByIdCompany_Id(companyDTO.getId())));
+            }
+            return companyDTOS;
         }
 
         @Override
