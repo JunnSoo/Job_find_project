@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class JobDTO {
     private int degreeLevelId;
     private int employmentTypeId;
     private int experienceId;
+    private List<StatusSpecialDTO> statusSpecials;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

@@ -1,6 +1,6 @@
 package com.project.codinviec.entity;
-
 import com.project.codinviec.entity.auth.Company;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,4 +66,7 @@ public class Job {
 
     @OneToMany(mappedBy = "job",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idJob", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StatusSpecialJob> listStatusSpecialJob = new ArrayList<>();;
 }

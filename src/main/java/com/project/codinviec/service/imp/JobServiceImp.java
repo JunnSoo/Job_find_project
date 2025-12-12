@@ -5,7 +5,9 @@ import com.project.codinviec.entity.Job;
 import com.project.codinviec.entity.auth.Company;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.mapper.JobMapper;
+import com.project.codinviec.mapper.StatusSpecialMapper;
 import com.project.codinviec.repository.JobRepository;
+import com.project.codinviec.repository.StatusSpecialJobRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
 import com.project.codinviec.request.JobRequest;
 import com.project.codinviec.request.PageRequestCustom;
@@ -33,12 +35,20 @@ public class JobServiceImp implements JobService {
     private final PageCustomHelper pageCustomHelper;
     private final JobSpecification jobSpecification;
 
+    private final StatusSpecialJobRepository statusSpecialJobRepository;
+    private final StatusSpecialMapper statusSpecialMapper;
+
     @Override
     public List<JobDTO> getAllJob() {
-        return jobRepository.findAll()
-                .stream()
+        List<JobDTO> jobDTOList = jobRepository.findAll().stream()
                 .map(jobMapper::toDTO)
                 .toList();
+        for (JobDTO jobDTO : jobDTOList) {
+            jobDTO.setStatusSpecials(statusSpecialMapper
+                    .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
+                            .findByIdJob_Id(jobDTO.getId())));
+        }
+        return jobDTOList;
     }
 
     @Override
