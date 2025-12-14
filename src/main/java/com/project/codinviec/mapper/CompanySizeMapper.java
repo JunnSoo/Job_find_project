@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompanySizeMapper {
     public CompanySizeDTO companySizeToCompanySizeDTO(CompanySize companySize) {
+        if (companySize == null) return null;
         return CompanySizeDTO.builder()
                 .id(companySize.getId())
                 .minEmployees(companySize.getMinEmployees())

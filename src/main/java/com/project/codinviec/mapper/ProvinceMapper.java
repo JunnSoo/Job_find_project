@@ -1,5 +1,6 @@
 package com.project.codinviec.mapper;
 
+import com.project.codinviec.dto.ProvinceCompanyDTO;
 import com.project.codinviec.dto.ProvinceDTO;
 import com.project.codinviec.entity.Province;
 import com.project.codinviec.request.ProvinceRequest;
@@ -23,6 +24,15 @@ public class ProvinceMapper {
                 .wards(entity.getWards() != null ? entity.getWards().stream()
                         .map(wardMapper::toDTO)
                         .collect(Collectors.toList()) : null)
+                .build();
+    }
+
+    public ProvinceCompanyDTO toDTOCompany(Province entity) {
+        if (entity == null)
+            return null;
+        return ProvinceCompanyDTO.builder()
+                .id(entity.getId())
+                .name(entity.getName())
                 .build();
     }
 
