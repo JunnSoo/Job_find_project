@@ -3,7 +3,6 @@ package com.project.codinviec.dto.auth;
 import com.project.codinviec.dto.CompanyAddressDTO;
 import com.project.codinviec.dto.CompanySizeDTO;
 import com.project.codinviec.dto.StatusSpecialDTO;
-import com.project.codinviec.entity.StatusSpecialJob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
