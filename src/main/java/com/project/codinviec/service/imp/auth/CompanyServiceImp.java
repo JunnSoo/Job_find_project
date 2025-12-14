@@ -1,6 +1,5 @@
 package com.project.codinviec.service.imp.auth;
 
-import com.project.codinviec.dto.CompanyAddressDTO;
 import com.project.codinviec.dto.auth.CompanyDTO;
 import com.project.codinviec.entity.CompanySize;
 import com.project.codinviec.entity.auth.Company;

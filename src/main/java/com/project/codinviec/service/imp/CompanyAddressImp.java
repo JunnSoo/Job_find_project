@@ -37,7 +37,7 @@ public class CompanyAddressImp implements CompanyAddressService {
 
     @Override
     public List<CompanyAddressDTO> getAllCompanyAddresses() {
-        return companyAddressRepository.findAll().stream().map(c-> companyAddressMapper.toCompanyAddressDTO(c)).toList();
+        return companyAddressRepository.findAll().stream().map(companyAddressMapper::toCompanyAddressDTO).toList();
     }
 
     @Override
