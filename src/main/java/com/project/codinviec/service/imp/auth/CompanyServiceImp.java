@@ -1,13 +1,15 @@
 package com.project.codinviec.service.imp.auth;
 
+import com.project.codinviec.dto.CompanyAddressDTO;
 import com.project.codinviec.dto.auth.CompanyDTO;
 import com.project.codinviec.entity.CompanySize;
-import com.project.codinviec.entity.StatusSpecial;
-import com.project.codinviec.entity.StatusSpecialCompany;
 import com.project.codinviec.entity.auth.Company;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
+import com.project.codinviec.mapper.CompanyAddressMapper;
+import com.project.codinviec.mapper.CompanySizeMapper;
 import com.project.codinviec.mapper.StatusSpecialMapper;
 import com.project.codinviec.mapper.auth.CompanyMapper;
+import com.project.codinviec.repository.CompanyAddressRepository;
 import com.project.codinviec.repository.CompanySizeRepository;
 import com.project.codinviec.repository.StatusSpecialCompanyRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
@@ -34,6 +36,9 @@ public class CompanyServiceImp implements CompanyService {
         private final PageCustomHelper PageCustomHelper;
         private final CompanySpecification companySpecification;
         private final CompanySizeRepository companySizeRepository;
+        private final CompanySizeMapper companySizeMapper;
+        private final CompanyAddressRepository companyAddressRepository;
+        private final CompanyAddressMapper companyAddressMapper;
 
         private final StatusSpecialCompanyRepository statusSpecialCompanyRepository;
         private final StatusSpecialMapper statusSpecialMapper;
@@ -48,6 +53,14 @@ public class CompanyServiceImp implements CompanyService {
                 companyDTO.setStatusSpecials(statusSpecialMapper
                         .StatusSpecialCompanyToStatusSpecialDTO(statusSpecialCompanyRepository
                                 .findByIdCompany_Id(companyDTO.getId())));
+                companyDTO.setCompanySize(companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository
+                        .findByCompanies_Id(companyDTO
+                                .getId()).orElse(null)));
+
+                companyDTO.setCompanyAddress(
+                        companyAddressRepository.findByCompany_Id(companyDTO.getId())
+                                        .stream().map(companyAddressMapper::toCompanyAddressDTO).toList()
+                );
             }
             return companyDTOS;
         }
