@@ -1,5 +1,6 @@
 package com.project.codinviec.controller.auth;
 
+import com.project.codinviec.request.PageRequestCompany;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.auth.SaveUpdateCompanyRequest;
 import com.project.codinviec.response.BaseResponse;
@@ -17,11 +18,11 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCompany(PageRequestCustom pageRequestCustom){
-        if (pageRequestCustom.getPageNumber() == 0 && pageRequestCustom.getPageSize() == 0  && pageRequestCustom.getKeyword() == null ) {
+    public ResponseEntity<?> getAllCompany(PageRequestCompany pageRequestCompany){
+        if (pageRequestCompany.getPageNumber() == 0 && pageRequestCompany.getPageSize() == 0  && pageRequestCompany.getKeyword() == null ) {
             return ResponseEntity.ok(BaseResponse.success(companyService.getAllCompany(),"OK"));
         }
-        return ResponseEntity.ok(BaseResponse.success(companyService.getAllCompanyPage(pageRequestCustom),"OK"));
+        return ResponseEntity.ok(BaseResponse.success(companyService.getAllCompanyPage(pageRequestCompany),"OK"));
     }
 
     @GetMapping("/{idCompany}")

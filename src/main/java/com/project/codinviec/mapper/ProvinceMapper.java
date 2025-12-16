@@ -22,7 +22,7 @@ public class ProvinceMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .wards(entity.getWards() != null ? entity.getWards().stream()
-                        .map(wardMapper::toDTO)
+                        .map(wardMapper::toDTOForProvince)
                         .collect(Collectors.toList()) : null)
                 .build();
     }

@@ -12,6 +12,7 @@ import com.project.codinviec.repository.CompanyAddressRepository;
 import com.project.codinviec.repository.CompanySizeRepository;
 import com.project.codinviec.repository.StatusSpecialCompanyRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
+import com.project.codinviec.request.PageRequestCompany;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.auth.SaveUpdateCompanyRequest;
 import com.project.codinviec.service.auth.CompanyService;
@@ -30,92 +31,110 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceImp implements CompanyService {
-        private final CompanyRepository companyRepository;
-        private final CompanyMapper companyMapper;
-        private final PageCustomHelper PageCustomHelper;
-        private final CompanySpecification companySpecification;
-        private final CompanySizeRepository companySizeRepository;
-        private final CompanySizeMapper companySizeMapper;
-        private final CompanyAddressRepository companyAddressRepository;
-        private final CompanyAddressMapper companyAddressMapper;
+    private final CompanyRepository companyRepository;
+    private final CompanyMapper companyMapper;
+    private final PageCustomHelper PageCustomHelper;
+    private final CompanySpecification companySpecification;
+    private final CompanySizeRepository companySizeRepository;
+    private final CompanySizeMapper companySizeMapper;
+    private final CompanyAddressRepository companyAddressRepository;
+    private final CompanyAddressMapper companyAddressMapper;
 
-        private final StatusSpecialCompanyRepository statusSpecialCompanyRepository;
-        private final StatusSpecialMapper statusSpecialMapper;
+    private final StatusSpecialCompanyRepository statusSpecialCompanyRepository;
+    private final StatusSpecialMapper statusSpecialMapper;
 
-        @Override
-        public List<CompanyDTO> getAllCompany() {
-            List<CompanyDTO> companyDTOS = companyRepository.findAll().stream()
-                    .map(companyMapper::companyToCompanyDTO)
-                    .toList();
+    @Override
+    public List<CompanyDTO> getAllCompany() {
+        List<CompanyDTO> companyDTOS = companyRepository.findAll().stream()
+                .map(companyMapper::companyToCompanyDTO)
+                .toList();
 
-            for(CompanyDTO companyDTO : companyDTOS){
-                companyDTO.setStatusSpecials(statusSpecialMapper
-                        .StatusSpecialCompanyToStatusSpecialDTO(statusSpecialCompanyRepository
-                                .findByIdCompany_Id(companyDTO.getId())));
-                companyDTO.setCompanySize(companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository
-                        .findByCompanies_Id(companyDTO
-                                .getId()).orElse(null)));
+        for (CompanyDTO companyDTO : companyDTOS) {
+            companyDTO.setStatusSpecials(statusSpecialMapper
+                    .StatusSpecialCompanyToStatusSpecialDTO(statusSpecialCompanyRepository
+                            .findByIdCompany_Id(companyDTO.getId())));
+            companyDTO.setCompanySize(companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository
+                    .findByCompanies_Id(companyDTO
+                            .getId()).orElse(null)));
 
-                companyDTO.setCompanyAddress(
-                        companyAddressRepository.findByCompany_Id(companyDTO.getId())
-                                        .stream().map(companyAddressMapper::toCompanyAddressDTO).toList()
-                );
-            }
-            return companyDTOS;
+            companyDTO.setCompanyAddress(
+                    companyAddressRepository.findByCompany_Id(companyDTO.getId())
+                            .stream().map(companyAddressMapper::toCompanyAddressDTO).toList()
+            );
         }
+        return companyDTOS;
+    }
 
-        @Override
-        public Page<CompanyDTO> getAllCompanyPage(PageRequestCustom pageRequestCustom) {
-                // Validate pageCustom
-                PageRequestCustom pageRequestValidate = PageCustomHelper.validatePageCustom(pageRequestCustom);
-                // Tạo page cho api
-                Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,
-                                pageRequestValidate.getPageSize());
+    @Override
+    public Page<CompanyDTO> getAllCompanyPage(PageRequestCompany pageRequestCompany) {
+        // Validate pageCustom
+        PageRequestCompany pageRequestValidate = PageCustomHelper.validatePageCompany(pageRequestCompany);
+        // Tạo page cho api
+        Pageable pageable = PageRequest.of(pageRequestValidate.getPageNumber() - 1,
+                pageRequestValidate.getPageSize());
 
-                // Tạo search
-                Specification<Company> spec = Specification
-                                .allOf(companySpecification.searchByName(pageRequestValidate.getKeyword()));
-                return companyRepository.findAll(spec, pageable)
-                                .map(companyMapper::companyToCompanyDTO);
+        // Tạo search
+        Specification<Company> spec =  Specification.allOf(companySpecification.searchByName(pageRequestValidate.getKeyword())
+                        ,companySpecification.minEmployees(pageRequestValidate.getMinEmployees()),
+                        companySpecification.maxEmployees(pageRequestValidate.getMaxEmployees()),
+                        companySpecification.hasProvince(pageRequestValidate.getLocation()));
+
+        Page<CompanyDTO> companyDTOPage =   companyRepository.findAll(spec, pageable)
+                .map(companyMapper::companyToCompanyDTO);
+
+        for (CompanyDTO companyDTO : companyDTOPage.getContent()) {
+            companyDTO.setStatusSpecials(statusSpecialMapper
+                    .StatusSpecialCompanyToStatusSpecialDTO(statusSpecialCompanyRepository
+                            .findByIdCompany_Id(companyDTO.getId())));
+            companyDTO.setCompanySize(companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository
+                    .findByCompanies_Id(companyDTO
+                            .getId()).orElse(null)));
+
+            companyDTO.setCompanyAddress(
+                    companyAddressRepository.findByCompany_Id(companyDTO.getId())
+                            .stream().map(companyAddressMapper::toCompanyAddressDTO).toList()
+            );
         }
+        return companyDTOPage;
+    }
 
-        @Override
-        public CompanyDTO getCompanyById(String idCompany) {
-                Company company = companyRepository.findById(idCompany)
-                                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
-                return companyMapper.companyToCompanyDTO(company);
-        }
+    @Override
+    public CompanyDTO getCompanyById(String idCompany) {
+        Company company = companyRepository.findById(idCompany)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
+        return companyMapper.companyToCompanyDTO(company);
+    }
 
-        @Override
-        @Transactional
-        public CompanyDTO saveCompany(SaveUpdateCompanyRequest saveUpdateCompanyRequest) {
-                CompanySize companySize = companySizeRepository.findById(saveUpdateCompanyRequest.getCompanySizeId())
-                                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company size!"));
-                Company company = companyMapper.saveCompanyMapper(companySize, saveUpdateCompanyRequest);
-                return companyMapper.companyToCompanyDTO(companyRepository.save(company));
-        }
+    @Override
+    @Transactional
+    public CompanyDTO saveCompany(SaveUpdateCompanyRequest saveUpdateCompanyRequest) {
+        CompanySize companySize = companySizeRepository.findById(saveUpdateCompanyRequest.getCompanySizeId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company size!"));
+        Company company = companyMapper.saveCompanyMapper(companySize, saveUpdateCompanyRequest);
+        return companyMapper.companyToCompanyDTO(companyRepository.save(company));
+    }
 
-        @Override
-        @Transactional
-        public CompanyDTO updateCompany(String idCompany, SaveUpdateCompanyRequest saveUpdateCompanyRequest) {
-                CompanySize companySize = companySizeRepository.findById(saveUpdateCompanyRequest.getCompanySizeId())
-                                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company size!"));
+    @Override
+    @Transactional
+    public CompanyDTO updateCompany(String idCompany, SaveUpdateCompanyRequest saveUpdateCompanyRequest) {
+        CompanySize companySize = companySizeRepository.findById(saveUpdateCompanyRequest.getCompanySizeId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company size!"));
 
-                Company company = companyRepository.findById(idCompany)
-                                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
+        Company company = companyRepository.findById(idCompany)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
 
-                Company mappedCompany = companyMapper.updateCompanyMapper(idCompany, companySize,
-                                saveUpdateCompanyRequest);
-                mappedCompany.setCreatedDate(company.getCreatedDate());
-                return companyMapper.companyToCompanyDTO(companyRepository.save(mappedCompany));
-        }
+        Company mappedCompany = companyMapper.updateCompanyMapper(idCompany, companySize,
+                saveUpdateCompanyRequest);
+        mappedCompany.setCreatedDate(company.getCreatedDate());
+        return companyMapper.companyToCompanyDTO(companyRepository.save(mappedCompany));
+    }
 
-        @Override
-        @Transactional
-        public CompanyDTO deleteCompany(String idCompany) {
-                Company company = companyRepository.findById(idCompany)
-                                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
-                companyRepository.delete(company);
-                return companyMapper.companyToCompanyDTO(company);
-        }
+    @Override
+    @Transactional
+    public CompanyDTO deleteCompany(String idCompany) {
+        Company company = companyRepository.findById(idCompany)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
+        companyRepository.delete(company);
+        return companyMapper.companyToCompanyDTO(company);
+    }
 }

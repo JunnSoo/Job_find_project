@@ -1,5 +1,6 @@
 package com.project.codinviec.service.imp;
 
+import com.project.codinviec.dto.ProvinceDTO;
 import com.project.codinviec.dto.WardDTO;
 import com.project.codinviec.entity.Ward;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
@@ -9,6 +10,7 @@ import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.WardRequest;
 import com.project.codinviec.service.WardService;
 import com.project.codinviec.specification.WardSpecification;
+import com.project.codinviec.util.helper.LocationHelper;
 import com.project.codinviec.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,13 +31,24 @@ public class WardServiceImp implements WardService {
     private final WardMapper wardMapper;
     private final PageCustomHelper pageCustomHelper;
     private final WardSpecification wardSpecification;
+    private final LocationHelper locationHelper;
 
     @Override
     public List<WardDTO> getAll() {
-        return wardRepository.findAll()
-                .stream()
-                .map(wardMapper::toDTO)
-                .toList();
+
+        List<WardDTO> wardList = new ArrayList<>();
+
+//        lấy dữ liệu từ redis
+        List<WardDTO> wardRedis = locationHelper.getWardRedis();
+        if (wardRedis.isEmpty()) {
+            wardList = wardRepository.findAll()
+                    .stream()
+                    .map(wardMapper::toDTO)
+                    .toList();
+            locationHelper.addWardToRedis(wardList);
+            return wardList;
+        }
+        return wardRedis;
     }
 
     @Override
@@ -51,7 +65,7 @@ public class WardServiceImp implements WardService {
             case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
             case "provinceNameAsc" -> Sort.by(Sort.Direction.ASC, "province.name");
             case "provinceNameDesc" -> Sort.by(Sort.Direction.DESC, "province.name");
-            default -> Sort.by(Sort.Direction.ASC, "id");
+            default -> Sort.by(Sort.Direction.ASC, "name");
         };
 
         //Page

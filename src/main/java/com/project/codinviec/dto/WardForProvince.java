@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProvinceDTO {
+public class WardForProvince {
     private int id;
     private String name;
-    private List<WardForProvince> wards;
 }
