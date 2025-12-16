@@ -13,18 +13,17 @@ import com.project.codinviec.repository.CompanySizeRepository;
 import com.project.codinviec.repository.StatusSpecialCompanyRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
 import com.project.codinviec.request.PageRequestCompany;
-import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.auth.SaveUpdateCompanyRequest;
 import com.project.codinviec.service.auth.CompanyService;
 import com.project.codinviec.specification.auth.CompanySpecification;
 import com.project.codinviec.util.helper.PageCustomHelper;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

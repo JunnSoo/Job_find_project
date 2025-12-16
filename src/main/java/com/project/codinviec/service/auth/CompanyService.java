@@ -2,7 +2,6 @@ package com.project.codinviec.service.auth;
 
 import com.project.codinviec.dto.auth.CompanyDTO;
 import com.project.codinviec.request.PageRequestCompany;
-import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.auth.SaveUpdateCompanyRequest;
 import org.springframework.data.domain.Page;
 

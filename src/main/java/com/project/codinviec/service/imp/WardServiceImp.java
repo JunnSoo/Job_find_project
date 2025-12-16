@@ -1,6 +1,5 @@
 package com.project.codinviec.service.imp;
 
-import com.project.codinviec.dto.ProvinceDTO;
 import com.project.codinviec.dto.WardDTO;
 import com.project.codinviec.entity.Ward;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;

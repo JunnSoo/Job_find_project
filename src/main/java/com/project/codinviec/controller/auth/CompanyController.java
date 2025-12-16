@@ -1,7 +1,6 @@
 package com.project.codinviec.controller.auth;
 
 import com.project.codinviec.request.PageRequestCompany;
-import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.auth.SaveUpdateCompanyRequest;
 import com.project.codinviec.response.BaseResponse;
 import com.project.codinviec.service.auth.CompanyService;
