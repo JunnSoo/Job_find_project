@@ -1,6 +1,7 @@
 package com.project.codinviec.mapper;
 
 import com.project.codinviec.dto.WardDTO;
+import com.project.codinviec.dto.WardForProvince;
 import com.project.codinviec.entity.Province;
 import com.project.codinviec.entity.Ward;
 import com.project.codinviec.request.WardRequest;
@@ -16,6 +17,15 @@ public class WardMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .idProvince(entity.getProvince() != null ? entity.getProvince().getId() : 0)
+                .build();
+    }
+
+    public WardForProvince toDTOForProvince(Ward entity) {
+        if (entity == null)
+            return null;
+        return WardForProvince.builder()
+                .id(entity.getId())
+                .name(entity.getName())
                 .build();
     }
 

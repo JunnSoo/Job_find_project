@@ -20,7 +20,6 @@ public class CompanyDTO {
     private String id;
     private String name;
     private String description;
-    private String address;
     private String website;
     private String logo;
     private List<StatusSpecialDTO> statusSpecials;

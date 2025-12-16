@@ -9,6 +9,7 @@ import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.request.ProvinceRequest;
 import com.project.codinviec.service.ProvinceService;
 import com.project.codinviec.specification.ProvinceSpecification;
+import com.project.codinviec.util.helper.LocationHelper;
 import com.project.codinviec.util.helper.PageCustomHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,13 +30,23 @@ public class ProvinceServiceImp implements ProvinceService {
     private final ProvinceMapper provinceMapper;
     private final PageCustomHelper pageCustomHelper;
     private final ProvinceSpecification provinceSpecification;
+    private final LocationHelper locationHelper;
 
     @Override
     public List<ProvinceDTO> getAll() {
-        return provinceRepository.findAll()
-                .stream()
-                .map(provinceMapper::toDTO)
-                .toList();
+        List<ProvinceDTO> provinceList = new ArrayList<>();
+
+//        lấy dữ liệu từ redis
+        List<ProvinceDTO> provinceListRedis = locationHelper.getProvineRedis();
+        if (provinceListRedis.isEmpty()) {
+            provinceList = provinceRepository.findAll()
+                    .stream()
+                    .map(provinceMapper::toDTO)
+                    .toList();
+            locationHelper.addProvinceToRedis(provinceList);
+            return provinceList;
+        }
+        return provinceListRedis;
     }
 
     @Override
@@ -49,7 +61,7 @@ public class ProvinceServiceImp implements ProvinceService {
         Sort sort = switch (pageRequestValidate.getSortBy()) {
             case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
             case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
-            default -> Sort.by(Sort.Direction.ASC, "id");
+            default -> Sort.by(Sort.Direction.ASC, "name");
         };
 
         //Page
