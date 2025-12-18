@@ -27,7 +27,9 @@ public final class SecurityConstants {
                         "/api/payment/**",
                         "/api/status-special/**",
                         "/api/company-address/**",
-                        "/images/**"
+                        "/images/**",
+                        "/favicon.ico"
+
 
         };
 
