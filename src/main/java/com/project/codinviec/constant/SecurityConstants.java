@@ -26,7 +26,9 @@ public final class SecurityConstants {
                         "/file/**",
                         "/api/payment/**",
                         "/api/status-special/**",
-                        "/api/company-address/**"
+                        "/api/company-address/**",
+                        "/images/**"
+
         };
 
         public static final String[] API_PUBLIC_GET_URLS = {
