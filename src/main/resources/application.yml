@@ -49,6 +49,7 @@ jwt:
 
 upload:
   image: ${UPLOAD_IMAGE:D:\}
+  link: http://api.codinviec.io.vn/file
 
 client:
   url: ${CLIENT_URL:http://localhost:3000}

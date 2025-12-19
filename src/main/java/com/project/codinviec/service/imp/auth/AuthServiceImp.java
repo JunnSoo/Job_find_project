@@ -7,22 +7,26 @@ import com.project.codinviec.entity.auth.Role;
 import com.project.codinviec.entity.auth.User;
 import com.project.codinviec.exception.auth.*;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
+import com.project.codinviec.exception.file.FileExceptionHandler;
 import com.project.codinviec.mapper.auth.RegisterMapper;
 import com.project.codinviec.mapper.auth.UserMapper;
 import com.project.codinviec.model.UserBlock;
 import com.project.codinviec.repository.auth.RoleRepository;
 import com.project.codinviec.repository.auth.UserRepository;
+import com.project.codinviec.request.UpdateAvatarRequest;
 import com.project.codinviec.request.auth.GoogleUserRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
 import com.project.codinviec.request.auth.UpdateProfileRequest;
 import com.project.codinviec.service.auth.AuthService;
 import com.project.codinviec.service.auth.TokenManagerService;
+import com.project.codinviec.service.file.FileService;
 import com.project.codinviec.util.helper.BlockUserHelper;
 import com.project.codinviec.util.helper.KafkaHelper;
 import com.project.codinviec.util.helper.TimeHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,8 +51,12 @@ public class AuthServiceImp implements AuthService {
     private final RoleRepository roleRepository;
     private final KafkaHelper kafkaHelper;
     private final UserMapper userMapper;
+    private final FileService fileService;
 
     private final TokenManagerService tokenManagerService;
+
+    @Value("${upload.link}")
+    private String linkBe;
 
     @Override
     @Transactional
@@ -265,5 +273,24 @@ public class AuthServiceImp implements AuthService {
         // Lưu user đã cập nhật
         User updatedUser = userRepository.save(user);
         return userMapper.userToUserDTO(updatedUser);
+    }
+
+    @Override
+    public UserDTO updateAvatar(String userId, UpdateAvatarRequest updateAvatarRequest) {
+        // Validate userId
+        if (userId == null || userId.isEmpty()) {
+            throw new AccessTokenExceptionHandler("UserId không hợp lệ");
+        }
+
+        // Lấy user hiện tại
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
+
+        String nameAvatarFile = fileService.saveFiles(updateAvatarRequest.getAvatarFile());
+        if (nameAvatarFile == null) {
+           throw new FileExceptionHandler("Cập nhật thất bại avatar của user với id: " + userId);
+        }
+        user.setAvatar(linkBe + "/" + nameAvatarFile);
+        return userMapper.userToUserDTO(userRepository.save(user));
     }
 }
