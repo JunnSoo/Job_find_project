@@ -286,6 +286,11 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
 
+        if (user.getAvatar() != null && !user.getAvatar().isEmpty() && user.getAvatar().contains(linkBe)) {
+            String nameAvatarFileOld = user.getAvatar().replaceFirst(linkBe+"/","");
+            fileService.deleteFile(nameAvatarFileOld);
+        }
+
         String nameAvatarFile = fileService.saveFiles(updateAvatarRequest.getAvatarFile());
         if (nameAvatarFile == null) {
            throw new FileExceptionHandler("Cập nhật thất bại avatar của user với id: " + userId);
