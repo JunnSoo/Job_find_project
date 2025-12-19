@@ -1,8 +1,9 @@
 spring:
-#  servlet:
-#    multipart:
-#      max-file-size: 1MB
-#      max-request-size: 1MB
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+      enabled: true
   application:
     name: codinviec
   datasource:

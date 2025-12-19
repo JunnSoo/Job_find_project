@@ -8,12 +8,13 @@ import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
 import com.project.codinviec.request.auth.UpdateProfileRequest;
 import com.project.codinviec.response.BaseResponse;
-import com.project.codinviec.util.security.CustomUserDetails;
 import com.project.codinviec.service.auth.AuthService;
 import com.project.codinviec.util.security.CookieHelper;
+import com.project.codinviec.util.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -89,10 +90,10 @@ public class AuthenticationController {
                 .ok(BaseResponse.success(authService.updateProfile(userDetails.getUserId(), request), "Cập nhật profile thành công"));
     }
 
-    @PutMapping("/profile/avatar")
+    @PutMapping(value = "/profile/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAvatar(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody UpdateAvatarRequest updateAvatarRequest) {
+            @ModelAttribute  UpdateAvatarRequest updateAvatarRequest) {
         return ResponseEntity
                 .ok(BaseResponse.success(authService.updateAvatar(userDetails.getUserId(), updateAvatarRequest), "Cập nhật avatar thành công"));
     }

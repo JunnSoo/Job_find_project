@@ -35,6 +35,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String token = request.getHeader("Authorization");
         String path = request.getServletPath();
 
+
+
         if (token != null && token.startsWith("Bearer ") && !path.equals("/auth/refresh")) {
             token = token.substring(7);
 
@@ -50,6 +52,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         .userId(jwtUser.getUserId())
                         .authorities(grantedAuthorities)
                         .build();
+
+                System.out.println("path   " + path );
+                System.out.println("token   " + jwtUser.getUserId() );
 
 //                thẻ thông hành
                 UsernamePasswordAuthenticationToken authentication =
