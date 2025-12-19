@@ -70,4 +70,20 @@ public class FileServiceImp implements FileService {
             throw new FileExceptionHandler();
         }
     }
+
+    @Override
+    public void deleteFile(String fileName) {
+        try {
+            if (fileName == null || fileName.isBlank()) return;
+
+            Path filePath = Paths.get(root).resolve(fileName).normalize();
+
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            }
+        } catch (Exception e) {
+            throw new FileExceptionHandler();
+        }
+    }
+
 }

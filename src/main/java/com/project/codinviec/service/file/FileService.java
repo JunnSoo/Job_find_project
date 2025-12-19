@@ -7,4 +7,6 @@ public interface FileService {
     String saveFiles(MultipartFile file);
 
     Resource getFile(String fileName);
+
+    void deleteFile(String fileName);
 }
