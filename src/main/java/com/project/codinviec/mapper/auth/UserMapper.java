@@ -121,39 +121,14 @@ public class UserMapper {
     }
 
     public void updateProfileMapper(User existingUser, UpdateProfileRequest request) {
-        if (request.getFirstName() != null) {
-            existingUser.setFirstName(request.getFirstName());
-        }
-        if (request.getLastName() != null) {
-            existingUser.setLastName(request.getLastName());
-        }
-        if (request.getAvatar() != null) {
-            existingUser.setAvatar(request.getAvatar());
-        }
-        if (request.getPhone() != null) {
-            existingUser.setPhone(request.getPhone());
-        }
-        if (request.getGender() != null) {
-            existingUser.setGender(request.getGender());
-        }
-        if (request.getEducation() != null) {
-            existingUser.setEducation(request.getEducation());
-        }
-        if (request.getAddress() != null) {
-            existingUser.setAddress(request.getAddress());
-        }
-        if (request.getWebsiteLink() != null) {
-            existingUser.setWebsiteLink(request.getWebsiteLink());
-        }
-        if (request.getBirthDate() != null) {
-            existingUser.setBirthDate(request.getBirthDate());
-        }
-        if (request.getIsFindJob() != null) {
-            existingUser.setFindJob(request.getIsFindJob());
-        }
-        if (request.getGroupSoftSkill() != null) {
-            existingUser.setGroupSoftSkill(request.getGroupSoftSkill());
-        }
-        existingUser.setUpdatedDate(LocalDateTime.now());
+        existingUser.setFirstName(request.getFirstName());
+        existingUser.setLastName(request.getLastName());
+        existingUser.setEmail(request.getEmail());
+        existingUser.setPhone(request.getPhone());
+        existingUser.setGender(request.getGender().toLowerCase());
+        existingUser.setEducation(request.getEducation());
+        existingUser.setAddress(request.getAddress());
+        existingUser.setWebsiteLink(request.getWebsiteLink());
+        existingUser.setBirthDate(request.getBirthDate());
     }
 }
