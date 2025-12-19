@@ -264,7 +264,6 @@ public class AuthServiceImp implements AuthService {
 
         // Lưu user đã cập nhật
         User updatedUser = userRepository.save(user);
-
         return userMapper.userToUserDTO(updatedUser);
     }
 }
