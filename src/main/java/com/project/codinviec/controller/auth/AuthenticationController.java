@@ -3,6 +3,7 @@ package com.project.codinviec.controller.auth;
 import com.project.codinviec.dto.auth.TokenDTO;
 import com.project.codinviec.exception.auth.ExpireTokenExceptionHandler;
 import com.project.codinviec.exception.auth.RefreshTokenExceptionHandler;
+import com.project.codinviec.request.UpdateAvatarRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
 import com.project.codinviec.request.auth.UpdateProfileRequest;
@@ -86,5 +87,13 @@ public class AuthenticationController {
             @Valid @RequestBody UpdateProfileRequest request) {
         return ResponseEntity
                 .ok(BaseResponse.success(authService.updateProfile(userDetails.getUserId(), request), "Cập nhật profile thành công"));
+    }
+
+    @PutMapping("/profile/avatar")
+    public ResponseEntity<?> updateAvatar(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody UpdateAvatarRequest updateAvatarRequest) {
+        return ResponseEntity
+                .ok(BaseResponse.success(authService.updateAvatar(userDetails.getUserId(), updateAvatarRequest), "Cập nhật avatar thành công"));
     }
 }
