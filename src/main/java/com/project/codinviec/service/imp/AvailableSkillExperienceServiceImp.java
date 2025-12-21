@@ -80,11 +80,11 @@ public class AvailableSkillExperienceServiceImp implements AvailableSkillExperie
         Experience experience = experienceRepository.findById(request.getExperienceId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id experience"));
 
-        // chặn trùng
-        if (availableSkillExperienceRepository.existsByUser_IdAndAvailableSkill_IdAndExperience_Id(
-                user.getId(), availableSkill.getId(), experience.getId())) {
-            throw new NotFoundIdExceptionHandler("User đã tồn tại available_skill + experience này");
-        }
+//        // chặn trùng
+//        if (availableSkillExperienceRepository.existsByUser_IdAndAvailableSkill_IdAndExperience_Id(
+//                user.getId(), availableSkill.getId(), experience.getId())) {
+//            throw new NotFoundIdExceptionHandler("User đã tồn tại available_skill + experience này");
+//        }
 
         AvailableSkillExperience ase = mapper.saveAvailableSkillExperience(user, groupCoreSkill, availableSkill, experience, request);
 
