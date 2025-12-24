@@ -25,6 +25,9 @@ public interface AuthService {
 
     UserDTO updateProfile(String userId, UpdateProfileRequest request);
 
+    UserDTO toggleIsFindJob(String userId);
+
+
     UserDTO updateAvatar(String userId, UpdateAvatarRequest updateAvatarRequest);
 
 }

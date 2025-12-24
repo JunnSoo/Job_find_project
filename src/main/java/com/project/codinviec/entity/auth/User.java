@@ -37,11 +37,12 @@ public class User {
     @Column(name = "website_link")
     private String websiteLink;
     private LocalDateTime birthDate;
-    private boolean isFindJob;
+    private Boolean  isFindJob;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String updatedPerson;
     private String groupSoftSkill;
+    private Boolean  isBlock;
 
     @ManyToOne
     @JoinColumn(name = "company_id")

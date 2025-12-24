@@ -9,6 +9,7 @@ import com.project.codinviec.exception.auth.*;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.exception.file.FileExceptionHandler;
 import com.project.codinviec.mapper.auth.RegisterMapper;
+import com.project.codinviec.mapper.auth.RoleMapper;
 import com.project.codinviec.mapper.auth.UserMapper;
 import com.project.codinviec.model.UserBlock;
 import com.project.codinviec.repository.auth.RoleRepository;
@@ -54,6 +55,7 @@ public class AuthServiceImp implements AuthService {
     private final FileService fileService;
 
     private final TokenManagerService tokenManagerService;
+    private final RoleMapper roleMapper;
 
     @Value("${upload.link}")
     private String linkBe;
@@ -252,7 +254,10 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
 
-        return userMapper.userToProfileDTO(user);
+        ProfileDTO updatedUser = userMapper.userToProfileDTO(user);
+        updatedUser.setRole(roleMapper.toRoleDTO(user.getRole()));
+
+        return updatedUser;
     }
 
     @Override
@@ -267,12 +272,27 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
 
+
         // Cập nhật thông tin profile (không cho phép thay đổi email)
         userMapper.updateProfileMapper(user, request);
 
         // Lưu user đã cập nhật
         User updatedUser = userRepository.save(user);
-        return userMapper.userToUserDTO(updatedUser);
+        UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
+        userDTO.setRole(roleMapper.toRoleDTO(updatedUser.getRole()));
+        return userDTO;
+    }
+
+    @Override
+    public UserDTO toggleIsFindJob(String userId) {
+        // Lấy user hiện tại
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
+        user.setIsFindJob(!user.getIsFindJob());
+        User updatedUser = userRepository.save(user);
+        UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
+        userDTO.setRole(roleMapper.toRoleDTO(updatedUser.getRole()));
+        return userDTO;
     }
 
     @Override
@@ -296,6 +316,10 @@ public class AuthServiceImp implements AuthService {
            throw new FileExceptionHandler("Cập nhật thất bại avatar của user với id: " + userId);
         }
         user.setAvatar(linkBe + "/" + nameAvatarFile);
-        return userMapper.userToUserDTO(userRepository.save(user));
+
+        User updatedUser = userRepository.save(user);
+        UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
+        userDTO.setRole(roleMapper.toRoleDTO(updatedUser.getRole()));
+        return userDTO;
     }
 }

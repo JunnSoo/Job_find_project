@@ -3,6 +3,7 @@ package com.project.codinviec.util.helper;
 import com.project.codinviec.exception.common.ParamExceptionHandler;
 import com.project.codinviec.request.PageRequestCompany;
 import com.project.codinviec.request.PageRequestCustom;
+import com.project.codinviec.request.PageRequestUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +59,7 @@ public class PageCustomHelper {
         }
 
         // Trường hợp keyword = null
-        if (pageRequestCompany.getKeyword() == null) {
+        if (pageRequestCompany.getKeyword() == null || pageRequestCompany.getKeyword().isBlank()) {
             pageRequestCompany.setKeyword("");
         } else {
             // set pageSize mặc định khi có keyword và pageSize không được truyền
@@ -87,5 +88,41 @@ public class PageCustomHelper {
         if (maxEmployees < 0)
             throw new ParamExceptionHandler("Truyền maxEmployees không hợp lệ!");
         return pageRequestCompany;
+    }
+
+    public PageRequestUser validatePageUser(PageRequestUser pageRequestUser) throws ParamExceptionHandler {
+        // Check xem pageSize và pageNumber có phải int không
+
+        int pageSize = integerHelper.parseIntOrThrow(pageRequestUser.getPageSize(), "pageSize");
+        int pageNumber = integerHelper.parseIntOrThrow(pageRequestUser.getPageNumber(), "pageNumber");
+
+
+        // Trường hợp keyword = null
+        if (pageRequestUser.getKeyword() == null || pageRequestUser.getKeyword().isBlank()) {
+
+            pageRequestUser.setKeyword("");
+        } else {
+            // set pageSize mặc định khi có keyword và pageSize không được truyền
+            if (pageSize == 0) {
+                pageRequestUser.setPageSize(10);
+            }
+        }
+        if (pageRequestUser.getRoleId() == null || pageRequestUser.getRoleId().isBlank()) {
+            pageRequestUser.setRoleId("");
+        } else {
+            if (pageSize == 0) {
+                pageRequestUser.setPageSize(10);
+            }
+        }
+
+        if (pageNumber == 0) {
+            pageRequestUser.setPageNumber(1);
+        }
+
+        // truyền pageSize không hợp lệ ( > 0 mới tính)
+        if (pageSize < 0)
+            throw new ParamExceptionHandler("Truyền pageSize không hợp lệ!");
+
+        return pageRequestUser;
     }
 }

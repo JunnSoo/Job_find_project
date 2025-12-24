@@ -29,10 +29,12 @@ public class RegisterMapper {
 
     public User saveRegister(RegisterRequest request, Role role) {
         return User.builder()
-                .email(request.getEmail())
+                .email(request.getEmail().toLowerCase())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .isBlock(false)
+                .isFindJob(false)
                 .role(role)
                 .createdDate(LocalDateTime.now())
                 .updatedDate(LocalDateTime.now())

@@ -85,8 +85,9 @@ public final class SecurityConstants {
             "/api/payment-method/**",
             "/api/service-product/**",
             "/api/auth/logout",
-            "/api/auth/profile",
-            "/api/auth/profile/avatar"
+            "/api/auth/profile/**",
+            "/api/auth/change-find-job/**",
+
     };
 
     public static final String[] USER_WRITE_URLS = {

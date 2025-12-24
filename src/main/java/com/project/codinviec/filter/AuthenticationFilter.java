@@ -54,7 +54,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                         .build();
 
                 System.out.println("path   " + path );
-                System.out.println("token   " + jwtUser.getUserId() );
+                System.out.println("token   " + jwtUser.getRole() );
 
 //                thẻ thông hành
                 UsernamePasswordAuthenticationToken authentication =
