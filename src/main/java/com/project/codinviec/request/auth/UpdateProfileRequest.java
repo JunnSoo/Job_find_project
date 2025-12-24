@@ -31,10 +31,6 @@ public class UpdateProfileRequest {
     @NotEmpty(message = "lastName không được rỗng")
     private String lastName;
 
-    @NotNull(message = "email không được null")
-    @NotEmpty(message = "email không được rỗng")
-    private String email;
-
     @NotNull(message = "phone không được null")
     @NotEmpty(message = "phone không được rỗng")
     private String phone;

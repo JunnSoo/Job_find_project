@@ -16,9 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class UpdateUserRequest {
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
-    private String email;
 
     @NotBlank(message = "Họ không được để trống")
     @Size(min = 1, max = 50, message = "Họ phải từ 1 đến 50 ký tự")
@@ -28,25 +25,26 @@ public class UpdateUserRequest {
     @Size(min = 1, max = 50, message = "Tên phải từ 1 đến 50 ký tự")
     private String lastName;
 
-    private String avatar;
-
+    @NotNull(message = "phone không được null")
     private String phone;
 
+    @NotNull(message = "gender không được null")
     private String gender;
 
+    @NotNull(message = "education không được null")
     private String education;
 
+    @NotNull(message = "address không được null")
     private String address;
 
+    @NotNull(message = "websiteLink không được null")
     private String websiteLink;
 
-    //    @NotNull(message = "birthDate must be not null")
+    @NotNull(message = "birthDate không được null")
     private LocalDateTime birthDate;
 
     @NotNull(message = "isFindJob không được null")
     private boolean isFindJob;
-
-    private String groupSoftSkill;
 
     @NotBlank(message = "Company ID không được để trống")
     private String companyId;

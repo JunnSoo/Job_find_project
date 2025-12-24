@@ -33,10 +33,10 @@ public class UserMapper {
                 .address(user.getAddress())
                 .websiteLink(user.getWebsiteLink())
                 .birthDate(user.getBirthDate())
-                .isFindJob(user.isFindJob())
+                .isFindJob(user.getIsFindJob())
                 .groupSoftSkill(user.getGroupSoftSkill())
                 .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
-                .roleId(user.getRole()  != null ? user.getRole().getId() : null)
+                .isBlock(user.getIsBlock())
                 .createdDate(user.getCreatedDate())
                 .updatedDate(user.getUpdatedDate())
                 .build();
@@ -55,34 +55,32 @@ public class UserMapper {
                 .address(user.getAddress())
                 .websiteLink(user.getWebsiteLink())
                 .birthDate(user.getBirthDate())
-                .isFindJob(user.isFindJob())
+                .isFindJob(user.getIsFindJob())
                 .groupSoftSkill(user.getGroupSoftSkill())
                 .company(
                         user.getCompany() == null || user.getCompany().getId() == null
                                 ? "Chưa Vào Công Ty"
                                 : user.getCompany().getName()
                 )
-                .role(user.getRole().getRoleName())
                 .createdDate(user.getCreatedDate())
                 .updatedDate(user.getUpdatedDate())
                 .build();
     }
 
-    public User saveUserMapper(Role role, Company company, SaveUserRequest saveUserRequest){
+    public User saveUserMapper(Role role, Company company, SaveUserRequest saveUserRequest, String passwword){
         return User.builder()
                 .email(saveUserRequest.getEmail())
-                .password(passwordEncoder.encode(saveUserRequest.getPassword()))
+                .password(passwordEncoder.encode(passwword))
                 .firstName(saveUserRequest.getFirstName())
                 .lastName(saveUserRequest.getLastName())
-                .avatar(saveUserRequest.getAvatar())
                 .phone(saveUserRequest.getPhone())
                 .gender(saveUserRequest.getGender())
                 .education(saveUserRequest.getEducation())
                 .address(saveUserRequest.getAddress())
                 .websiteLink(saveUserRequest.getWebsiteLink())
                 .birthDate(saveUserRequest.getBirthDate())
-                .isFindJob(saveUserRequest.isFindJob())
-                .groupSoftSkill(saveUserRequest.getGroupSoftSkill())
+                .isFindJob(false)
+                .isBlock(false)
                 .role(role)
                 .company(company)
                 .createdDate(LocalDateTime.now())
@@ -93,10 +91,8 @@ public class UserMapper {
     public User updateUserMapper(String idUser,Role role, Company company, UpdateUserRequest updateUserRequest){
         return User.builder()
                 .id(idUser)
-                .email(updateUserRequest.getEmail())
                 .firstName(updateUserRequest.getFirstName())
                 .lastName(updateUserRequest.getLastName())
-                .avatar(updateUserRequest.getAvatar())
                 .phone(updateUserRequest.getPhone())
                 .gender(updateUserRequest.getGender())
                 .education(updateUserRequest.getEducation())
@@ -104,7 +100,6 @@ public class UserMapper {
                 .websiteLink(updateUserRequest.getWebsiteLink())
                 .birthDate(updateUserRequest.getBirthDate())
                 .isFindJob(updateUserRequest.isFindJob())
-                .groupSoftSkill(updateUserRequest.getGroupSoftSkill())
                 .role(role)
                 .company(company)
                 .updatedDate(LocalDateTime.now())
@@ -123,7 +118,6 @@ public class UserMapper {
     public void updateProfileMapper(User existingUser, UpdateProfileRequest request) {
         existingUser.setFirstName(request.getFirstName());
         existingUser.setLastName(request.getLastName());
-        existingUser.setEmail(request.getEmail());
         existingUser.setPhone(request.getPhone());
         existingUser.setGender(request.getGender().toLowerCase());
         existingUser.setEducation(request.getEducation());

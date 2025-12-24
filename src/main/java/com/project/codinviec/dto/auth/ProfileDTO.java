@@ -26,7 +26,7 @@ public class ProfileDTO {
     private boolean isFindJob;
     private String groupSoftSkill;
     private String company;
-    private String role;
+    private RoleDTO role;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 

@@ -90,6 +90,13 @@ public class AuthenticationController {
                 .ok(BaseResponse.success(authService.updateProfile(userDetails.getUserId(), request), "Cập nhật profile thành công"));
     }
 
+    @PutMapping("/change-find-job")
+    public ResponseEntity<?> toggleIsFindJob(
+            @AuthenticationPrincipal CustomUserDetails userDetails ) {
+        return ResponseEntity
+                .ok(BaseResponse.success(authService.toggleIsFindJob(userDetails.getUserId()), "Cập nhật profile thành công"));
+    }
+
     @PutMapping(value = "/profile/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateAvatar(
             @AuthenticationPrincipal CustomUserDetails userDetails,

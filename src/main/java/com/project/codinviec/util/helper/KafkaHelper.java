@@ -2,6 +2,7 @@ package com.project.codinviec.util.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.codinviec.dto.InforEmailDTO;
+import com.project.codinviec.dto.InforEmailSecurityDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -22,4 +23,18 @@ public class KafkaHelper {
             throw new RuntimeException(e);
         }
     }
+
+    public void sendKafkaEmailSecurity(String topics, InforEmailSecurityDTO inforEmailSecurityDTO) {
+        try {
+            if (inforEmailSecurityDTO == null)
+                throw new Exception("inforEmailSecurityDTO is null");
+            String jsonString = objectMapper.writeValueAsString(inforEmailSecurityDTO);
+            kafkaTemplate.send(topics, jsonString);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }
