@@ -156,12 +156,8 @@ public class UserServiceImp implements UserService {
         }
 
         try {
-            User mappedUser = userMapper.updateUserMapper(idUser, role, company, updateUserRequest);
-            mappedUser.setCreatedDate(user.getCreatedDate());
-            mappedUser.setPassword(user.getPassword());
-
+            User mappedUser = userMapper.updateUserMapper(idUser, role, company, updateUserRequest, user);
             User userSaved = userRepository.save(mappedUser);
-
             UserDTO userDTO = userMapper.userToUserDTO(userSaved);
             userDTO.setRole(roleMapper.toRoleDTO(userSaved.getRole()));
             return userDTO;

@@ -39,10 +39,8 @@ public class SaveUserRequest {
 
     private String websiteLink;
 
-//    @NotNull(message = "birthDate must be not null")
     private LocalDateTime birthDate;
 
-    @NotBlank(message = "Company ID không được để trống")
     private String companyId;
 
     @NotBlank(message = "Role ID không được để trống")

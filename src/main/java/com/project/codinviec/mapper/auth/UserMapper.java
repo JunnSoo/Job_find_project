@@ -88,22 +88,22 @@ public class UserMapper {
                 .build();
     }
 
-    public User updateUserMapper(String idUser,Role role, Company company, UpdateUserRequest updateUserRequest){
-        return User.builder()
-                .id(idUser)
-                .firstName(updateUserRequest.getFirstName())
-                .lastName(updateUserRequest.getLastName())
-                .phone(updateUserRequest.getPhone())
-                .gender(updateUserRequest.getGender())
-                .education(updateUserRequest.getEducation())
-                .address(updateUserRequest.getAddress())
-                .websiteLink(updateUserRequest.getWebsiteLink())
-                .birthDate(updateUserRequest.getBirthDate())
-                .isFindJob(updateUserRequest.isFindJob())
-                .role(role)
-                .company(company)
-                .updatedDate(LocalDateTime.now())
-                .build();
+    public User updateUserMapper(String idUser,Role role, Company company, UpdateUserRequest updateUserRequest, User user){
+        user.setId(idUser);
+        user.setRole(role);
+        user.setCompany(company);
+        user.setFirstName(updateUserRequest.getFirstName());
+        user.setLastName(updateUserRequest.getLastName());
+        user.setPhone(updateUserRequest.getPhone());
+        user.setGender(updateUserRequest.getGender());
+        user.setEducation(updateUserRequest.getEducation());
+        user.setAddress(updateUserRequest.getAddress());
+        user.setWebsiteLink(updateUserRequest.getWebsiteLink());
+        user.setBirthDate(updateUserRequest.getBirthDate());
+        user.setRole(role);
+        user.setCompany(company);
+        user.setUpdatedDate(LocalDateTime.now());
+        return user;
     }
 
     public UserReviewDTO userToUserReviewDTO(User user){

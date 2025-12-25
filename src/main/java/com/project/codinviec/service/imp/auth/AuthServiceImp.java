@@ -89,9 +89,15 @@ public class AuthServiceImp implements AuthService {
                     return new WrongPasswordOrEmailExceptionHandler("Không tìm thấy email!");
                 });
 
+//        check pass
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             blockUserHelper.updateCountErrorUser(loginRequest.getEmail());
             throw new WrongPasswordOrEmailExceptionHandler("Tài khoản hoặc mật khẩu không hợp lệ!");
+        }
+
+//        check block
+        if (user.getIsBlock()){
+            throw new BlockLoginUserExceptionHandler("Tài khoản bị khóa viễn vĩnh hãy liên hệ admin!");
         }
 
         AccessTokenDTO accessTokenDTO = tokenManagerService.getAccessToken(user.getId());
@@ -167,7 +173,6 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userJwt.getUserId())
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Id User"));
 
-        tokenManagerService.revokeAllTokens(user.getId());
         tokenManagerService.revokeAllTokens(user.getId());
     }
 
