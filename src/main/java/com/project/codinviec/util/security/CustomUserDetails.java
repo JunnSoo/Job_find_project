@@ -16,6 +16,7 @@ import java.util.Collection;
 public class CustomUserDetails implements UserDetails {
     private String userId;
     private Collection<? extends GrantedAuthority> authorities;
+    private boolean blocked;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -38,11 +39,6 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
@@ -50,5 +46,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !blocked;
     }
 }

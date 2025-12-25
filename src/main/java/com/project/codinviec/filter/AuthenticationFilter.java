@@ -3,9 +3,14 @@ package com.project.codinviec.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.codinviec.dto.auth.JwtUserDTO;
+import com.project.codinviec.entity.auth.User;
 import com.project.codinviec.exception.auth.AccessTokenExceptionHandler;
+import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
+import com.project.codinviec.repository.auth.UserRepository;
 import com.project.codinviec.response.BaseResponse;
+import com.project.codinviec.service.auth.AuthService;
 import com.project.codinviec.service.auth.TokenManagerService;
+import com.project.codinviec.util.security.CookieHelper;
 import com.project.codinviec.util.security.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,6 +34,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final TokenManagerService tokenManagerService;
+    private final UserRepository userRepository;
+    private final CookieHelper cookieHelper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,6 +49,21 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             try {
                 JwtUserDTO jwtUser = tokenManagerService.verifyAccessToken(token);
+                // load user từ DB
+                User user = userRepository.findById(jwtUser.getUserId())
+                        .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user!"));
+//                lỗi 410 bị block nhé
+                if (user.getIsBlock()) {
+//                    Xóa cookies refresh
+                    cookieHelper.clearRefreshTokenCookie(response);
+//                    Xóa redis
+                    tokenManagerService.revokeAllTokens(user.getId());
+                    response.setStatus(410);
+                    response.setContentType("application/json;charset=UTF-8");
+                    BaseResponse baseResponse = BaseResponse.error("Tài khoản đã bị khoá vĩnh viễn bởi admin", HttpStatus.valueOf(response.getStatus()));
+                    new ObjectMapper().writeValue(response.getOutputStream(), baseResponse);
+                    return;
+                }
 
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + jwtUser.getRole());
@@ -49,12 +71,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 
                 CustomUserDetails customUserDetails = CustomUserDetails.builder()
-                        .userId(jwtUser.getUserId())
+                        .userId(user.getId())
+                        .blocked(user.getIsBlock())
                         .authorities(grantedAuthorities)
                         .build();
 
-                System.out.println("path   " + path );
-                System.out.println("token   " + jwtUser.getRole() );
 
 //                thẻ thông hành
                 UsernamePasswordAuthenticationToken authentication =

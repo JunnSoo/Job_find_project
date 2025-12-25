@@ -43,10 +43,6 @@ public class UpdateUserRequest {
     @NotNull(message = "birthDate không được null")
     private LocalDateTime birthDate;
 
-    @NotNull(message = "isFindJob không được null")
-    private boolean isFindJob;
-
-    @NotBlank(message = "Company ID không được để trống")
     private String companyId;
 
     @NotBlank(message = "Role ID không được để trống")

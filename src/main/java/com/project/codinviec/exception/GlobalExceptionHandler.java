@@ -293,7 +293,27 @@ public class GlobalExceptionHandler {
                                 .body(BaseResponse.error(userMessage, HttpStatus.FORBIDDEN));
         }
 
-        // RefreshToken handle exception
+    // Block user
+    @ExceptionHandler(AdminBlockUserExceptionHandler.class)
+    public ResponseEntity<BaseResponse> handlleAdminBlockUser(
+            AdminBlockUserExceptionHandler ex, HttpServletRequest request) {
+        log.error("AdminBlockUserExceptionHandler: {} | URI: {} | Method: {} | Message: {}",
+                ex.getClass().getSimpleName(),
+                request.getRequestURI(),
+                request.getMethod(),
+                ex.getMessage(),
+                ex);
+
+        String userMessage = ex.getMessage() != null && !ex.getMessage().isBlank()
+                ? "Tài khoản bị khóa viễn vĩnh hãy liên hệ admin! " + ex.getMessage()
+                : "Tài khoản bị khóa viễn vĩnh hãy liên hệ admin!";
+        return ResponseEntity
+                .status(HttpStatus.valueOf(410))
+                .body(BaseResponse.error(userMessage, HttpStatus.valueOf(410)));
+    }
+
+
+    // RefreshToken handle exception
         @ExceptionHandler(RefreshTokenExceptionHandler.class)
         public ResponseEntity<BaseResponse> handleRefreshTokenException(
                         RefreshTokenExceptionHandler ex, HttpServletRequest request) {
