@@ -1,4 +1,4 @@
-package com.project.codinviec.dto;
+package com.project.codinviec.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SoftSkillsNameDTO {
-    private int id;
-    private String name;
+public class DeleteAvailableSkillExperienceByGroupCoreIdRequest {
+    private int groupCoreId;
+    private String userId;
 }

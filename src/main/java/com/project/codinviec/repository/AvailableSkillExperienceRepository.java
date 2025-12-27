@@ -10,6 +10,4 @@ import java.util.List;
 public interface AvailableSkillExperienceRepository extends JpaRepository<AvailableSkillExperience, Integer> {
 
     List<AvailableSkillExperience> findByUser_Id(String userId);
-
-    boolean existsByUser_IdAndAvailableSkill_IdAndExperience_Id(String userId, Integer availableSkillId, Integer experienceId);
 }

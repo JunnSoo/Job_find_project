@@ -14,6 +14,7 @@ import com.project.codinviec.mapper.auth.UserMapper;
 import com.project.codinviec.model.UserBlock;
 import com.project.codinviec.repository.auth.RoleRepository;
 import com.project.codinviec.repository.auth.UserRepository;
+import com.project.codinviec.request.ChangeSoftSkillRequest;
 import com.project.codinviec.request.UpdateAvatarRequest;
 import com.project.codinviec.request.auth.GoogleUserRequest;
 import com.project.codinviec.request.auth.LoginRequest;
@@ -294,6 +295,17 @@ public class AuthServiceImp implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
         user.setIsFindJob(!user.getIsFindJob());
+        User updatedUser = userRepository.save(user);
+        UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
+        userDTO.setRole(roleMapper.toRoleDTO(updatedUser.getRole()));
+        return userDTO;
+    }
+
+    @Override
+    public UserDTO changeSoftSkill(String userId, ChangeSoftSkillRequest changeSoftSkillRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
+        user.setGroupSoftSkill(changeSoftSkillRequest.getSoftSkill());
         User updatedUser = userRepository.save(user);
         UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
         userDTO.setRole(roleMapper.toRoleDTO(updatedUser.getRole()));
