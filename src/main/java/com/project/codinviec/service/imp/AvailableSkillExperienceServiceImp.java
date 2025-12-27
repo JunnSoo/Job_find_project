@@ -1,13 +1,20 @@
 package com.project.codinviec.service.imp;
 
 import com.project.codinviec.dto.AvailableSkillExperienceDTO;
-import com.project.codinviec.entity.*;
+import com.project.codinviec.entity.AvailableSkill;
+import com.project.codinviec.entity.AvailableSkillExperience;
+import com.project.codinviec.entity.Experience;
+import com.project.codinviec.entity.GroupCoreSkill;
 import com.project.codinviec.entity.auth.User;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.mapper.AvailableSkillExperienceMapper;
-import com.project.codinviec.repository.*;
+import com.project.codinviec.repository.AvailableSkillExperienceRepository;
+import com.project.codinviec.repository.AvailableSkillRepository;
+import com.project.codinviec.repository.ExperienceRepository;
+import com.project.codinviec.repository.GroupCoreSkillRepository;
 import com.project.codinviec.repository.auth.UserRepository;
 import com.project.codinviec.request.AvailableSkillExperienceRequest;
+import com.project.codinviec.request.DeleteAvailableSkillExperienceByGroupCoreIdRequest;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.service.AvailableSkillExperienceService;
 import com.project.codinviec.util.helper.PageCustomHelper;
@@ -18,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -127,5 +135,28 @@ public class AvailableSkillExperienceServiceImp implements AvailableSkillExperie
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id available_skill_experience"));
         availableSkillExperienceRepository.delete(ase);
         return mapper.toDto(ase);
+    }
+
+    @Override
+    @Transactional
+    public List<AvailableSkillExperienceDTO> deleteAvailableSkillExperienceByGroupCoreId(DeleteAvailableSkillExperienceByGroupCoreIdRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
+
+        GroupCoreSkill groupCoreSkill = groupCoreSkillRepository.findById(request.getGroupCoreId())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id group_core_skill"));
+
+        List<AvailableSkillExperience> skillsUser = availableSkillExperienceRepository.findByUser_Id(user.getId());
+
+        Iterator<AvailableSkillExperience> iterator = skillsUser.iterator();
+        while (iterator.hasNext()) {
+            AvailableSkillExperience skill = iterator.next();
+            if (skill.getGroupCoreSkill().getId() == groupCoreSkill.getId()) {
+                availableSkillExperienceRepository.deleteById(skill.getId());
+                groupCoreSkillRepository.deleteById(skill.getGroupCoreSkill().getId());
+                iterator.remove();
+            }
+        }
+        return skillsUser.stream().map(mapper::toDto).toList();
     }
 }

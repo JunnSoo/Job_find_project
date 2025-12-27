@@ -4,6 +4,7 @@ import com.project.codinviec.dto.auth.ProfileDTO;
 import com.project.codinviec.dto.auth.RegisterDTO;
 import com.project.codinviec.dto.auth.TokenDTO;
 import com.project.codinviec.dto.auth.UserDTO;
+import com.project.codinviec.request.ChangeSoftSkillRequest;
 import com.project.codinviec.request.UpdateAvatarRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.GoogleUserRequest;
@@ -27,6 +28,7 @@ public interface AuthService {
 
     UserDTO toggleIsFindJob(String userId);
 
+    UserDTO changeSoftSkill(String userId, ChangeSoftSkillRequest changeSoftSkillRequest);
 
     UserDTO updateAvatar(String userId, UpdateAvatarRequest updateAvatarRequest);
 

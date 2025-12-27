@@ -1,6 +1,7 @@
 package com.project.codinviec.controller;
 
 import com.project.codinviec.request.AvailableSkillExperienceRequest;
+import com.project.codinviec.request.DeleteAvailableSkillExperienceByGroupCoreIdRequest;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.response.BaseResponse;
 import com.project.codinviec.service.AvailableSkillExperienceService;
@@ -63,6 +64,13 @@ public class AvailableSkillExperienceController {
     public ResponseEntity<?> deleteAvailableSkillExperience(@PathVariable Integer id) {
         return ResponseEntity.ok(
                 BaseResponse.success(availableSkillExperienceService.deleteAvailableSkillExperience(id), "ok")
+        );
+    }
+
+    @DeleteMapping("/group-core-skill")
+    public ResponseEntity<?> đeleteAvailableSkillExperienceByGroupCoreId(@RequestBody DeleteAvailableSkillExperienceByGroupCoreIdRequest request) {
+        return ResponseEntity.ok(
+                BaseResponse.success(availableSkillExperienceService.deleteAvailableSkillExperienceByGroupCoreId(request), "ok")
         );
     }
 }

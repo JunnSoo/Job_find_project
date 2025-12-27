@@ -3,6 +3,7 @@ package com.project.codinviec.controller.auth;
 import com.project.codinviec.dto.auth.TokenDTO;
 import com.project.codinviec.exception.auth.ExpireTokenExceptionHandler;
 import com.project.codinviec.exception.auth.RefreshTokenExceptionHandler;
+import com.project.codinviec.request.ChangeSoftSkillRequest;
 import com.project.codinviec.request.UpdateAvatarRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
@@ -94,7 +95,14 @@ public class AuthenticationController {
     public ResponseEntity<?> toggleIsFindJob(
             @AuthenticationPrincipal CustomUserDetails userDetails ) {
         return ResponseEntity
-                .ok(BaseResponse.success(authService.toggleIsFindJob(userDetails.getUserId()), "Cập nhật profile thành công"));
+                .ok(BaseResponse.success(authService.toggleIsFindJob(userDetails.getUserId()), "Cập nhật findjob thành công"));
+    }
+
+    @PutMapping("/profile/soft-skill")
+    public ResponseEntity<?> changeSoftSkillProfile(
+            @AuthenticationPrincipal CustomUserDetails userDetails,@RequestBody ChangeSoftSkillRequest changeSoftSkillRequest) {
+        return ResponseEntity
+                .ok(BaseResponse.success(authService.changeSoftSkill(userDetails.getUserId(), changeSoftSkillRequest), "Cập nhật softSkill thành công"));
     }
 
     @PutMapping(value = "/profile/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

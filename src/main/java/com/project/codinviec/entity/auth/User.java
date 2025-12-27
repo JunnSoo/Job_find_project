@@ -1,7 +1,6 @@
 package com.project.codinviec.entity.auth;
 
 import com.project.codinviec.entity.Review;
-import com.project.codinviec.entity.SoftSkillsName;
 import com.project.codinviec.entity.WishlistCandidate;
 import com.project.codinviec.entity.WishlistJob;
 import jakarta.persistence.*;
@@ -54,9 +53,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Review> listReview;
-
-    @OneToMany(mappedBy = "user")
-    private List<SoftSkillsName> listSoftSkillsName;
 
     // ds wishlist của bản thân
     @OneToMany(mappedBy = "userHr", cascade = CascadeType.ALL, orphanRemoval = true)
