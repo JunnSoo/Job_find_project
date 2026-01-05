@@ -16,18 +16,27 @@ import java.util.List;
 public class JobDTO {
     private int id;
     private String jobPosition;
-    private CompanyDTO companies;
+    private CompanyDTO company;
     private String detailAddress;
     private String descriptionJob;
     private String requirement;
     private String benefits;
     private int provinceId;
+    private String provinceName;
     private int industryId;
+    private String industryName;
     private int jobLevelId;
+    private String jobLevelName;
     private int degreeLevelId;
+    private String degreeLevelName;
     private int employmentTypeId;
+    private String employmentTypeName;
     private int experienceId;
+    private String experienceName;
     private List<StatusSpecialDTO> statusSpecials;
+    private List<AvailableSkillDTO> skills;
+    private Boolean isAgreedSalary;
+    private double salary;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

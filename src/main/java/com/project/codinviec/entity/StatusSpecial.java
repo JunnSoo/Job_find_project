@@ -24,7 +24,7 @@ public class StatusSpecial {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "idStatusSpecial",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "statusSpecial",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StatusSpecialJob> listStatusSpecialJob;
 
 }

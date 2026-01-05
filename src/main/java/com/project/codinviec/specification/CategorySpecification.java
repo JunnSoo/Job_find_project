@@ -14,4 +14,6 @@ public class CategorySpecification {
         public Specification<Category> parentIsNull() {
             return (root, query, cb) -> cb.isNull(root.get("parent"));
         }
+
+
 }

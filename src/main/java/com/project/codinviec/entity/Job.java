@@ -40,23 +40,11 @@ public class Job {
     @Column(name = "benefits", columnDefinition = "TEXT")
     private String benefits;
 
-    @Column(name = "province_id")
-    private int provinceId;
+    @Column(name = "is_agreed_salary")
+    private Boolean isAgreedSalary;
 
-    @Column(name = "industry_id")
-    private int industryId;
-
-    @Column(name = "job_level_id")
-    private int jobLevelId;
-
-    @Column(name = "degree_level_id")
-    private int degreeLevelId;
-
-    @Column(name = "employment_type_id")
-    private int employmentTypeId;
-
-    @Column(name = "experience_id")
-    private int experienceId;
+    @Column(name = "salary")
+    private double salary;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -64,9 +52,38 @@ public class Job {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id")
+    private Province province;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "industry_id")
+    private Industry industry;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_level_id")
+    private JobLevel jobLevel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "degree_level_id")
+    private DegreeLevel degreeLevel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employment_type_id")
+    private EmploymentType employmentType;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "experience_id")
+    private Experience experience;
+
     @OneToMany(mappedBy = "job",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WishlistJob> listWishlistJob = new ArrayList<>();
 
-    @OneToMany(mappedBy = "idJob", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StatusSpecialJob> listStatusSpecialJob = new ArrayList<>();;
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StatusSpecialJob> listStatusSpecialJob = new ArrayList<>();
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AvailableSkillsJob> listAvailableSkillsJob = new ArrayList<>();
+
 }

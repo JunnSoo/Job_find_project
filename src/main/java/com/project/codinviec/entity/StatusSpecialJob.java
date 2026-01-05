@@ -18,11 +18,10 @@ public class StatusSpecialJob {
     @MapsId("idJob")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_job", nullable = false)
-    private Job idJob;
+    private Job job;
 
     @MapsId("idStatusSpecial")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_status_special", nullable = false)
-    private StatusSpecial idStatusSpecial;
-
+    private StatusSpecial statusSpecial;
 }

@@ -36,7 +36,7 @@ public class StatusSpecialMapper {
     public List<StatusSpecialDTO> StatusSpecialJobToStatusSpecialDTO(List<StatusSpecialJob> statusSpecialJob) {
         List<StatusSpecialDTO> statusSpecialDTOS = new ArrayList<>();
         for(StatusSpecialJob item : statusSpecialJob){
-            statusSpecialDTOS.add(toDTO(item.getIdStatusSpecial()));
+            statusSpecialDTOS.add(toDTO(item.getStatusSpecial()));
         }
         return statusSpecialDTOS;
     }

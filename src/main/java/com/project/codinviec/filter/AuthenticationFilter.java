@@ -65,6 +65,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
 
+                System.out.println("ROLE LÀ : " + user.getRole().getRoleName());
+
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + jwtUser.getRole());
                 grantedAuthorities.add(grantedAuthority);

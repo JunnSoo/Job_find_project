@@ -1,6 +1,7 @@
 package com.project.codinviec.controller;
 
 import com.project.codinviec.dto.JobDTO;
+import com.project.codinviec.request.JobFilterRequest;
 import com.project.codinviec.request.JobRequest;
 import com.project.codinviec.request.PageRequestCustom;
 import com.project.codinviec.response.BaseResponse;
@@ -22,6 +23,11 @@ public class JobController {
             return ResponseEntity.ok(BaseResponse.success(jobService.getAllJob(), "Lấy danh sách Job thành công"));
         }
         return ResponseEntity.ok(BaseResponse.success(jobService.getAllJobPage(pageRequestCustom), "Lấy danh sách Job phân trang thành công"));
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> getAllJobWithFilter(@RequestBody JobFilterRequest jobFilterRequest) {
+        return ResponseEntity.ok(BaseResponse.success(jobService.getAllJobPageWithFilter(jobFilterRequest), "Lấy danh sách Job phân trang thành công"));
     }
 
     @GetMapping("/{idJob}")
