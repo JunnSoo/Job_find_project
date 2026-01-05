@@ -7,12 +7,12 @@ import lombok.Data;
 
 @Data
 @Embeddable
-public class StatusSpecialJobId{
+public class AvaibleSkillsJobId {
     @NotNull
     @Column(name = "id_job", nullable = false)
     private Integer idJob;
 
     @NotNull
-    @Column(name = "id_status_special", nullable = false)
-    private Integer idStatusSpecial;
+    @Column(name = "id_available_skills", nullable = false)
+    private Integer idAvailableSkills;
 }

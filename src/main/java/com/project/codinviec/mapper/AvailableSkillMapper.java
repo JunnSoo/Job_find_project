@@ -2,8 +2,12 @@ package com.project.codinviec.mapper;
 
 import com.project.codinviec.dto.AvailableSkillDTO;
 import com.project.codinviec.entity.AvailableSkill;
+import com.project.codinviec.entity.AvailableSkillsJob;
 import com.project.codinviec.request.AvailableSkillRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class AvailableSkillMapper {
@@ -30,4 +34,13 @@ public class AvailableSkillMapper {
                 .name(request.getName())
                 .build();
     }
+
+    public List<AvailableSkillDTO> AvailbleSkillJobToAvaibleSkill(List<AvailableSkillsJob> availableSkillsJobs) {
+        List<AvailableSkillDTO> listAvailableSkill = new ArrayList<>();
+        for(AvailableSkillsJob item : availableSkillsJobs){
+            listAvailableSkill.add(toDto(item.getAvailableSkill()));
+        }
+        return listAvailableSkill;
+    }
+
 }

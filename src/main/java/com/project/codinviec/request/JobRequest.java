@@ -1,5 +1,6 @@
 package com.project.codinviec.request;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,13 @@ public class JobRequest {
 
     @NotBlank(message = "Quyền lợi không được để trống")
     private String benefits;
+
+    @NotNull(message = "isAgreedSalary không được null")
+    private Boolean isAgreedSalary;
+
+    @NotNull(message = "salary không được null")
+    @Min(value = 1, message = "salary phải lớn hơn 0")
+    private double salary;
 
     @NotNull(message = "Province ID không được null")
     @Min(value = 1, message = "Province ID phải lớn hơn 0")
