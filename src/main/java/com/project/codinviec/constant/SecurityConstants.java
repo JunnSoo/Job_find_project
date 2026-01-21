@@ -18,8 +18,6 @@ public final class SecurityConstants {
             "/api/auth/login-google",
             "/api/auth/register",
             "/api/auth/refresh",
-            "/oauth2/**",
-            "/login/oauth2/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",

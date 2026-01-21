@@ -26,8 +26,8 @@ spring:
       client:
         registration:
           google:
-            client-id: ${SPRING_SECURITY_GOOGLE_CLIENT_ID:253105273512-o9u9tqfjt7tqaq4cp3qln0pagoc9gjf6.apps.googleusercontent.com}
-            client-secret: ${SPRING_SECURITY_GOOGLE_CLIENT_SECRET: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}
+            client-id: ${SPRING_SECURITY_GOOGLE_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_GOOGLE_CLIENT_SECRET}
             scope:
               - openid
               - profile
