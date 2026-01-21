@@ -25,8 +25,8 @@ public class JobController {
         return ResponseEntity.ok(BaseResponse.success(jobService.getAllJobPage(pageRequestCustom), "Lấy danh sách Job phân trang thành công"));
     }
 
-    @PostMapping("/filter")
-    public ResponseEntity<?> getAllJobWithFilter(@RequestBody JobFilterRequest jobFilterRequest) {
+    @GetMapping("/filter")
+    public ResponseEntity<?> getAllJobWithFilter(JobFilterRequest jobFilterRequest) {
         return ResponseEntity.ok(BaseResponse.success(jobService.getAllJobPageWithFilter(jobFilterRequest), "Lấy danh sách Job phân trang thành công"));
     }
 
