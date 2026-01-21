@@ -35,6 +35,11 @@ public class JobController {
         return ResponseEntity.ok(BaseResponse.success(jobService.getJobById(idJob), "Lấy Job thành công"));
     }
 
+    @GetMapping("/company/{idCompany}")
+    public ResponseEntity<?> getJobById(@PathVariable("idCompany") String idCompany) {
+        return ResponseEntity.ok(BaseResponse.success(jobService.getJobByIdCompany(idCompany), "Lấy Job thành công"));
+    }
+
     @PostMapping
     public ResponseEntity<?> createJob(@Valid @RequestBody JobRequest request) {
         JobDTO createdJob = jobService.createJob(request);

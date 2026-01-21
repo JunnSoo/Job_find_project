@@ -101,7 +101,19 @@ public class CompanyServiceImp implements CompanyService {
     public CompanyDTO getCompanyById(String idCompany) {
         Company company = companyRepository.findById(idCompany)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
-        return companyMapper.companyToCompanyDTO(company);
+        CompanyDTO companyDTO = companyMapper.companyToCompanyDTO(company);
+            companyDTO.setStatusSpecials(statusSpecialMapper
+                    .StatusSpecialCompanyToStatusSpecialDTO(statusSpecialCompanyRepository
+                            .findByIdCompany_Id(companyDTO.getId())));
+            companyDTO.setCompanySize(companySizeMapper.companySizeToCompanySizeDTO(companySizeRepository
+                    .findByCompanies_Id(companyDTO
+                            .getId()).orElse(null)));
+
+            companyDTO.setCompanyAddress(
+                    companyAddressRepository.findByCompany_Id(companyDTO.getId())
+                            .stream().map(companyAddressMapper::toCompanyAddressDTO).toList()
+            );
+        return companyDTO;
     }
 
     @Override

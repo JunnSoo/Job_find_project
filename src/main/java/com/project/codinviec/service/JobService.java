@@ -14,6 +14,8 @@ public interface JobService {
     Page<JobDTO> getAllJobPageWithFilter(JobFilterRequest jobFilterRequest);
 
     JobDTO getJobById(int id);
+    List<JobDTO> getJobByIdCompany(String companyId);
+
     JobDTO createJob(JobRequest request);
     JobDTO updateJob(int id, JobRequest request);
     void deleteJob(int id);
