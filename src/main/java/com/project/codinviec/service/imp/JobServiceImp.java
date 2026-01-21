@@ -151,6 +151,23 @@ public class JobServiceImp implements JobService {
     }
 
     @Override
+    public List<JobDTO> getJobByIdCompany(String companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy company"));
+        List<JobDTO> jobDTOList = jobRepository.getJobByCompany_Id(companyId)
+                .stream().map((j)->jobMapper.toDTO(j)).toList();
+        for (JobDTO jobDTO : jobDTOList) {
+            jobDTO.setStatusSpecials(statusSpecialMapper
+                    .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
+                            .findByJob_Id(jobDTO.getId())));
+            jobDTO.setSkills(availableSkillMapper
+                    .AvailbleSkillJobToAvaibleSkill(
+                            availableSkillsJobRepository.findByJob_Id(jobDTO.getId())));
+        }
+        return jobDTOList;
+    }
+
+    @Override
     @Transactional
     public JobDTO createJob(JobRequest request) {
         Company company = companyRepository.findById(request.getCompanyId())

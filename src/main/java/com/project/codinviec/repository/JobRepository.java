@@ -1,10 +1,14 @@
 package com.project.codinviec.repository;
 
+import com.project.codinviec.dto.JobDTO;
 import com.project.codinviec.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface JobRepository extends JpaRepository<Job, Integer>, JpaSpecificationExecutor<Job> {
+    List<Job> getJobByCompany_Id(String companyId);
 }
