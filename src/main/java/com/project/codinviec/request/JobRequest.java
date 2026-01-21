@@ -25,11 +25,15 @@ public class JobRequest {
     @NotBlank(message = "Yêu cầu công việc không được để trống")
     private String requirement;
 
+    @NotBlank(message = "trách nhiệm không được để trống")
+    private String responsibility;
+
     @NotBlank(message = "Quyền lợi không được để trống")
     private String benefits;
 
     @NotNull(message = "isAgreedSalary không được null")
     private Boolean isAgreedSalary;
+
 
     @NotNull(message = "salary không được null")
     @Min(value = 1, message = "salary phải lớn hơn 0")
@@ -58,6 +62,8 @@ public class JobRequest {
     @NotNull(message = "Experience ID không được null")
     @Min(value = 1, message = "Experience ID phải lớn hơn 0")
     private int experienceId;
+
+
 
     private LocalDateTime createdDate;
 }
