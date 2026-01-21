@@ -2,13 +2,13 @@ package com.project.codinviec.config;
 
 import com.project.codinviec.constant.SecurityConstants;
 import com.project.codinviec.exception.security.CustomAccessDeniedHandler;
-import com.project.codinviec.exception.security.CustomAuthenticationEntryPointHandler;
 import com.project.codinviec.filter.AuthenticationFilter;
 import com.project.codinviec.util.security.GoogleLoginHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,7 +31,6 @@ public class SecurityConfig {
         private String localhost;
 
         private final CustomAccessDeniedHandler customAccessDeniedHandler;
-        private final GoogleLoginHandler googleLoginHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationFilter authenticationFilter) throws Exception {
@@ -39,6 +38,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .securityMatcher("/api/**")
                 .authorizeHttpRequests(auth -> auth
                         // Public URLs - Không cần authentication (auth, swagger, file)
                         .requestMatchers(SecurityConstants.API_PUBLIC_URLS).permitAll()
@@ -73,8 +73,7 @@ public class SecurityConfig {
                         .hasAnyRole("USER", "ADMIN"))
 
                 // Cấu hình Google Login
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(googleLoginHandler))
+                .oauth2Login(AbstractHttpConfigurer::disable)
                 // Add authentication filter trước Spring Security filter
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // Cấu hình Exception Handling
@@ -100,4 +99,23 @@ public class SecurityConfig {
 
                 return source;
         }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webFilterChain(HttpSecurity http, GoogleLoginHandler googleLoginHandler) throws Exception {
+        http
+                .securityMatcher("/oauth2/**", "/login/oauth2/**")
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                                "/",
+                                "/oauth2/**",
+                                "/login/oauth2/**"
+                        ).permitAll()
+                .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth -> oauth.successHandler(googleLoginHandler))
+                .csrf(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
 }
