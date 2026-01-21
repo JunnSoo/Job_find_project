@@ -8,7 +8,6 @@ import com.project.codinviec.exception.auth.AccessTokenExceptionHandler;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.repository.auth.UserRepository;
 import com.project.codinviec.response.BaseResponse;
-import com.project.codinviec.service.auth.AuthService;
 import com.project.codinviec.service.auth.TokenManagerService;
 import com.project.codinviec.util.security.CookieHelper;
 import com.project.codinviec.util.security.CustomUserDetails;
