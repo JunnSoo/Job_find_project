@@ -33,6 +33,7 @@ public class JobDTO {
     private String employmentTypeName;
     private int experienceId;
     private String experienceName;
+    private String responsibility;
     private List<StatusSpecialDTO> statusSpecials;
     private List<AvailableSkillDTO> skills;
     private Boolean isAgreedSalary;

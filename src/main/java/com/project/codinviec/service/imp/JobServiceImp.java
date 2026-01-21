@@ -48,6 +48,7 @@ public class JobServiceImp implements JobService {
         List<JobDTO> jobDTOList = jobRepository.findAll().stream()
                 .map(jobMapper::toDTO)
                 .toList();
+
         for (JobDTO jobDTO : jobDTOList) {
             jobDTO.setStatusSpecials(statusSpecialMapper
                     .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
@@ -139,7 +140,14 @@ public class JobServiceImp implements JobService {
     public JobDTO getJobById(int id) {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Job ID: " + id));
-        return jobMapper.toDTO(job);
+        JobDTO jobDTO = jobMapper.toDTO(job);
+        jobDTO.setStatusSpecials(statusSpecialMapper
+                    .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
+                            .findByJob_Id(job.getId())));
+        jobDTO.setSkills(availableSkillMapper
+                    .AvailbleSkillJobToAvaibleSkill(
+                            availableSkillsJobRepository.findByJob_Id(job.getId())));
+        return jobDTO;
     }
 
     @Override

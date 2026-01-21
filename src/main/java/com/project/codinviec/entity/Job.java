@@ -52,6 +52,9 @@ public class Job {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @Column(name = "responsibility")
+    private String responsibility;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "province_id")
     private Province province;
