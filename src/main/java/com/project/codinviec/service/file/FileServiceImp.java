@@ -24,7 +24,7 @@ public class FileServiceImp implements FileService {
     public String saveFiles(MultipartFile file) {
         try {
             if (file == null || file.isEmpty()) {
-                throw new FileExceptionHandler();
+                throw new FileExceptionHandler("Save file serevices lỗi");
             }
 
             Path rootPath = Paths.get(root);

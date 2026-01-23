@@ -1,5 +1,6 @@
 package com.project.codinviec.service.auth;
 
+import com.project.codinviec.dto.JobUserApplyDTO;
 import com.project.codinviec.dto.auth.UserDTO;
 import com.project.codinviec.request.PageRequestUser;
 import com.project.codinviec.request.auth.SaveUserRequest;
@@ -17,4 +18,5 @@ public interface UserService {
     UserDTO deleteUser(String idUser);
     UserDTO blockUser(String idUser);
     UserDTO unblockUser(String idUser);
+    JobUserApplyDTO getUserApplyByIdCompany(String idCompany);
 }

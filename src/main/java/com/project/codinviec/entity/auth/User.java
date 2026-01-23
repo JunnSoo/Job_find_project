@@ -42,6 +42,7 @@ public class User {
     private String updatedPerson;
     private String groupSoftSkill;
     private Boolean  isBlock;
+    private String cv;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -51,8 +52,11 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
+
+
     @OneToMany(mappedBy = "user")
     private List<Review> listReview;
+
 
     // ds wishlist của bản thân
     @OneToMany(mappedBy = "userHr", cascade = CascadeType.ALL, orphanRemoval = true)

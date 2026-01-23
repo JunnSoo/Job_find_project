@@ -32,7 +32,6 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
@@ -49,8 +48,8 @@ jwt:
     refresh: ${JWT_REFRESH_EXPIRED:604800000000} #7d
 
 upload:
-  image: ${UPLOAD_IMAGE:D:\}
-  link: http://api.codinviec.io.vn/file
+  image: ${UPLOAD_IMAGE}
+  link:  ${UPLOAD_LINK}
 
 client:
   url: ${CLIENT_URL:http://localhost:3000}

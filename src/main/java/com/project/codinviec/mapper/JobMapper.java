@@ -34,6 +34,8 @@ public class JobMapper {
                 .experienceId(entity.getExperience().getId())
                 .experienceName(entity.getExperience().getName())
                 .salary(entity.getSalary())
+                .idJobStatus(entity.getJobStatus() != null ? entity.getJobStatus().getId() : null )
+                .jobStatusName(entity.getJobStatus() != null ? entity.getJobStatus().getName() : null )
                 .responsibility(entity.getResponsibility())
                 .isAgreedSalary(entity.getIsAgreedSalary())
                 .createdDate(entity.getCreatedDate())

@@ -38,6 +38,8 @@ public class JobDTO {
     private List<AvailableSkillDTO> skills;
     private Boolean isAgreedSalary;
     private double salary;
+    private int idJobStatus;
+    private String jobStatusName;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

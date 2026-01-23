@@ -8,6 +8,7 @@ import com.project.codinviec.entity.auth.User;
 import com.project.codinviec.exception.auth.*;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.exception.file.FileExceptionHandler;
+import com.project.codinviec.mapper.auth.CompanyMapper;
 import com.project.codinviec.mapper.auth.RegisterMapper;
 import com.project.codinviec.mapper.auth.RoleMapper;
 import com.project.codinviec.mapper.auth.UserMapper;
@@ -16,6 +17,7 @@ import com.project.codinviec.repository.auth.RoleRepository;
 import com.project.codinviec.repository.auth.UserRepository;
 import com.project.codinviec.request.ChangeSoftSkillRequest;
 import com.project.codinviec.request.UpdateAvatarRequest;
+import com.project.codinviec.request.UploadCvRequest;
 import com.project.codinviec.request.auth.GoogleUserRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
@@ -41,6 +43,7 @@ import java.time.LocalDateTime;
 public class AuthServiceImp implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyMapper companyMapper;
 
     private final BlockUserHelper blockUserHelper;
 
@@ -102,9 +105,8 @@ public class AuthServiceImp implements AuthService {
         }
 
         AccessTokenDTO accessTokenDTO = tokenManagerService.getAccessToken(user.getId());
-        RefreshTokenDTO refreshTokenDTO = tokenManagerService.getRefreshToken(user.getId());
 
-        if (accessTokenDTO != null || refreshTokenDTO != null) {
+        if (accessTokenDTO != null) {
             throw new AlreadyLoggedInExceptionHandler("Tài khoản này đã được đăng nhập ở nơi khác!");
         }
 
@@ -200,6 +202,7 @@ public class AuthServiceImp implements AuthService {
                     .password("") // OAuth user không có password
                     .role(defaultRole)
                     .isFindJob(false)
+                    .isBlock(false)
                     .createdDate(LocalDateTime.now())
                     .updatedDate(LocalDateTime.now())
                     .build();
@@ -261,8 +264,12 @@ public class AuthServiceImp implements AuthService {
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
 
         ProfileDTO updatedUser = userMapper.userToProfileDTO(user);
-        updatedUser.setRole(roleMapper.toRoleDTO(user.getRole()));
-
+        if (user.getCompany() != null){
+            updatedUser.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+        }
+        if (user.getRole() != null){
+            updatedUser.setRole(roleMapper.toRoleDTO(user.getRole()));
+        }
         return updatedUser;
     }
 
@@ -322,21 +329,53 @@ public class AuthServiceImp implements AuthService {
         // Lấy user hiện tại
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
+        String nameAvatarFile = fileService.saveFiles(updateAvatarRequest.getAvatarFile());
+        if (nameAvatarFile == null) {
+            throw new FileExceptionHandler("Cập nhật thất bại avatar của user, file không hợp lệ! ");
+        }
 
         if (user.getAvatar() != null && !user.getAvatar().isEmpty() && user.getAvatar().contains(linkBe)) {
             String nameAvatarFileOld = user.getAvatar().replaceFirst(linkBe+"/","");
             fileService.deleteFile(nameAvatarFileOld);
         }
-
-        String nameAvatarFile = fileService.saveFiles(updateAvatarRequest.getAvatarFile());
-        if (nameAvatarFile == null) {
-           throw new FileExceptionHandler("Cập nhật thất bại avatar của user với id: " + userId);
-        }
         user.setAvatar(linkBe + "/" + nameAvatarFile);
-
         User updatedUser = userRepository.save(user);
         UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
         userDTO.setRole(roleMapper.toRoleDTO(updatedUser.getRole()));
         return userDTO;
+    }
+
+    @Override
+    public UserDTO uploadCv(String userId, UploadCvRequest uploadCvRequest) {
+        // Validate userId
+        if (userId == null || userId.isEmpty()) {
+            throw new AccessTokenExceptionHandler("UserId không hợp lệ");
+        }
+
+        // Lấy user hiện tại
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy user với id: " + userId));
+
+        String nameFile = fileService.saveFiles(uploadCvRequest.getCvFile());
+        if (nameFile == null) {
+            throw new FileExceptionHandler("Cập nhật thất bại cv của user, file không hợp lệ! ");
+        }
+
+        if (user.getCv() != null && !user.getCv().isEmpty() && user.getCv().contains(linkBe)) {
+            String nameCvFileOld = user.getCv().replaceFirst(linkBe+"/","");
+            fileService.deleteFile(nameCvFileOld);
+        }
+
+        user.setCv(linkBe + "/" + nameFile);
+        User updatedUser = userRepository.save(user);
+        UserDTO userDTO = userMapper.userToUserDTO(updatedUser);
+        if (user.getCompany() != null){
+            userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+        }
+        if (user.getRole() != null){
+            userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+        }
+        return userDTO;
+
     }
 }

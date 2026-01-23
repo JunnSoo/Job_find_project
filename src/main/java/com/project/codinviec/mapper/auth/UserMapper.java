@@ -35,8 +35,8 @@ public class UserMapper {
                 .birthDate(user.getBirthDate())
                 .isFindJob(user.getIsFindJob())
                 .groupSoftSkill(user.getGroupSoftSkill())
-                .companyId(user.getCompany() != null ? user.getCompany().getId() : null)
                 .isBlock(user.getIsBlock())
+                .cv(user.getCv())
                 .createdDate(user.getCreatedDate())
                 .updatedDate(user.getUpdatedDate())
                 .build();
@@ -57,11 +57,7 @@ public class UserMapper {
                 .birthDate(user.getBirthDate())
                 .isFindJob(user.getIsFindJob())
                 .groupSoftSkill(user.getGroupSoftSkill())
-                .company(
-                        user.getCompany() == null || user.getCompany().getId() == null
-                                ? "Chưa Vào Công Ty"
-                                : user.getCompany().getName()
-                )
+                .cv(user.getCv())
                 .createdDate(user.getCreatedDate())
                 .updatedDate(user.getUpdatedDate())
                 .build();

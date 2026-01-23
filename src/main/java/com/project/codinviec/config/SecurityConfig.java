@@ -62,15 +62,15 @@ public class SecurityConfig {
 
                         // User write endpoints - POST/PUT/DELETE cho user data (bao gồm ADMIN)
                         .requestMatchers(HttpMethod.POST, SecurityConstants.USER_WRITE_URLS)
-                        .hasAnyRole("USER", "ADMIN")
+                        .hasAnyRole("USER","HR", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, SecurityConstants.USER_WRITE_URLS)
-                        .hasAnyRole("USER", "ADMIN")
+                        .hasAnyRole("USER","HR", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, SecurityConstants.USER_WRITE_URLS)
-                        .hasAnyRole("USER", "ADMIN")
+                        .hasAnyRole("USER","HR", "ADMIN")
 
                         // User endpoints - Cần authentication (bao gồm ADMIN)
                         .requestMatchers(SecurityConstants.USER_URLS)
-                        .hasAnyRole("USER", "ADMIN"))
+                        .hasAnyRole("USER","HR", "ADMIN"))
 
                 // Cấu hình Google Login
                 .oauth2Login(AbstractHttpConfigurer::disable)
@@ -109,7 +109,8 @@ public class SecurityConfig {
                 .requestMatchers(
                                 "/",
                                 "/oauth2/**",
-                                "/login/oauth2/**"
+                                "/login/oauth2/**",
+                                "/auth/**"
                         ).permitAll()
                 .anyRequest().authenticated()
                 )

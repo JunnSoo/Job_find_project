@@ -19,14 +19,28 @@ public class JobSpecification {
         String pattern = "%" + keyword.toLowerCase() + "%";
 
         return (root, query, cb) -> {
-            // Nếu keyword là số thì tìm theo ID
             try {
                 int id = Integer.parseInt(keyword);
                 return cb.equal(root.get("id"), id);
             } catch (NumberFormatException e) {
-                // Nếu không phải số thì tìm theo jobPosition (chứa keyword)
                 return cb.like(cb.lower(root.get("jobPosition")), pattern);
             }
+        };
+    }
+
+    public Specification<Job> searchCompanyName(String companyName) {
+        if (companyName == null || companyName.isBlank()) {
+            return null;
+        }
+
+        return (root, query, cb) -> {
+            Join<Object, Object> companyJoin =
+                    root.join("company", JoinType.INNER);
+
+            return cb.like(
+                    cb.lower(companyJoin.get("name")),
+                    "%" + companyName.toLowerCase() + "%"
+            );
         };
     }
 

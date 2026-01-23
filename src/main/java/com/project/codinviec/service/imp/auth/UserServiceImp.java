@@ -2,7 +2,10 @@ package com.project.codinviec.service.imp.auth;
 
 import com.project.codinviec.dto.InforEmailDTO;
 import com.project.codinviec.dto.InforEmailSecurityDTO;
+import com.project.codinviec.dto.JobDTO;
+import com.project.codinviec.dto.JobUserApplyDTO;
 import com.project.codinviec.dto.auth.UserDTO;
+import com.project.codinviec.entity.JobUser;
 import com.project.codinviec.entity.auth.Company;
 import com.project.codinviec.entity.auth.Role;
 import com.project.codinviec.entity.auth.User;
@@ -10,8 +13,15 @@ import com.project.codinviec.exception.auth.EmailAlreadyExistsExceptionHandler;
 import com.project.codinviec.exception.auth.EmailNotChangeExceptionHandler;
 import com.project.codinviec.exception.common.ConflictExceptionHandler;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
+import com.project.codinviec.mapper.AvailableSkillMapper;
+import com.project.codinviec.mapper.JobMapper;
+import com.project.codinviec.mapper.StatusSpecialMapper;
+import com.project.codinviec.mapper.auth.CompanyMapper;
 import com.project.codinviec.mapper.auth.RoleMapper;
 import com.project.codinviec.mapper.auth.UserMapper;
+import com.project.codinviec.repository.AvailableSkillsJobRepository;
+import com.project.codinviec.repository.JobUserRepository;
+import com.project.codinviec.repository.StatusSpecialJobRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
 import com.project.codinviec.repository.auth.RoleRepository;
 import com.project.codinviec.repository.auth.UserRepository;
@@ -32,6 +42,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -47,13 +58,25 @@ public class UserServiceImp implements UserService {
     private final PasswordGenerator passwordGenerator;
     private final KafkaHelper kafkaHelper;
     private final TimeHelper timeHelper;
+    private final CompanyMapper companyMapper;
+    private final JobUserRepository JobUserRepository;
+    private final JobMapper jobMapper;
+    private final StatusSpecialMapper statusSpecialMapper;
+    private final AvailableSkillMapper availableSkillMapper;
+    private final StatusSpecialJobRepository statusSpecialJobRepository;
+    private final AvailableSkillsJobRepository availableSkillsJobRepository;
 
     @Override
     public List<UserDTO> getAllUsers() {
         List<UserDTO> users = userRepository.findAll().stream()
                 .map((user) -> {
                     UserDTO userDTO = userMapper.userToUserDTO(user);
-                    userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+                    if (user.getCompany() != null){
+                        userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+                    }
+                    if (user.getRole() != null){
+                        userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+                    }
                     return userDTO;
                 })
                 .toList();
@@ -78,7 +101,12 @@ public class UserServiceImp implements UserService {
         return userRepository.findAll(spec, pageable)
                 .map((user) -> {
                     UserDTO userDTO = userMapper.userToUserDTO(user);
-                    userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+                    if (user.getCompany() != null){
+                        userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+                    }
+                    if (user.getRole() != null){
+                        userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+                    }
                     return userDTO;
                 });
     }
@@ -88,8 +116,12 @@ public class UserServiceImp implements UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
         UserDTO userDTO = userMapper.userToUserDTO(user);
-        userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
-
+        if (user.getCompany() != null){
+            userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+        }
+        if (user.getRole() != null){
+            userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+        }
         return userDTO;
     }
 
@@ -121,8 +153,12 @@ public class UserServiceImp implements UserService {
             User user = userMapper.saveUserMapper(role, company, saveUserRequest,password);
             User savedUser = userRepository.save(user);
             UserDTO userDTO = userMapper.userToUserDTO(savedUser);
-            userDTO.setRole(roleMapper.toRoleDTO(savedUser.getRole()));
-
+            if (user.getCompany() != null){
+                userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+            }
+            if (user.getRole() != null){
+                userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+            }
             if (!savedUser.getId().isBlank() && !savedUser.getId().isEmpty() && savedUser.getId() != null) {
                 kafkaHelper.sendKafkaEmailSecurity("create_user_email",
                         InforEmailSecurityDTO.builder()
@@ -159,8 +195,12 @@ public class UserServiceImp implements UserService {
             User mappedUser = userMapper.updateUserMapper(idUser, role, company, updateUserRequest, user);
             User userSaved = userRepository.save(mappedUser);
             UserDTO userDTO = userMapper.userToUserDTO(userSaved);
-            userDTO.setRole(roleMapper.toRoleDTO(userSaved.getRole()));
-            return userDTO;
+            if (user.getCompany() != null){
+                userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+            }
+            if (user.getRole() != null){
+                userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+            }             return userDTO;
         } catch (Exception e) {
             throw new ConflictExceptionHandler("Lỗi cập nhật user!");
         }
@@ -173,7 +213,12 @@ public class UserServiceImp implements UserService {
                 () -> new NotFoundIdExceptionHandler("Không tìm thấy id user!"));
         userRepository.delete(user);
         UserDTO userDTO = userMapper.userToUserDTO(user);
-        userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+        if (user.getCompany() != null){
+            userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+        }
+        if (user.getRole() != null){
+            userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+        }
         return userDTO;
     }
 
@@ -184,7 +229,12 @@ public class UserServiceImp implements UserService {
         user.setIsBlock(Boolean.TRUE);
         User savedUser = userRepository.save(user);
         UserDTO userDTO = userMapper.userToUserDTO(savedUser);
-        userDTO.setRole(roleMapper.toRoleDTO(savedUser.getRole()));
+        if (user.getCompany() != null){
+            userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+        }
+        if (user.getRole() != null){
+            userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+        }
         return userDTO;
     }
 
@@ -195,7 +245,45 @@ public class UserServiceImp implements UserService {
         user.setIsBlock(Boolean.FALSE);
         User savedUser = userRepository.save(user);
         UserDTO userDTO = userMapper.userToUserDTO(savedUser);
-        userDTO.setRole(roleMapper.toRoleDTO(savedUser.getRole()));
+        if (user.getCompany() != null){
+            userDTO.setCompany(companyMapper.companyToCompanyDTO(user.getCompany()));
+        }
+        if (user.getRole() != null){
+            userDTO.setRole(roleMapper.toRoleDTO(user.getRole()));
+        }
         return userDTO;
+    }
+
+    @Override
+    public JobUserApplyDTO getUserApplyByIdCompany(String idCompany) {
+        Company company = companyRepository.findById(idCompany)
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy id company!"));
+        List<JobUser> listJobUserApply = JobUserRepository.findByJob_Company(company);
+
+        List<UserDTO> listUser = new ArrayList<>();
+        List<JobDTO> listJobs =  new ArrayList<>();
+
+        for (JobUser jobUser : listJobUserApply) {
+            if (jobUser.getUser() != null){
+                UserDTO userDTO = userMapper.userToUserDTO(jobUser.getUser());
+                if (jobUser.getUser().getCompany() != null){
+                    userDTO.setCompany(companyMapper.companyToCompanyDTO(jobUser.getUser().getCompany()));
+                }
+                if (jobUser.getUser().getRole() != null){
+                    userDTO.setRole(roleMapper.toRoleDTO(jobUser.getUser().getRole()));
+                }
+                listUser.add(userDTO);
+            }
+            if (jobUser.getJob() != null){
+                JobDTO jobDTO = jobMapper.toDTO(jobUser.getJob());
+                jobDTO.setStatusSpecials(statusSpecialMapper
+                        .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
+                                .findByJob_Id(jobUser.getJob().getId())));
+                jobDTO.setSkills(availableSkillMapper
+                        .AvailbleSkillJobToAvaibleSkill(
+                                availableSkillsJobRepository.findByJob_Id(jobUser.getJob().getId())));
+            }
+        }
+        return JobUserApplyDTO.builder().listUsers(listUser).listJobs(listJobs).build();
     }
 }
