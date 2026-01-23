@@ -26,7 +26,12 @@ public final class SecurityConstants {
             "/api/status-special/**",
             "/api/company-address/**",
             "/images/**",
-            "/favicon.ico"
+            "/favicon.ico",
+            "/api/group-core-skill/**",
+            "/api/auth/profile/**",
+            "/api/auth/logout",
+            "/api/available-skill-experience/**",
+
     };
 
     public static final String[] API_PUBLIC_GET_URLS = {
@@ -49,7 +54,8 @@ public final class SecurityConstants {
             "/api/level-language/**",
             "/api/experience/**",
             "/api/group-core-skill/**",
-            "/api/available-skill/**"
+            "/api/available-skill/**",
+            "/api/user/company/**"
     };
 
     public static final String[] RESOURCE_URLS = {
@@ -64,8 +70,7 @@ public final class SecurityConstants {
     public static final String[] ADMIN_URLS = {
             "/api/roles/**",
             "/api/user/**",
-            "/api/blog/**",
-
+            "/api/blog/**"
     };
 
     public static final String[] USER_URLS = {
@@ -76,16 +81,12 @@ public final class SecurityConstants {
             "/api/award/**",
             "/api/project/**",
             "/api/language-skill/**",
-            "/api/available-skill-experience/**",
             "/api/soft-skills-name/**",
             "/api/reports/**",
             "/api/payment/**",
             "/api/payment-method/**",
             "/api/service-product/**",
-            "/api/auth/logout",
-            "/api/auth/profile/**",
-            "/api/auth/change-find-job/**",
-
+            "/api/auth/change-find-job/**"
     };
 
     public static final String[] USER_WRITE_URLS = {
@@ -93,6 +94,7 @@ public final class SecurityConstants {
             "/api/category/**",
             "/api/review/**",
             "/api/company/**"
+
     };
 
     public static final String[] ADMIN_WRITE_URLS = {
@@ -108,7 +110,6 @@ public final class SecurityConstants {
             "/api/language/**",
             "/api/level-language/**",
             "/api/experience/**",
-            "/api/group-core-skill/**",
             "/api/available-skill/**"
     };
 }

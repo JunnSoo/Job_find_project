@@ -1,6 +1,7 @@
 package com.project.codinviec.controller;
 
 import com.project.codinviec.dto.JobDTO;
+import com.project.codinviec.request.ApplyJobRequest;
 import com.project.codinviec.request.JobFilterRequest;
 import com.project.codinviec.request.JobRequest;
 import com.project.codinviec.request.PageRequestCustom;
@@ -45,6 +46,13 @@ public class JobController {
         JobDTO createdJob = jobService.createJob(request);
         return ResponseEntity.ok(BaseResponse.success(createdJob, "Tạo Job thành công"));
     }
+
+    @PostMapping("/apply")
+    public ResponseEntity<?> applyJob(@Valid @RequestBody ApplyJobRequest applyJobRequest) {
+        JobDTO jobApply = jobService.applyJob(applyJobRequest);
+        return ResponseEntity.ok(BaseResponse.success(jobApply, "Ứng tuyển thành công"));
+    }
+
     @PutMapping("/{idJob}")
     public ResponseEntity<?> updateJob(@PathVariable("idJob") int idJob, @Valid @RequestBody JobRequest request) {
         JobDTO updatedJob = jobService.updateJob(idJob, request);

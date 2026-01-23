@@ -1,6 +1,7 @@
 package com.project.codinviec.service;
 
 import com.project.codinviec.dto.JobDTO;
+import com.project.codinviec.request.ApplyJobRequest;
 import com.project.codinviec.request.JobFilterRequest;
 import com.project.codinviec.request.JobRequest;
 import com.project.codinviec.request.PageRequestCustom;
@@ -19,6 +20,5 @@ public interface JobService {
     JobDTO createJob(JobRequest request);
     JobDTO updateJob(int id, JobRequest request);
     void deleteJob(int id);
-
-
+    JobDTO applyJob(ApplyJobRequest applyJobRequest);
 }

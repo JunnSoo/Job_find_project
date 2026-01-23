@@ -3,14 +3,21 @@ package com.project.codinviec.service.imp;
 import com.project.codinviec.dto.JobDTO;
 import com.project.codinviec.entity.*;
 import com.project.codinviec.entity.auth.Company;
+import com.project.codinviec.entity.auth.User;
+import com.project.codinviec.entity.key.JobUserKey;
+import com.project.codinviec.exception.common.ConflictExceptionHandler;
 import com.project.codinviec.exception.common.NotFoundIdExceptionHandler;
 import com.project.codinviec.mapper.AvailableSkillMapper;
 import com.project.codinviec.mapper.JobMapper;
 import com.project.codinviec.mapper.StatusSpecialMapper;
+import com.project.codinviec.mapper.auth.UserMapper;
 import com.project.codinviec.repository.AvailableSkillsJobRepository;
 import com.project.codinviec.repository.JobRepository;
+import com.project.codinviec.repository.JobUserRepository;
 import com.project.codinviec.repository.StatusSpecialJobRepository;
 import com.project.codinviec.repository.auth.CompanyRepository;
+import com.project.codinviec.repository.auth.UserRepository;
+import com.project.codinviec.request.ApplyJobRequest;
 import com.project.codinviec.request.JobFilterRequest;
 import com.project.codinviec.request.JobRequest;
 import com.project.codinviec.request.PageRequestCustom;
@@ -43,6 +50,9 @@ public class JobServiceImp implements JobService {
     private final AvailableSkillsJobRepository availableSkillsJobRepository;
     private final AvailableSkillMapper availableSkillMapper;
 
+    private final UserRepository userRepository;
+    private final JobUserRepository  jobUserRepository;
+
     @Override
     public List<JobDTO> getAllJob() {
         List<JobDTO> jobDTOList = jobRepository.findAll().stream()
@@ -56,7 +66,9 @@ public class JobServiceImp implements JobService {
             jobDTO.setSkills(availableSkillMapper
                     .AvailbleSkillJobToAvaibleSkill(
                             availableSkillsJobRepository.findByJob_Id(jobDTO.getId())));
+
         }
+
         return jobDTOList;
     }
 
@@ -122,7 +134,8 @@ public class JobServiceImp implements JobService {
                 jobFilterRequest.getEmploymentTypeNames(),
                 jobFilterRequest.getSalaryMin(),
                 jobFilterRequest.getSalaryMax()
-        ), jobSpecification.searchByName(jobFilterRequest.getKeyword().trim()));
+        ), jobSpecification.searchByName(jobFilterRequest.getKeyword().trim())
+                ,jobSpecification.searchCompanyName(jobFilterRequest.getKeyword().trim()));
         return jobRepository.findAll(spec, pageable)
                 .map((job) -> {
                     JobDTO jobDTO = jobMapper.toDTO(job);
@@ -142,20 +155,20 @@ public class JobServiceImp implements JobService {
                 .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Job ID: " + id));
         JobDTO jobDTO = jobMapper.toDTO(job);
         jobDTO.setStatusSpecials(statusSpecialMapper
-                    .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
-                            .findByJob_Id(job.getId())));
+                .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
+                        .findByJob_Id(job.getId())));
         jobDTO.setSkills(availableSkillMapper
-                    .AvailbleSkillJobToAvaibleSkill(
-                            availableSkillsJobRepository.findByJob_Id(job.getId())));
+                .AvailbleSkillJobToAvaibleSkill(
+                        availableSkillsJobRepository.findByJob_Id(job.getId())));
         return jobDTO;
     }
 
     @Override
     public List<JobDTO> getJobByIdCompany(String companyId) {
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(()-> new NotFoundIdExceptionHandler("Không tìm thấy company"));
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy company"));
         List<JobDTO> jobDTOList = jobRepository.getJobByCompany_Id(companyId)
-                .stream().map((j)->jobMapper.toDTO(j)).toList();
+                .stream().map((j) -> jobMapper.toDTO(j)).toList();
         for (JobDTO jobDTO : jobDTOList) {
             jobDTO.setStatusSpecials(statusSpecialMapper
                     .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
@@ -235,5 +248,30 @@ public class JobServiceImp implements JobService {
         jobRepository.delete(job);
     }
 
-
+    @Override
+    @Transactional
+    public JobDTO applyJob(ApplyJobRequest applyJobRequest) {
+        Job job = jobRepository.findById(applyJobRequest.getIdJob())
+                .orElseThrow(() -> new NotFoundIdExceptionHandler("Không tìm thấy Job ID: " + applyJobRequest.getIdJob()));
+        User user = userRepository.findById(applyJobRequest.getUserId()).orElseThrow(
+                () -> new NotFoundIdExceptionHandler("Không tìm thấy id user"));
+        if (user.getCv() == null){
+            throw new ConflictExceptionHandler("Không tìm thấy CV của User");
+        }
+        JobUser existed = jobUserRepository.findById(new JobUserKey(job.getId(), user.getId())).orElse(null);
+        if (existed != null) {
+            throw new ConflictExceptionHandler("Bạn đã apply công việc này rồi");
+        }
+        jobUserRepository.save(JobUser.builder().id(JobUserKey.builder()
+                .jobId(job.getId()).userId(user.getId()).build())
+                .job(job).user(user).build());
+        JobDTO jobDTO = jobMapper.toDTO(job);
+        jobDTO.setStatusSpecials(statusSpecialMapper
+                .StatusSpecialJobToStatusSpecialDTO(statusSpecialJobRepository
+                        .findByJob_Id(job.getId())));
+        jobDTO.setSkills(availableSkillMapper
+                .AvailbleSkillJobToAvaibleSkill(
+                        availableSkillsJobRepository.findByJob_Id(job.getId())));
+        return jobDTO;
+    }
 }

@@ -46,6 +46,10 @@ public class Job {
     @Column(name = "salary")
     private double salary;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_status_id", nullable = false)
+    private JobStatus jobStatus;
+
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 

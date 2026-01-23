@@ -5,6 +5,7 @@ import com.project.codinviec.exception.auth.ExpireTokenExceptionHandler;
 import com.project.codinviec.exception.auth.RefreshTokenExceptionHandler;
 import com.project.codinviec.request.ChangeSoftSkillRequest;
 import com.project.codinviec.request.UpdateAvatarRequest;
+import com.project.codinviec.request.UploadCvRequest;
 import com.project.codinviec.request.auth.LoginRequest;
 import com.project.codinviec.request.auth.RegisterRequest;
 import com.project.codinviec.request.auth.UpdateProfileRequest;
@@ -111,5 +112,13 @@ public class AuthenticationController {
             @ModelAttribute  UpdateAvatarRequest updateAvatarRequest) {
         return ResponseEntity
                 .ok(BaseResponse.success(authService.updateAvatar(userDetails.getUserId(), updateAvatarRequest), "Cập nhật avatar thành công"));
+    }
+
+    @PutMapping(value = "/profile/uploadCv",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadCv(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @ModelAttribute UploadCvRequest uploadCvRequest) {
+        return ResponseEntity
+                .ok(BaseResponse.success(authService.uploadCv(userDetails.getUserId(), uploadCvRequest), "Cập nhật cv thành công"));
     }
 }

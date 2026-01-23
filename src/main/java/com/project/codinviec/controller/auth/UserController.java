@@ -31,6 +31,11 @@ public class UserController {
         return ResponseEntity.ok(BaseResponse.success(userService.getUserById(idUser), "OK"));
     }
 
+    @GetMapping("/company/{idCompany}")
+    public ResponseEntity<?> getUserApplyByIdCompany(@PathVariable("idCompany") String idCompany) {
+        return ResponseEntity.ok(BaseResponse.success(userService.getUserApplyByIdCompany(idCompany), "OK"));
+    }
+
     @PostMapping
     public ResponseEntity<?> saveUser(@Valid @RequestBody SaveUserRequest saveUserRequest) {
         return ResponseEntity.ok(BaseResponse.success(userService.saveUser(saveUserRequest), "OK"));
